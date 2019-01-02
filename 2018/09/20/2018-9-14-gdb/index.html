@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="pwn,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="gdb 123456789101112基础调试命令s step，si步入n 执行下一条指令 ni步入b 在某处下断点，可以用b * adrressb function_nameinfo b 查看断点信息delete 删除所有断点c 继续r 执行disas addr 查看addr处前后的反汇编代码disas functions 参看fucntion函数的反汇编代码 显示内存数据12345678910">
+<meta name="keywords" content="pwn">
+<meta property="og:type" content="article">
+<meta property="og:title" content="gdb常用命令">
+<meta property="og:url" content="http://yoursite.com/2018/09/20/2018-9-14-gdb/index.html">
+<meta property="og:site_name" content="zs0zrc">
+<meta property="og:description" content="gdb 123456789101112基础调试命令s step，si步入n 执行下一条指令 ni步入b 在某处下断点，可以用b * adrressb function_nameinfo b 查看断点信息delete 删除所有断点c 继续r 执行disas addr 查看addr处前后的反汇编代码disas functions 参看fucntion函数的反汇编代码 显示内存数据12345678910">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-01-02T07:49:01.320Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="gdb常用命令">
+<meta name="twitter:description" content="gdb 123456789101112基础调试命令s step，si步入n 执行下一条指令 ni步入b 在某处下断点，可以用b * adrressb function_nameinfo b 查看断点信息delete 删除所有断点c 继续r 执行disas addr 查看addr处前后的反汇编代码disas functions 参看fucntion函数的反汇编代码 显示内存数据12345678910">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/09/20/2018-9-14-gdb/">
+
+
+
+
+
+  <title>gdb常用命令 | zs0zrc</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">zs0zrc</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            About
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            Archives
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/09/20/2018-9-14-gdb/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="zs0zrc">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zs0zrc">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">gdb常用命令</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-09-20T18:50:30+08:00">
+                2018-09-20
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/TOOL/" itemprop="url" rel="index">
+                    <span itemprop="name">TOOL</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/09/20/2018-9-14-gdb/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2018/09/20/2018-9-14-gdb/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>gdb</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">基础调试命令</span><br><span class="line">s step，si步入</span><br><span class="line">n 执行下一条指令 ni步入</span><br><span class="line">b 在某处下断点，可以用</span><br><span class="line">b * adrress</span><br><span class="line">b function_name</span><br><span class="line">info b 查看断点信息</span><br><span class="line">delete 删除所有断点</span><br><span class="line">c 继续</span><br><span class="line">r 执行</span><br><span class="line">disas addr 查看addr处前后的反汇编代码</span><br><span class="line">disas functions 参看fucntion函数的反汇编代码</span><br></pre></td></tr></table></figure>
+<p>显示内存数据<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">p 系列</span><br><span class="line">p system/main 显示某个函数地址</span><br><span class="line">p $esp 显示寄存器</span><br><span class="line">p/x p/a p/b p/s。。。</span><br><span class="line">p 0xff - 0xea 计算器</span><br><span class="line">print &amp;VarName 查看变量地址</span><br><span class="line">p * 0xffffebac 查看某个地址处的值</span><br><span class="line"></span><br><span class="line">x系列</span><br><span class="line">命令格式：x/&lt;n/f/u&gt; &lt;addr&gt; </span><br><span class="line">n是一个正整数，表示需要显示的内存单元的个数</span><br><span class="line">f 表示显示的格式(b字符，s字符串,i汇编指令,x十六进制，d十进制)</span><br><span class="line">u 表示从当前地址往后请求的字节数 默认4byte,u参数可以用下面的字符来代替，b表示单字节，h表示双字节，w表示四字 节，g表示八字节</span><br><span class="line">&lt;addr&gt;表示一个内存地址</span><br><span class="line">x/xw addr 显示某个地址处开始的16进制内容，如果有符号表会加载符号表</span><br><span class="line">x/x $esp 查看esp寄存器中的值</span><br><span class="line">x/s addr 查看addr处的字符串</span><br><span class="line">x/b addr 查看addr处的字符</span><br><span class="line">x/i addr 查看addr处的反汇编结果</span><br><span class="line"></span><br><span class="line">info系列</span><br><span class="line">info register $ebp 查看寄存器ebp中的内容 (简写为 i r ebp)</span><br><span class="line">i r eflags 查看状态寄存器</span><br><span class="line">i r ss 查看段寄存器</span><br><span class="line">i b 查看断点信息</span><br><span class="line">i functions 查看所有的函数</span><br><span class="line">disas addr 查看addr处前后的反汇编代码</span><br><span class="line">stack 20 查看栈内20个值</span><br><span class="line">show args 查看参数</span><br><span class="line">vmmap 查看映射状况 peda带有</span><br><span class="line">readelf 查看elf文件中各个段的起始地址 peda带有</span><br><span class="line">parseheap 显示堆状况 peda带有</span><br></pre></td></tr></table></figure></p>
+<p>查找数据<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">find 查找字符串 peda带有</span><br><span class="line">searchmem 查找字符串 peda带有</span><br><span class="line">ropsearch &quot;xor eax,eax;ret&quot; 0x08048080 0x08050000 查找某段的rop peda带有</span><br><span class="line">ropgadget 提供多个pop|ret可行结果 peda带有</span><br></pre></td></tr></table></figure></p>
+<p>Pwngdb插件<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">libc : Print the base address of libc</span><br><span class="line">ld : Print the base address of ld</span><br><span class="line">codebase : Print the base of code segment</span><br><span class="line">heap : Print the base of heap</span><br><span class="line">got : Print the Global Offset Table infomation</span><br><span class="line">dyn : Print the Dynamic section infomation</span><br><span class="line">findcall : Find some function call</span><br><span class="line">bcall : Set the breakpoint at some function call</span><br><span class="line">tls : Print the thread local storage address</span><br><span class="line">at : Attach by process name</span><br><span class="line">findsyscall : Find the syscall</span><br><span class="line">fmtarg : Calculate the index of format string</span><br><span class="line">You need to stop on printf which has vulnerability.</span><br><span class="line">force : Calculate the nb in the house of force.</span><br><span class="line">heapinfo :打印heap的一些信息</span><br><span class="line">default is the arena of current thread</span><br><span class="line">If tcache is enable, it would show infomation of tcache entry</span><br><span class="line">heapinfoall : Print some infomation of heap (all threads)</span><br><span class="line">arenainfo : Print some infomation of all arena</span><br><span class="line">chunkptr : 打印chunk的信息 后面加chunk返回给用户的地址</span><br><span class="line">printfastbin : 打印fastbin的链表信息</span><br><span class="line">tracemalloc on : 追踪程序chunk的malloc和free</span><br><span class="line">parseheap :解析堆的布局</span><br><span class="line">magic : 打印出glibc中一些有用的信息</span><br><span class="line">fp : show FILE structure</span><br><span class="line">fp (Address of FILE)</span><br><span class="line">fpchain: show linked list of FILE</span><br><span class="line">orange : Test house of orange condition in the _IO_flush_lockp</span><br><span class="line">orange (Address of FILE)</span><br><span class="line">glibc version &lt;= 2.23</span><br></pre></td></tr></table></figure></p>
+<p>pwndbg<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">top_chunk: 显示top chunk的信息</span><br><span class="line">malloc_chunk address:打印出已被分配的chunk的信息</span><br><span class="line">fastbins:显示fastbins链表信息</span><br><span class="line">unsorted:显示unsortedbin 的信息</span><br><span class="line">smallbins:显示smallbins的信息</span><br><span class="line">largebins:显示largebins的信息</span><br><span class="line">bins:显示所有bins的信息</span><br><span class="line">mp：显示一些内存管理用到的全局变量</span><br><span class="line">arena：显示分配区的信息</span><br></pre></td></tr></table></figure></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/pwn/" rel="tag"># pwn</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/09/20/2018-9-22-very_overflow-writeup/" rel="next" title="very_overflow writeup">
+                <i class="fa fa-chevron-left"></i> very_overflow writeup
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/09/21/2018-9-21-ida的常见操作/" rel="prev" title="IDA的常见操作">
+                IDA的常见操作 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar.png" alt="zs0zrc">
+            
+              <p class="site-author-name" itemprop="name">zs0zrc</p>
+              <p class="site-description motion-element" itemprop="description">zs0zrc's blog</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">42</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">7</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">14</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                Links
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://23r3f.github.io/" title="23R3F" target="_blank">23R3F</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://myhackerworld.top/" title="D4rk3r" target="_blank">D4rk3r</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://m4x.fun/" title="M4X" target="_blank">M4X</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">zs0zrc</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+  
+  <script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item=>{
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: false,
+        notify: false,
+        appId: 'kXIhCtwOU5AsdKEH7mjI1f2k-gzGzoHsz',
+        appKey: 'uYeHUkgtbToPh4mGzE7YJXNe',
+        placeholder: 'pwn pwn pwn',
+        avatar:'mm',
+        guest_info:guest,
+        pageSize:'10' || 10,
+    });
+  </script>
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

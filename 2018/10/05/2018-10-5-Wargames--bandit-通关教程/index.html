@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="bandit,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="这是一个让人熟悉linux操作的一个wargame，挺有意思的 网站 bandit0直接ssh连上去，cat readme 拿到下一关的密码  密码：boJ9jbbUNNfktd78OOpsqOltutMc3MY1  bandit1这一关它将密码藏在 - 文件中，以’-‘作为文件名，代表标准输入流或者标准输出流，要显示 ‘-‘文件的内容 需要用 cat ./- 来打印出来  密码：CV1DtqXW">
+<meta name="keywords" content="bandit">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Wargames--bandit 通关教程">
+<meta property="og:url" content="http://yoursite.com/2018/10/05/2018-10-5-Wargames--bandit-通关教程/index.html">
+<meta property="og:site_name" content="zs0zrc">
+<meta property="og:description" content="这是一个让人熟悉linux操作的一个wargame，挺有意思的 网站 bandit0直接ssh连上去，cat readme 拿到下一关的密码  密码：boJ9jbbUNNfktd78OOpsqOltutMc3MY1  bandit1这一关它将密码藏在 - 文件中，以’-‘作为文件名，代表标准输入流或者标准输出流，要显示 ‘-‘文件的内容 需要用 cat ./- 来打印出来  密码：CV1DtqXW">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-01-02T07:47:34.570Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Wargames--bandit 通关教程">
+<meta name="twitter:description" content="这是一个让人熟悉linux操作的一个wargame，挺有意思的 网站 bandit0直接ssh连上去，cat readme 拿到下一关的密码  密码：boJ9jbbUNNfktd78OOpsqOltutMc3MY1  bandit1这一关它将密码藏在 - 文件中，以’-‘作为文件名，代表标准输入流或者标准输出流，要显示 ‘-‘文件的内容 需要用 cat ./- 来打印出来  密码：CV1DtqXW">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/10/05/2018-10-5-Wargames--bandit-通关教程/">
+
+
+
+
+
+  <title>Wargames--bandit 通关教程 | zs0zrc</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">zs0zrc</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            About
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            Archives
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/10/05/2018-10-5-Wargames--bandit-通关教程/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="zs0zrc">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zs0zrc">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Wargames--bandit 通关教程</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-10-05T10:10:05+08:00">
+                2018-10-05
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/wargames/" itemprop="url" rel="index">
+                    <span itemprop="name">wargames</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/10/05/2018-10-5-Wargames--bandit-通关教程/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2018/10/05/2018-10-5-Wargames--bandit-通关教程/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>这是一个让人熟悉linux操作的一个wargame，挺有意思的 <a href="http://overthewire.org/wargames/bandit/" target="_blank" rel="noopener">网站</a></p>
+<h3 id="bandit0"><a href="#bandit0" class="headerlink" title="bandit0"></a>bandit0</h3><p>直接ssh连上去，cat readme 拿到下一关的密码</p>
+<blockquote>
+<p>密码：boJ9jbbUNNfktd78OOpsqOltutMc3MY1</p>
+</blockquote>
+<h3 id="bandit1"><a href="#bandit1" class="headerlink" title="bandit1"></a>bandit1</h3><p>这一关它将密码藏在 - 文件中，以’-‘作为文件名，代表标准输入流或者标准输出流，要显示 ‘-‘文件的内容</p>
+<p>需要用 cat ./- 来打印出来</p>
+<blockquote>
+<p>密码：CV1DtqXWVFXTvM2F0k09SHz0YwRINYA9</p>
+</blockquote>
+<h3 id="bandit2"><a href="#bandit2" class="headerlink" title="bandit2"></a>bandit2</h3><p>这关它将密码存在 spaces in this filename这个文件中，但是直接cat 的话不行，要在文件名左右加上”，</p>
+<p>通过 cat “spaces in this filename”打印密码</p>
+<blockquote>
+<p>密码：UmHadQclWmgdLOKQ3YNgjWxGoRMb5luK</p>
+</blockquote>
+<h3 id="bandit3"><a href="#bandit3" class="headerlink" title="bandit3"></a>bandit3</h3><p>进到inhere的目录下，ls发现没有东西。通过 ls -al 将隐藏的文件也显示出来，发现有个.hidden文件。在linux下文件名以.开头的都默认会隐藏起来。 通过 cat .hidden打印密码</p>
+<blockquote>
+<p>密码：pIwrPrtPN36QITSp3EQaw936yaFoFgAB</p>
+</blockquote>
+<h3 id="bandit4"><a href="#bandit4" class="headerlink" title="bandit4"></a>bandit4</h3><p>发现inhere中有好多个文件，文件名都以’-‘开头，所以不能直接 用cat命令+文件名，文件名前加./</p>
+<p>用file 命令查看目录下文件的类型，发现有个ASCII text和别的都不一样，密码就在这个文件里面</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">bandit4@bandit:~$ ls</span><br><span class="line">inhere</span><br><span class="line">bandit4@bandit:~$ cd inhere/</span><br><span class="line">bandit4@bandit:~/inhere$ ls</span><br><span class="line">-file00  -file02  -file04  -file06  -file08</span><br><span class="line">-file01  -file03  -file05  -file07  -file09</span><br><span class="line">bandit4@bandit:~/inhere$ file .<span class="comment">/*</span></span><br><span class="line"><span class="comment">./-file00: PGP\011Secret Key -</span></span><br><span class="line"><span class="comment">./-file01: data</span></span><br><span class="line"><span class="comment">./-file02: data</span></span><br><span class="line"><span class="comment">./-file03: data</span></span><br><span class="line"><span class="comment">./-file04: data</span></span><br><span class="line"><span class="comment">./-file05: data</span></span><br><span class="line"><span class="comment">./-file06: data</span></span><br><span class="line"><span class="comment">./-file07: ASCII text</span></span><br><span class="line"><span class="comment">./-file08: data</span></span><br><span class="line"><span class="comment">./-file09: data</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>密码：koReBOKuIDDepwhWk7jZC0RTdopnAYKh</p>
+</blockquote>
+<h3 id="bandit5"><a href="#bandit5" class="headerlink" title="bandit5"></a>bandit5</h3><p>题目给的提示：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">The password for the next level is stored in a file somewhere under the inhere directory and has all of the following properties:</span><br><span class="line"></span><br><span class="line">human-readable</span><br><span class="line">1033 bytes in size</span><br><span class="line">not executable</span><br></pre></td></tr></table></figure>
+<p>进入inhere文件夹，可以发现有很多目录，结合题目给的提示，用find命令查找文件</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">find -type f -size <span class="number">1033</span>c</span><br><span class="line">-type设置查找文件的属性 f是普通文件</span><br><span class="line">-size指定查找的大小</span><br><span class="line"></span><br><span class="line">bandit5@bandit:~/inhere$ find -type f -size <span class="number">1033</span>c</span><br><span class="line">./maybehere07/.file2</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>密码：DXjZPULLxYr17uwoI01bNLQbtFemEgo7</p>
+</blockquote>
+<h3 id="bandit6"><a href="#bandit6" class="headerlink" title="bandit6"></a>bandit6</h3><p>题目提示</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">The password for the next level is stored somewhere on the server and has all of the following properties:</span><br><span class="line"></span><br><span class="line">owned by user bandit7</span><br><span class="line">owned by group bandit6</span><br><span class="line">33 bytes in size</span><br></pre></td></tr></table></figure>
+<p>文件在服务器的某个位置，文件的用户是 bandit7 群组是 bandit6,大小为33c</p>
+<p>用命令</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">find / -user bandit7 -group bandit6 -size 33c</span><br><span class="line">会出来一堆东西，但是又权限的只有</span><br><span class="line">/var/lib/dpkg/info/bandit7.password</span><br><span class="line">用cat将它内容打印出来</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>密码：HKBPTKQnIay4Fw76bEy8PVxKEDQRKTzs</p>
+</blockquote>
+<h3 id="bandit7"><a href="#bandit7" class="headerlink" title="bandit7"></a>bandit7</h3><p>这关密码存在 data.txt中，并且密码在millionth这个单词后面，用grep命令</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">grep millionth data.txt</span><br><span class="line">millionth	cvX2JJa4CFALtqS87jk27qwqGhBM9plV</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>密码：cvX2JJa4CFALtqS87jk27qwqGhBM9plV</p>
+</blockquote>
+<h3 id="bandit8"><a href="#bandit8" class="headerlink" title="bandit8"></a>bandit8</h3><p>密码存储在data.txt中，并且只出现一次</p>
+<p>用sort命令给data.txt的内容排序，同时用uniq命令忽略文件的重复行 </p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">sort data.txt | uniq -u </span><br><span class="line">-u 参数是只显示出现一次的行列</span><br><span class="line"></span><br><span class="line">bandit8@bandit:~$ sort data.txt | uniq -u</span><br><span class="line">UsvVyFSfZZWbi6wgC7dAFyFuR6jQQUhR</span><br><span class="line">bandit8@bandit:~$</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>密码：UsvVyFSfZZWbi6wgC7dAFyFuR6jQQUhR</p>
+</blockquote>
+<h3 id="bandit9"><a href="#bandit9" class="headerlink" title="bandit9"></a>bandit9</h3><p>密码存储在data.txt中，并且以几个 “===”开头</p>
+<p>用strings 命令打印data.txt的可见字符，用grep命令筛选出包含 “===”的字符串</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">bandit9@bandit:~$ strings  data.txt | grep <span class="string">"=="</span></span><br><span class="line">&lt;========== the?</span><br><span class="line">========== password</span><br><span class="line">*========== is</span><br><span class="line">:========== truKLdjsbJ5g7yyJ2X2R0o3a5HQJFuLk</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>密码 ： truKLdjsbJ5g7yyJ2X2R0o3a5HQJFuLk</p>
+</blockquote>
+<h3 id="bandit10"><a href="#bandit10" class="headerlink" title="bandit10"></a>bandit10</h3><p>密码存储在data.txt中，并且被base64加密过，这里用到的命令是base64</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">base64用法：</span><br><span class="line">格式：base64 file</span><br><span class="line">从指定的文件file中读取数据，编码为base64字符串输出。</span><br><span class="line">格式：base64 -d file</span><br><span class="line">从标准输入中读取已经进行base64编码的内容，解码输出。</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">bandit10@bandit:~$ base64 -d data.txt </span><br><span class="line">The password is IFukwKGsFW8MOq3IRFqrxE1hxTNEbUPR</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>密码：IFukwKGsFW8MOq3IRFqrxE1hxTNEbUPR</p>
+</blockquote>
+<h3 id="bandit11"><a href="#bandit11" class="headerlink" title="bandit11"></a>bandit11</h3><p>题目提示所有大小写字母位置都旋转了13个位置，这里用到了tr命令</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">tr  参数 前面的是原字符集，后面的是要替换的字符集</span><br><span class="line">-c或——complerment：取代所有不属于第一字符集的字符；</span><br><span class="line">-d或——delete：删除所有属于第一字符集的字符；</span><br><span class="line">-s或--squeeze-repeats：把连续重复的字符以单独一个字符表示；</span><br><span class="line">-t或--truncate-set1：先删除第一字符集较第二字符集多出的字符。</span><br><span class="line"></span><br><span class="line">tr能使用的字符类：</span><br><span class="line">[:alnum:]：字母和数字</span><br><span class="line">[:alpha:]：字母</span><br><span class="line">[:cntrl:]：控制（非打印）字符</span><br><span class="line">[:digit:]：数字</span><br><span class="line">[:graph:]：图形字符</span><br><span class="line">[:lower:]：小写字母</span><br><span class="line">[:<span class="keyword">print</span>:]：可打印字符</span><br><span class="line">[:punct:]：标点符号</span><br><span class="line">[:space:]：空白字符</span><br><span class="line">[:upper:]：大写字母</span><br><span class="line">[:xdigit:]：十六进制字符</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">用法：</span><br><span class="line">转换大小写：</span><br><span class="line">echo <span class="string">"HELLO WORLD"</span> | tr <span class="string">'A-Z'</span> <span class="string">'a-z'</span></span><br><span class="line"><span class="keyword">or</span> </span><br><span class="line">echo <span class="string">"HELLO WORLD"</span> | tr <span class="string">'[:upper:]'</span> <span class="string">'[:lower:]'</span></span><br></pre></td></tr></table></figure>
+<p>这一题输入的命令</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">bandit11@bandit:~$ cat data.txt | tr 'a-zA-Z' 'n-za-mN-ZA-M'</span><br><span class="line">The password is <span class="number">5</span>Te8Y4drgCRfCx8ugdwuEX8KFC6k2EUu</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>密码：5Te8Y4drgCRfCx8ugdwuEX8KFC6k2EUu</p>
+</blockquote>
+<h3 id="bandit12"><a href="#bandit12" class="headerlink" title="bandit12"></a>bandit12</h3><p>未完待续</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/bandit/" rel="tag"># bandit</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/10/04/2018-10-4-BugkuCTF-RE-writeup/" rel="next" title="BugkuCTF RE writeup">
+                <i class="fa fa-chevron-left"></i> BugkuCTF RE writeup
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/10/06/2018-10-6-pwnable.kr-writeup/" rel="prev" title="pwnable.kr writeup">
+                pwnable.kr writeup <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar.png" alt="zs0zrc">
+            
+              <p class="site-author-name" itemprop="name">zs0zrc</p>
+              <p class="site-description motion-element" itemprop="description">zs0zrc's blog</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">42</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">7</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">14</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                Links
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://23r3f.github.io/" title="23R3F" target="_blank">23R3F</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://myhackerworld.top/" title="D4rk3r" target="_blank">D4rk3r</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://m4x.fun/" title="M4X" target="_blank">M4X</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#bandit0"><span class="nav-number">1.</span> <span class="nav-text">bandit0</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#bandit1"><span class="nav-number">2.</span> <span class="nav-text">bandit1</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#bandit2"><span class="nav-number">3.</span> <span class="nav-text">bandit2</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#bandit3"><span class="nav-number">4.</span> <span class="nav-text">bandit3</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#bandit4"><span class="nav-number">5.</span> <span class="nav-text">bandit4</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#bandit5"><span class="nav-number">6.</span> <span class="nav-text">bandit5</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#bandit6"><span class="nav-number">7.</span> <span class="nav-text">bandit6</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#bandit7"><span class="nav-number">8.</span> <span class="nav-text">bandit7</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#bandit8"><span class="nav-number">9.</span> <span class="nav-text">bandit8</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#bandit9"><span class="nav-number">10.</span> <span class="nav-text">bandit9</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#bandit10"><span class="nav-number">11.</span> <span class="nav-text">bandit10</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#bandit11"><span class="nav-number">12.</span> <span class="nav-text">bandit11</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#bandit12"><span class="nav-number">13.</span> <span class="nav-text">bandit12</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">zs0zrc</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+  
+  <script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item=>{
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: false,
+        notify: false,
+        appId: 'kXIhCtwOU5AsdKEH7mjI1f2k-gzGzoHsz',
+        appKey: 'uYeHUkgtbToPh4mGzE7YJXNe',
+        placeholder: 'pwn pwn pwn',
+        avatar:'mm',
+        guest_info:guest,
+        pageSize:'10' || 10,
+    });
+  </script>
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

