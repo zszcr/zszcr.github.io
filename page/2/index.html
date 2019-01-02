@@ -14,6 +14,13 @@
 
 
 
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
 
 
 
@@ -391,6 +398,37 @@
           
 
           
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Words count in article&#58;</span>
+                
+                <span title="Words count in article">
+                  2.5k字
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Reading time &asymp;</span>
+                
+                <span title="Reading time">
+                  12分钟
+                </span>
+              
+            </div>
+          
 
           
 
@@ -436,8 +474,17 @@ exp：
     
 
     <footer class="post-footer">
+    <div>    
       
-
+      
+      </div>
+      
+      <div>
+      
+      </div>
+      <div>
+      
+      </div>
       
 
       
@@ -564,6 +611,37 @@ exp：
           
 
           
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Words count in article&#58;</span>
+                
+                <span title="Words count in article">
+                  182字
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Reading time &asymp;</span>
+                
+                <span title="Reading time">
+                  1分钟
+                </span>
+              
+            </div>
+          
 
           
 
@@ -610,161 +688,17 @@ exp：
     
 
     <footer class="post-footer">
-      
-
-      
-
-      
-
+    <div>    
       
       
-        <div class="post-eof"></div>
+      </div>
       
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
+      <div>
       
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/10/07/2018-10-7-初探arm下的pwn/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="zs0zrc">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="zs0zrc">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/10/07/2018-10-7-初探arm下的pwn/" itemprop="url">初探arm下的pwn</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-10-07T10:10:05+08:00">
-                2018-10-07
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/2018/10/07/2018-10-7-初探arm下的pwn/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count valine-comment-count" data-xid="/2018/10/07/2018-10-7-初探arm下的pwn/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-             <span id="/2018/10/07/2018-10-7-初探arm下的pwn/" class="leancloud_visitors" data-flag-title="初探arm下的pwn">
-               <span class="post-meta-divider">|</span>
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               
-                 <span class="post-meta-item-text">Visitors&#58;</span>
-               
-                 <span class="leancloud-visitors-count"></span>
-             </span>
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
+      </div>
+      <div>
       
-      
-
-      
-        
-          
-          最近做了下InCTF，第一道pwn题就是arm架构的，之前没有接触过，就学习一下
-基础知识可以看下维基百科的arm架构 ，介绍的挺详细的
-arm下的通用寄存器
-
-函数调用约定：
-
-ARM：参数1~参数4 分别保存到 R0~R3 寄存器中 ，剩下的参数从右往左依次入栈，被调用者实现栈平衡，返回值存放在
-          ...
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2018/10/07/2018-10-7-初探arm下的pwn/#more" rel="contents">
-              Read more &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
+      </div>
       
 
       
@@ -891,6 +825,37 @@ ARM：参数1~参数4 分别保存到 R0~R3 寄存器中 ，剩下的参数从�
           
 
           
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Words count in article&#58;</span>
+                
+                <span title="Words count in article">
+                  1.2k字
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Reading time &asymp;</span>
+                
+                <span title="Reading time">
+                  6分钟
+                </span>
+              
+            </div>
+          
 
           
 
@@ -933,8 +898,210 @@ ARM：参数1~参数4 分别保存到 R0~R3 寄存器中 ，剩下的参数从�
     
 
     <footer class="post-footer">
+    <div>    
+      
+      
+      </div>
+      
+      <div>
+      
+      </div>
+      <div>
+      
+      </div>
       
 
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/10/07/2018-10-7-初探arm下的pwn/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="zs0zrc">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zs0zrc">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/10/07/2018-10-7-初探arm下的pwn/" itemprop="url">初探arm下的pwn</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-10-07T10:10:05+08:00">
+                2018-10-07
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/10/07/2018-10-7-初探arm下的pwn/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2018/10/07/2018-10-7-初探arm下的pwn/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+             <span id="/2018/10/07/2018-10-7-初探arm下的pwn/" class="leancloud_visitors" data-flag-title="初探arm下的pwn">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">Visitors&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Words count in article&#58;</span>
+                
+                <span title="Words count in article">
+                  1.2k字
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Reading time &asymp;</span>
+                
+                <span title="Reading time">
+                  5分钟
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+          最近做了下InCTF，第一道pwn题就是arm架构的，之前没有接触过，就学习一下
+基础知识可以看下维基百科的arm架构 ，介绍的挺详细的
+arm下的通用寄存器
+
+函数调用约定：
+
+ARM：参数1~参数4 分别保存到 R0~R3 寄存器中 ，剩下的参数从右往左依次入栈，被调用者实现栈平衡，返回值存放在
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2018/10/07/2018-10-7-初探arm下的pwn/#more" rel="contents">
+              Read more &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+    <div>    
+      
+      
+      </div>
+      
+      <div>
+      
+      </div>
+      <div>
+      
+      </div>
       
 
       
@@ -1061,6 +1228,37 @@ ARM：参数1~参数4 分别保存到 R0~R3 寄存器中 ，剩下的参数从�
           
 
           
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Words count in article&#58;</span>
+                
+                <span title="Words count in article">
+                  336字
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Reading time &asymp;</span>
+                
+                <span title="Reading time">
+                  1分钟
+                </span>
+              
+            </div>
+          
 
           
 
@@ -1105,8 +1303,17 @@ bof这题给了二进制文件和源码
     
 
     <footer class="post-footer">
+    <div>    
       
-
+      
+      </div>
+      
+      <div>
+      
+      </div>
+      <div>
+      
+      </div>
       
 
       
@@ -1233,6 +1440,37 @@ bof这题给了二进制文件和源码
           
 
           
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Words count in article&#58;</span>
+                
+                <span title="Words count in article">
+                  1k字
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Reading time &asymp;</span>
+                
+                <span title="Reading time">
+                  4分钟
+                </span>
+              
+            </div>
+          
 
           
 
@@ -1279,8 +1517,17 @@ bandit1这一关它将密码藏在 - 文件中，以’-‘作为文件名，代
     
 
     <footer class="post-footer">
+    <div>    
       
-
+      
+      </div>
+      
+      <div>
+      
+      </div>
+      <div>
+      
+      </div>
       
 
       
@@ -1407,6 +1654,37 @@ bandit1这一关它将密码藏在 - 文件中，以’-‘作为文件名，代
           
 
           
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Words count in article&#58;</span>
+                
+                <span title="Words count in article">
+                  275字
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Reading time &asymp;</span>
+                
+                <span title="Reading time">
+                  1分钟
+                </span>
+              
+            </div>
+          
 
           
 
@@ -1452,8 +1730,17 @@ easy_re拿ida打开文件，在比较语句那下个断点，动态调试，在�
     
 
     <footer class="post-footer">
+    <div>    
       
-
+      
+      </div>
+      
+      <div>
+      
+      </div>
+      <div>
+      
+      </div>
       
 
       
@@ -1580,6 +1867,37 @@ easy_re拿ida打开文件，在比较语句那下个断点，动态调试，在�
           
 
           
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Words count in article&#58;</span>
+                
+                <span title="Words count in article">
+                  1.2k字
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Reading time &asymp;</span>
+                
+                <span title="Reading time">
+                  6分钟
+                </span>
+              
+            </div>
+          
 
           
 
@@ -1622,8 +1940,17 @@ easy_re拿ida打开文件，在比较语句那下个断点，动态调试，在�
     
 
     <footer class="post-footer">
+    <div>    
       
-
+      
+      </div>
+      
+      <div>
+      
+      </div>
+      <div>
+      
+      </div>
       
 
       
@@ -1750,6 +2077,37 @@ easy_re拿ida打开文件，在比较语句那下个断点，动态调试，在�
           
 
           
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Words count in article&#58;</span>
+                
+                <span title="Words count in article">
+                  1.3k字
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Reading time &asymp;</span>
+                
+                <span title="Reading time">
+                  6分钟
+                </span>
+              
+            </div>
+          
 
           
 
@@ -1792,8 +2150,17 @@ easy_re拿ida打开文件，在比较语句那下个断点，动态调试，在�
     
 
     <footer class="post-footer">
+    <div>    
       
-
+      
+      </div>
+      
+      <div>
+      
+      </div>
+      <div>
+      
+      </div>
       
 
       
@@ -1920,6 +2287,37 @@ easy_re拿ida打开文件，在比较语句那下个断点，动态调试，在�
           
 
           
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Words count in article&#58;</span>
+                
+                <span title="Words count in article">
+                  1.3k字
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Reading time &asymp;</span>
+                
+                <span title="Reading time">
+                  5分钟
+                </span>
+              
+            </div>
+          
 
           
 
@@ -1965,8 +2363,17 @@ source code o
     
 
     <footer class="post-footer">
+    <div>    
       
-
+      
+      </div>
+      
+      <div>
+      
+      </div>
+      <div>
+      
+      </div>
       
 
       
@@ -2121,8 +2528,17 @@ source code o
   <span class="with-love">
     <i class="fa fa-user"></i>
   </span>
-  <span class="author" itemprop="copyrightHolder">zs0zrc</span>
+  <span class="author" itemprop="copyrightHolder">true</span>
 
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    
+      <span class="post-meta-item-text">Site words total count&#58;</span>
+    
+    <span title="Site words total count">40.7k</span>
   
 </div>
 
