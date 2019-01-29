@@ -90,12 +90,12 @@
 <meta name="keywords" content="Vmare protect">
 <meta property="og:type" content="article">
 <meta property="og:title" content="逆向学习之虚拟机保护">
-<meta property="og:url" content="http://yoursite.com/2019/11/13/2019-11-13-逆向虚拟机保护学习/index.html">
+<meta property="og:url" content="http://yoursite.com/2019/01/13/2019-11-13-逆向虚拟机保护学习/index.html">
 <meta property="og:site_name" content="zs0zrc">
 <meta property="og:description" content="考试周终于过去了，是时候又要开始学习了。所以就研究下逆向中的虚拟机保护技术，下面记录下学习的过程，以及一些收获。 基础概念逆向中的虚拟机保护是一种基于虚拟机的代码保护技术。它将基于x86汇编系统中的可执行代码转换为字节码指令系统的代码，来达到不被轻易逆向和篡改的目的。简单点说就是将程序的代码转换自定义的操作码(opcode)，然后在程序执行时再通过解释这些操作码，选择对应的函数执行，从而实现程序原">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://yoursite.com/picture/1547372821186.png">
-<meta property="og:updated_time" content="2019-01-14T10:10:51.589Z">
+<meta property="og:updated_time" content="2019-01-29T14:33:39.111Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="逆向学习之虚拟机保护">
 <meta name="twitter:description" content="考试周终于过去了，是时候又要开始学习了。所以就研究下逆向中的虚拟机保护技术，下面记录下学习的过程，以及一些收获。 基础概念逆向中的虚拟机保护是一种基于虚拟机的代码保护技术。它将基于x86汇编系统中的可执行代码转换为字节码指令系统的代码，来达到不被轻易逆向和篡改的目的。简单点说就是将程序的代码转换自定义的操作码(opcode)，然后在程序执行时再通过解释这些操作码，选择对应的函数执行，从而实现程序原">
@@ -129,7 +129,7 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2019/11/13/2019-11-13-逆向虚拟机保护学习/">
+  <link rel="canonical" href="http://yoursite.com/2019/01/13/2019-11-13-逆向虚拟机保护学习/">
 
 
 
@@ -304,7 +304,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/13/2019-11-13-逆向虚拟机保护学习/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/01/13/2019-11-13-逆向虚拟机保护学习/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="zs0zrc">
@@ -333,8 +333,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-11-13T12:10:05+08:00">
-                2019-11-13
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-01-13T12:10:05+08:00">
+                2019-01-13
               </time>
             
 
@@ -374,8 +374,8 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/2019/11/13/2019-11-13-逆向虚拟机保护学习/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count valine-comment-count" data-xid="/2019/11/13/2019-11-13-逆向虚拟机保护学习/" itemprop="commentCount"></span>
+                <a href="/2019/01/13/2019-11-13-逆向虚拟机保护学习/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2019/01/13/2019-11-13-逆向虚拟机保护学习/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -383,7 +383,7 @@
 
           
           
-             <span id="/2019/11/13/2019-11-13-逆向虚拟机保护学习/" class="leancloud_visitors" data-flag-title="逆向学习之虚拟机保护">
+             <span id="/2019/01/13/2019-11-13-逆向虚拟机保护学习/" class="leancloud_visitors" data-flag-title="逆向学习之虚拟机保护">
                <span class="post-meta-divider">|</span>
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -462,7 +462,7 @@
 </ol>
 <p>opcode只是一个标识，可以随便定义，这里我定义了4条指令，每条指令分别对应着一个字节的字节码。而opcode的解释器是用来对opcode进行解释，从而选择对应的handle函数执行。</p>
 <h4 id="定义opcode"><a href="#定义opcode" class="headerlink" title="定义opcode"></a>定义opcode</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">enum</span> opcodes</span><br><span class="line">&#123;</span><br><span class="line">    MOV = <span class="number">0xf1</span>,</span><br><span class="line">    XOR = <span class="number">0xf2</span>,</span><br><span class="line">    RET = <span class="number">0xf4</span>,</span><br><span class="line">    READ = <span class="number">0xf5</span>,</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-<p>因为我只是为了理解，所以就只定义了几个常用指令。这里我用了共用体来定义opcode，比较方便。</p>
+<p>因为我只是为了理解，所以就只定义了几个常用指令。这里我用了枚举类型来定义opcode，比较方便。</p>
 <h4 id="实现解释器"><a href="#实现解释器" class="headerlink" title="实现解释器"></a>实现解释器</h4><p>opcode定义完后，就可以开始实现解释opcode的解释器了。解释器我们需要实现一个虚拟环境以及各个opcode对应的handle函数。虚拟环境则是真实物理机的一个虚拟，是自己定义的字节码运行的环境。</p>
 <h4 id="一些关键的结构体"><a href="#一些关键的结构体" class="headerlink" title="一些关键的结构体"></a>一些关键的结构体</h4><h5 id="vm-cpu"><a href="#vm-cpu" class="headerlink" title="vm_cpu"></a>vm_cpu</h5><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">vm_cpus</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">    <span class="keyword">int</span> r1;	虚拟寄存器r1</span><br><span class="line">    <span class="keyword">int</span> r2;	虚拟寄存器r2</span><br><span class="line">    <span class="keyword">int</span> r3;	虚拟寄存器r3</span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">char</span> *eip;	指向正在解释的opcode的地址</span><br><span class="line">    vm_opcode op_list[OPCODE_N];	opcode列表，存放了所有的opcode及其对应的处理函数</span><br><span class="line">&#125;vm_cpu;</span><br></pre></td></tr></table></figure>
 <h5 id="vm-opcode"><a href="#vm-opcode" class="headerlink" title="vm_opcode"></a>vm_opcode</h5><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">	<span class="keyword">unsigned</span> <span class="keyword">char</span> opcode;</span><br><span class="line">	<span class="keyword">void</span> (*handle)(<span class="keyword">void</span> *);</span><br><span class="line">    </span><br><span class="line">&#125;vm_opcode;</span><br></pre></td></tr></table></figure>
@@ -500,7 +500,7 @@
         </li>
         <li class="post-copyright-link">
           <strong>本文链接：</strong>
-          <a href="/2019/11/13/2019-11-13-逆向虚拟机保护学习/" title="逆向学习之虚拟机保护">2019/11/13/2019-11-13-逆向虚拟机保护学习/</a>
+          <a href="/2019/01/13/2019-11-13-逆向虚拟机保护学习/" title="逆向学习之虚拟机保护">2019/01/13/2019-11-13-逆向虚拟机保护学习/</a>
         </li>
         <li class="post-copyright-license">
           <strong>版权： </strong>
@@ -543,6 +543,10 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/01/19/2019-1-19-内核模块编程学习笔记/" rel="prev" title="内核模块编程学习笔记">
+                内核模块编程学习笔记 <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -624,7 +628,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">43</span>
+                  <span class="site-state-item-count">45</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -635,7 +639,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-count">9</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -646,7 +650,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">15</span>
+                  <span class="site-state-item-count">17</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
@@ -739,7 +743,7 @@
     
       <span class="post-meta-item-text">Site words total count&#58;</span>
     
-    <span title="Site words total count">42.4k</span>
+    <span title="Site words total count">43.2k</span>
   
 </div>
 
