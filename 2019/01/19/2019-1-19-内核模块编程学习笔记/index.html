@@ -95,7 +95,7 @@
 <meta property="og:description" content="最近想研究下linux内核，就开始学习内核模块编程，写篇博客，做下学习笔记。 内核模块编程模块的定义内核模块就是具有独立功能的程序，它能被单独编译，但是不能单独运行，它的运行必须被链接到内核作为内核的一部分在内核空间运行。 用户编程和内核模块编程的区别  基本组成模块通常由一组函数和数据结构组成，用来实现一种文件系统、一个驱动程序或其他内核上层的功能。 内核编程3个必须的头文件 123#inclu">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://yoursite.com/picture/1547897572940.png">
-<meta property="og:updated_time" content="2019-01-30T11:59:42.289Z">
+<meta property="og:updated_time" content="2019-02-01T09:45:15.888Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="linux内核模块编程学习笔记">
 <meta name="twitter:description" content="最近想研究下linux内核，就开始学习内核模块编程，写篇博客，做下学习笔记。 内核模块编程模块的定义内核模块就是具有独立功能的程序，它能被单独编译，但是不能单独运行，它的运行必须被链接到内核作为内核的一部分在内核空间运行。 用户编程和内核模块编程的区别  基本组成模块通常由一组函数和数据结构组成，用来实现一种文件系统、一个驱动程序或其他内核上层的功能。 内核编程3个必须的头文件 123#inclu">
@@ -468,7 +468,7 @@
 <p><a href="https://blog.csdn.net/cyfcsd/article/details/52057621" target="_blank" rel="noopener">博客</a></p>
 <p>这两篇文章可以做个入门</p>
 <p>一个例子：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span> Makefile2.6</span><br><span class="line">obj-m += hellomod.o        # 产生hellomod 模块的目标文件</span><br><span class="line">CURRENT_PATH := $(shell pwd)   #模块所在的当前路径</span><br><span class="line">LINUX_KERNEL := $(shell uname -r)    #Linux内核源代码的当前版本</span><br><span class="line">LINUX_KERNEL_PATH := /usr/src/linux-headers-$(LINUX_KERNEL) #Linux内核源代码的绝对路径</span><br><span class="line">all:</span><br><span class="line">make -C $(LINUX_KERNEL_PATH) M=$(CURRENT_PATH) modules   #编译模块了</span><br><span class="line">clean:</span><br><span class="line">make -C $(LINUX_KERNEL_PATH) M=$(CURRENT_PATH) clean    #清理</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span> Makefile2.6</span><br><span class="line">obj-m += hellomod.o        # 产生hellomod 模块的目标文件</span><br><span class="line">CURRENT_PATH := $(shell pwd)   #模块所在的当前路径</span><br><span class="line">LINUX_KERNEL := $(shell uname -r)    #Linux内核源代码的当前版本</span><br><span class="line">LINUX_KERNEL_PATH := /usr/src/linux-headers-$(LINUX_KERNEL) #Linux内核源代码的绝对路径</span><br><span class="line">all:</span><br><span class="line">	make -C $(LINUX_KERNEL_PATH) M=$(CURRENT_PATH) modules   #编译模块了</span><br><span class="line">clean:</span><br><span class="line">	make -C $(LINUX_KERNEL_PATH) M=$(CURRENT_PATH) clean    #清理</span><br></pre></td></tr></table></figure>
 <h4 id="常用的模块编程命令"><a href="#常用的模块编程命令" class="headerlink" title="常用的模块编程命令"></a>常用的模块编程命令</h4><ul>
 <li>lsmod   获得系统中加载了的所有模块以及模块间的依赖关系</li>
 <li>cat /proc/modules   查看加载模块的信息</li>
@@ -547,8 +547,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2019/01/29/2019-1-29-寒假学习记录/" rel="prev" title="寒假学习记录">
-                寒假学习记录 <i class="fa fa-chevron-right"></i>
+              <a href="/2019/01/31/2019-1-31-kernel_pwn入门之环境搭建/" rel="prev" title="kernel_pwn入门之环境搭建">
+                kernel_pwn入门之环境搭建 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -631,7 +631,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">45</span>
+                  <span class="site-state-item-count">46</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -642,7 +642,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">9</span>
+                  <span class="site-state-item-count">10</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -746,7 +746,7 @@
     
       <span class="post-meta-item-text">Site words total count&#58;</span>
     
-    <span title="Site words total count">43.2k</span>
+    <span title="Site words total count">45k</span>
   
 </div>
 
