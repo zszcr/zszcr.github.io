@@ -75,7 +75,7 @@
 
 
 
-  <meta name="keywords" content="pwn,writeup,">
+  <meta name="keywords" content="writeup,pwn,">
 
 
 
@@ -87,7 +87,7 @@
 
 
 <meta name="description" content="hackme.inndy 的echo 和 echo2 echo防护机制：  32位的开启了NX的程序ida反编译一下：  很明显的一个格式化字符串漏洞，加上程序中存在system函数，所以可以将printf_got覆盖成system函数，再传入”/bin/sh” 来getshell这里我用了pwntools库中的fmtstr_payload()函数 exp:12345678910111213141">
-<meta name="keywords" content="pwn,writeup">
+<meta name="keywords" content="writeup,pwn">
 <meta property="og:type" content="article">
 <meta property="og:title" content="echo 和 echo2 writeup">
 <meta property="og:url" content="http://yoursite.com/2018/05/10/2018-5-10-echo-和-echo2-writeup/index.html">
@@ -524,9 +524,9 @@
       
         <div class="post-tags">
           
-            <a href="/tags/pwn/" rel="tag"># pwn</a>
-          
             <a href="/tags/writeup/" rel="tag"># writeup</a>
+          
+            <a href="/tags/pwn/" rel="tag"># pwn</a>
           
         </div>
       
