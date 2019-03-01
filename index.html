@@ -2159,7 +2159,7 @@ web开发人员没有在将从web表单、cookie、输入参数等收到的值�
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/05/2018-11-5-【上海市大学生网络安全大赛】baby_arm复现/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/05/2018-11-5-arm-pwn环境搭建/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="zs0zrc">
@@ -2178,7 +2178,7 @@ web开发人员没有在将从web表单、cookie、输入参数等收到的值�
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2018/11/05/2018-11-5-【上海市大学生网络安全大赛】baby_arm复现/" itemprop="url">【上海市大学生网络安全大赛】pwn复现</a></h1>
+                <a class="post-title-link" href="/2018/11/05/2018-11-5-arm-pwn环境搭建/" itemprop="url">arm-pwn环境搭建</a></h1>
         
 
         <div class="post-meta">
@@ -2209,8 +2209,8 @@ web开发人员没有在将从web表单、cookie、输入参数等收到的值�
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/2018/11/05/2018-11-5-【上海市大学生网络安全大赛】baby_arm复现/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count valine-comment-count" data-xid="/2018/11/05/2018-11-5-【上海市大学生网络安全大赛】baby_arm复现/" itemprop="commentCount"></span>
+                <a href="/2018/11/05/2018-11-5-arm-pwn环境搭建/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2018/11/05/2018-11-5-arm-pwn环境搭建/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -2218,7 +2218,7 @@ web开发人员没有在将从web表单、cookie、输入参数等收到的值�
 
           
           
-             <span id="/2018/11/05/2018-11-5-【上海市大学生网络安全大赛】baby_arm复现/" class="leancloud_visitors" data-flag-title="【上海市大学生网络安全大赛】pwn复现">
+             <span id="/2018/11/05/2018-11-5-arm-pwn环境搭建/" class="leancloud_visitors" data-flag-title="arm-pwn环境搭建">
                <span class="post-meta-divider">|</span>
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -2243,7 +2243,7 @@ web开发人员没有在将从web表单、cookie、输入参数等收到的值�
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  1.3k字
+                  209字
                 </span>
               
 
@@ -2259,7 +2259,7 @@ web开发人员没有在将从web表单、cookie、输入参数等收到的值�
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
                 <span title="阅读时长">
-                  6分钟
+                  1分钟
                 </span>
               
             </div>
@@ -2282,12 +2282,19 @@ web开发人员没有在将从web表单、cookie、输入参数等收到的值�
       
         
           
-          baby_arm题如其名，这是一道arm下的pwn，用file查看了下文件信息
-12zs0zrc@zs0zrc-PC:~/pwn/babyarm$ file arm_pwn arm_pwn: ELF 64-bit LSB executable, ARM aarch64, version 1 (SYS
+          最近打的比赛，做arm-pwn发现自己环境有点问题，就像新搭一个基于deepin系统的环境，下面记录下搭环境的过程
+镜像 
+先装好deepin虚拟机，然后开始配环境
+
+基本环境的安装
+
+gdb-multiarch, git , vim, gdb ,binfmt 用来 识别文件格式
+
+  123sud
           ...
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2018/11/05/2018-11-5-【上海市大学生网络安全大赛】baby_arm复现/#more" rel="contents">
+            <a class="btn" href="/2018/11/05/2018-11-5-arm-pwn环境搭建/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>

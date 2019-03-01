@@ -95,8 +95,8 @@
 <meta property="og:description" content="最近做国际赛的题，遇到了tcache下的堆利用，之前没有接触过tcache机制，所以就来学习一下，主要是围绕howtoheap来学习，做下笔记。 tcache机制是glibc-2.26新增的机制，主要是用来提升堆管理的性能，但是它的安全机制几乎没有….所以搞事就容易很多了，混子pwn手的福音 基础知识tcache的两个新增的结构体 12345678910typedef struct tcache_">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://yoursite.com/assets/images/picture/1540968645366.png">
-<meta property="og:image" content="http://yoursite.com/assets/images/picture/1541055592233.png">
-<meta property="og:updated_time" content="2019-01-02T07:47:56.079Z">
+<meta property="og:image" content="http://yoursite.com/picture/1541055592233.png">
+<meta property="og:updated_time" content="2019-03-01T08:59:42.929Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="tcache下的堆利用的学习">
 <meta name="twitter:description" content="最近做国际赛的题，遇到了tcache下的堆利用，之前没有接触过tcache机制，所以就来学习一下，主要是围绕howtoheap来学习，做下笔记。 tcache机制是glibc-2.26新增的机制，主要是用来提升堆管理的性能，但是它的安全机制几乎没有….所以搞事就容易很多了，混子pwn手的福音 基础知识tcache的两个新增的结构体 12345678910typedef struct tcache_">
@@ -479,7 +479,7 @@
 <p>源码：</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">unsigned</span> <span class="keyword">long</span> <span class="keyword">long</span> *a; <span class="comment">//pointer that will be overwritten</span></span><br><span class="line">	<span class="keyword">unsigned</span> <span class="keyword">long</span> <span class="keyword">long</span> fake_chunks[<span class="number">10</span>]; <span class="comment">//fake chunk region</span></span><br><span class="line"></span><br><span class="line">	<span class="built_in">malloc</span>(<span class="number">1</span>);<span class="comment">//init heap</span></span><br><span class="line"></span><br><span class="line">	fake_chunks[<span class="number">1</span>] = <span class="number">0x40</span>; <span class="comment">// this is the size</span></span><br><span class="line"></span><br><span class="line">	<span class="built_in">fprintf</span>(<span class="built_in">stderr</span>, <span class="string">"Now we will overwrite our pointer with the address of the fake region inside the fake first chunk, %p.\n"</span>, &amp;fake_chunks[<span class="number">1</span>]);</span><br><span class="line">	<span class="built_in">fprintf</span>(<span class="built_in">stderr</span>, <span class="string">"... note that the memory address of the *region* associated with this chunk must be 16-byte aligned.\n"</span>);</span><br><span class="line"></span><br><span class="line">	a = &amp;fake_chunks[<span class="number">2</span>];</span><br><span class="line">	<span class="built_in">fprintf</span>(<span class="built_in">stderr</span>, <span class="string">"Freeing the overwritten pointer.\n"</span>);</span><br><span class="line">	<span class="built_in">free</span>(a);</span><br><span class="line"></span><br><span class="line">	<span class="built_in">fprintf</span>(<span class="built_in">stderr</span>, <span class="string">"Now the next malloc will return the region of our fake chunk at %p, which will be %p!\n"</span>, &amp;fake_chunks[<span class="number">1</span>], &amp;fake_chunks[<span class="number">2</span>]);</span><br><span class="line">	<span class="built_in">fprintf</span>(<span class="built_in">stderr</span>, <span class="string">"malloc(0x30): %p\n"</span>, <span class="built_in">malloc</span>(<span class="number">0x30</span>));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>free掉伪造的chunk后堆的情况</p>
-<p><img src="/assets/images/picture/1541055592233.png" alt="1541055592233"></p>
+<p><img src="/picture/1541055592233.png" alt="1541055592233"></p>
 <p>reference:</p>
 <p><a href="http://m4x.fun/post/dive-into-tcache/" target="_blank" rel="noopener">M4X’s blog</a></p>
 <p><a href="http://p4nda.top/2018/03/20/tcache/" target="_blank" rel="noopener">P4nda</a></p>
@@ -554,8 +554,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2018/11/05/2018-11-5-arm-pwn环境搭建/" rel="prev" title="arm-pwn环境搭建">
-                arm-pwn环境搭建 <i class="fa fa-chevron-right"></i>
+              <a href="/2018/11/05/2018-11-5-【上海市大学生网络安全大赛】baby_arm复现/" rel="prev" title="【上海市大学生网络安全大赛】pwn复现">
+                【上海市大学生网络安全大赛】pwn复现 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
