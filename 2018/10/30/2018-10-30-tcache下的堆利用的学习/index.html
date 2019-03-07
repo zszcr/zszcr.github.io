@@ -94,13 +94,13 @@
 <meta property="og:site_name" content="zs0zrc">
 <meta property="og:description" content="最近做国际赛的题，遇到了tcache下的堆利用，之前没有接触过tcache机制，所以就来学习一下，主要是围绕howtoheap来学习，做下笔记。 tcache机制是glibc-2.26新增的机制，主要是用来提升堆管理的性能，但是它的安全机制几乎没有….所以搞事就容易很多了，混子pwn手的福音 基础知识tcache的两个新增的结构体 12345678910typedef struct tcache_">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="http://yoursite.com/assets/images/picture/1540968645366.png">
+<meta property="og:image" content="http://yoursite.com/picture/1540968645366.png">
 <meta property="og:image" content="http://yoursite.com/picture/1541055592233.png">
-<meta property="og:updated_time" content="2019-03-01T08:59:42.929Z">
+<meta property="og:updated_time" content="2019-03-01T10:07:27.401Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="tcache下的堆利用的学习">
 <meta name="twitter:description" content="最近做国际赛的题，遇到了tcache下的堆利用，之前没有接触过tcache机制，所以就来学习一下，主要是围绕howtoheap来学习，做下笔记。 tcache机制是glibc-2.26新增的机制，主要是用来提升堆管理的性能，但是它的安全机制几乎没有….所以搞事就容易很多了，混子pwn手的福音 基础知识tcache的两个新增的结构体 12345678910typedef struct tcache_">
-<meta name="twitter:image" content="http://yoursite.com/assets/images/picture/1540968645366.png">
+<meta name="twitter:image" content="http://yoursite.com/picture/1540968645366.png">
 
 
 
@@ -469,7 +469,7 @@
 <p>运行结果:</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">zs0zrc@ubuntu:~/pwn/how2heap/glibc_2.26$ ./tcache_dup </span><br><span class="line">This file demonstrates a simple double-free attack with tcache.</span><br><span class="line">Allocating buffer.</span><br><span class="line">malloc(8): 0x5595e067f260</span><br><span class="line">Freeing twice...</span><br><span class="line">Now the free list has [ 0x5595e067f260, 0x5595e067f260 ].</span><br><span class="line">Next allocated buffers will be same: [ 0x5595e067f260, 0x5595e067f260 ].</span><br></pre></td></tr></table></figure>
 <p>free两次后tcache的情况</p>
-<p><img src="/assets/images/picture/1540968645366.png" alt="1540968645366"></p>
+<p><img src="/picture/1540968645366.png" alt="1540968645366"></p>
 <h3 id="house-of-spirit"><a href="#house-of-spirit" class="headerlink" title="house_of_spirit"></a>house_of_spirit</h3><p>这个主要是由于tcache_put函数没有对chunk的前后chunk的有效性进行检查，所以只要构造好本块对齐的chunk就可以free掉放入tcache中。</p>
 <p>前提：(x64位下)            ps：free掉的地址是伪造的chunk的user_data地址，和之前还是有点不同的</p>
 <ol>
