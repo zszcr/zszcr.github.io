@@ -302,7 +302,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/10/07/2018-10-7-pwnable.tw-writeup/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/10/07/2018-10-7-初探arm下的pwn/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="zs0zrc">
@@ -321,7 +321,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2018/10/07/2018-10-7-pwnable.tw-writeup/" itemprop="url">pwnable.tw writeup</a></h1>
+                <a class="post-title-link" href="/2018/10/07/2018-10-7-初探arm下的pwn/" itemprop="url">初探arm下的pwn</a></h1>
         
 
         <div class="post-meta">
@@ -344,28 +344,6 @@
           </span>
 
           
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/CTF-s-writeup/" itemprop="url" rel="index">
-                    <span itemprop="name">CTF's writeup</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
 
           
             
@@ -374,8 +352,8 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/2018/10/07/2018-10-7-pwnable.tw-writeup/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count valine-comment-count" data-xid="/2018/10/07/2018-10-7-pwnable.tw-writeup/" itemprop="commentCount"></span>
+                <a href="/2018/10/07/2018-10-7-初探arm下的pwn/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2018/10/07/2018-10-7-初探arm下的pwn/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -383,7 +361,7 @@
 
           
           
-             <span id="/2018/10/07/2018-10-7-pwnable.tw-writeup/" class="leancloud_visitors" data-flag-title="pwnable.tw writeup">
+             <span id="/2018/10/07/2018-10-7-初探arm下的pwn/" class="leancloud_visitors" data-flag-title="初探arm下的pwn">
                <span class="post-meta-divider">|</span>
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -408,7 +386,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  3.5k字
+                  1.2k字
                 </span>
               
 
@@ -424,7 +402,7 @@
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
                 <span title="阅读时长">
-                  18分钟
+                  5分钟
                 </span>
               
             </div>
@@ -447,12 +425,17 @@
       
         
           
-          start  防护机制：
-  1234567 checksec start [*] &apos;/home/zs0zrc/pwn/pwnable.tw/start/start&apos;    Arch:     i386-32-little    RELRO:    No RELRO    Sta
+          最近做了下InCTF，第一道pwn题就是arm架构的，之前没有接触过，就学习一下
+基础知识可以看下维基百科的arm架构 ，介绍的挺详细的
+arm下的通用寄存器
+
+函数调用约定：
+
+ARM：参数1~参数4 分别保存到 R0~R3 寄存器中 ，剩下的参数从右往左依次入栈，被调用者实现栈平衡，返回值存放在
           ...
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2018/10/07/2018-10-7-pwnable.tw-writeup/#more" rel="contents">
+            <a class="btn" href="/2018/10/07/2018-10-7-初探arm下的pwn/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -2556,7 +2539,7 @@ lucky
     
       <span class="post-meta-item-text">Site words total count&#58;</span>
     
-    <span title="Site words total count">62.9k</span>
+    <span title="Site words total count">66.3k</span>
   
 </div>
 
