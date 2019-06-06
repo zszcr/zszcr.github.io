@@ -1,0 +1,1071 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.1.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.1.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.1.0" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '7.1.0',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="ChakraCore简介结构： 基本执行流程：当一个函数第一次执行时，ChakraCore 的语法解析器（parser）产生一个抽象语法树（AST）来代表这个函数的源码，随后AST 会被翻译为字节码（bytecode），这些字节码将由ChakraCore 解释器直接执行。在解释执行期间解释器会收集一些程序信息，如类型信息、调用次数，这些信息会被用来帮助JIT 编译器生成高度优化的机器码。当Chak">
+<meta name="keywords" content="ChakraCore">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ChakraCore基础知识笔记">
+<meta property="og:url" content="http://yoursite.com/2019/05/28/2019-5-28-ChakraCore基础/index.html">
+<meta property="og:site_name" content="zs0zrc">
+<meta property="og:description" content="ChakraCore简介结构： 基本执行流程：当一个函数第一次执行时，ChakraCore 的语法解析器（parser）产生一个抽象语法树（AST）来代表这个函数的源码，随后AST 会被翻译为字节码（bytecode），这些字节码将由ChakraCore 解释器直接执行。在解释执行期间解释器会收集一些程序信息，如类型信息、调用次数，这些信息会被用来帮助JIT 编译器生成高度优化的机器码。当Chak">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="a:/workstation/Hexo/source/picture/1559462902531.png">
+<meta property="og:image" content="a:/workstation/Hexo/source/picture/1559462547485.png">
+<meta property="og:image" content="http://yoursite.com/picture/1559463103759.png">
+<meta property="og:image" content="http://yoursite.com/picture/1559463144069.png">
+<meta property="og:image" content="http://yoursite.com/picture/1559475003058.png">
+<meta property="og:image" content="http://yoursite.com/picture/1559476654120.png">
+<meta property="og:image" content="http://yoursite.com/picture/1559476662882.png">
+<meta property="og:image" content="http://yoursite.com/picture/1559476589034.png">
+<meta property="og:image" content="http://yoursite.com/picture/1559479879332.png">
+<meta property="og:image" content="http://yoursite.com/picture/1559479976387.png">
+<meta property="og:image" content="http://yoursite.com/picture/1559480428074.png">
+<meta property="og:image" content="http://yoursite.com/picture/1559480445986.png">
+<meta property="og:image" content="http://yoursite.com/picture/1559480624383.png">
+<meta property="og:updated_time" content="2019-06-04T07:11:31.752Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="ChakraCore基础知识笔记">
+<meta name="twitter:description" content="ChakraCore简介结构： 基本执行流程：当一个函数第一次执行时，ChakraCore 的语法解析器（parser）产生一个抽象语法树（AST）来代表这个函数的源码，随后AST 会被翻译为字节码（bytecode），这些字节码将由ChakraCore 解释器直接执行。在解释执行期间解释器会收集一些程序信息，如类型信息、调用次数，这些信息会被用来帮助JIT 编译器生成高度优化的机器码。当Chak">
+<meta name="twitter:image" content="a:/workstation/Hexo/source/picture/1559462902531.png">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="http://yoursite.com/2019/05/28/2019-5-28-ChakraCore基础/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>ChakraCore基础知识笔记 | zs0zrc</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">zs0zrc</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+  
+  
+
+  
+
+  <a href="https://github.com/zszcr" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewbox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"/><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"/><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"/></svg></a>
+
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/05/28/2019-5-28-ChakraCore基础/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="zs0zrc">
+      <meta itemprop="description" content="zs0zrc's blog">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zs0zrc">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">ChakraCore基础知识笔记
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-05-28 12:50:05" itemprop="dateCreated datePublished" datetime="2019-05-28T12:50:05+08:00">2019-05-28</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-06-04 15:11:31" itemprop="dateModified" datetime="2019-06-04T15:11:31+08:00">2019-06-04</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/JS-Engine/" itemprop="url" rel="index"><span itemprop="name">JS-Engine</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="ChakraCore简介"><a href="#ChakraCore简介" class="headerlink" title="ChakraCore简介"></a>ChakraCore简介</h3><h4 id="结构："><a href="#结构：" class="headerlink" title="结构："></a>结构：</h4><p><img src="A:/workstation/Hexo/source/picture/1559462902531.png" alt="1559462902531"></p>
+<h4 id="基本执行流程："><a href="#基本执行流程：" class="headerlink" title="基本执行流程："></a>基本执行流程：</h4><p>当一个函数第一次执行时，ChakraCore 的语法解析器（parser）产生一个抽象语法树（AST）来代表这个函数的源码，随后AST 会被翻译为字节码（bytecode），这些字节码将由ChakraCore 解释器直接执行。在解释执行期间解释器会收集一些程序信息，如类型信息、调用次数，这些信息会被用来帮助JIT 编译器生成高度优化的机器码。当ChakraCore 在解释器中发现一个函数或者循环体（loop-body）被多次执行时，会将其送入后台JIT 编译队列为这个函数生成优化的代码。一旦这些优化代码准备就绪，ChakraCore 就会替换函数和循环的入口到这些新代码，之后的执行将远快于之前的解释执行。</p>
+<p>ChakraCore 的后台JIT 编译器借助解释器生成的profile 数据来推断可能出现的模式，从而生成高度优化的本地代码。当得到JavaScript 代码的某些动态特性后，如果代码行为打破了基于profile 的预测，就会进行bailout，而bailout会放弃执行JIT代码转回使用解释器继续执行字节码，同时继续收集更多的配置文件数据。为了平衡JIT 编译时间与内存占用，ChakraCore 并不在一个函数每次释出时编译它，而是利用缓存下来的编译结果直到释出次数达到一定的门槛，之后才会迫使代码重新被JIT 编译并且抛弃旧的编译结果。</p>
+<p><img src="A:/workstation/Hexo/source/picture/1559462547485.png" alt="1559462547485"></p>
+<h4 id="JIT编译器"><a href="#JIT编译器" class="headerlink" title="JIT编译器"></a>JIT编译器</h4><p>ChakraCore 拥有两级JIT 编译器。在同一个后台线程中，ChakraCore 有一个完全JIT 编译器（Full JIT Compiler) 用来产生高度优化的代码；还有一个简单JIT 编译器（Simple JIT Compiler），这是一个有较少优化版本的完全JIT 编译器。在执行管线中，ChkaraCore 首先将解释执行的函数换入简单JIT 编译器，然后才是完全JIT 编译。在大多数情况下，简单JIT 编译耗时少于完全JIT 编译，所以相比单级JIT，这种架构有助于更快启动app 和网页。多一个简单JIT 的另外一个优势是，当”释出“发生时，函数的执行可以更快地从解释切换到简单JIT 编译，直到完全JIT 编译的代码就绪。简单JIT 编译的代码执行管线依然继续收集profile 信息以供完全JIT 编译器使用。</p>
+<p>无论何时，只要有潜在的未被利用的硬件资源，ChakraCore 也可为后台JIT 编译器产生多个并行线程。存在多个后台JIT 编译线程时，ChakraCore 的简单JIT 编译和完全JIT 编译的工作都会被分摊到多个编译线程上进行跨线程编译。这有助于在总体上减少JIT 编译延迟。</p>
+<p><img src="/picture/1559463103759.png" alt="1559463103759"></p>
+<h4 id="垃圾回收"><a href="#垃圾回收" class="headerlink" title="垃圾回收"></a>垃圾回收</h4><p>ChakraCore 拥有一个分代式标记清扫垃圾回收器，它支持并行、部分回收。当完全并行GC 被初始化，ChakraCore 的后台GC 会进行一个初始标记阶段，然后重新扫描（rescan）来找出在这个初始标记阶段被主线程修改的对象，随后再运行第二个标记阶段来标记重新扫描时被修改的对象。当第二个标记阶段扫描结束后，主线程暂停执行并启动最终的重新扫描（final rescan），之后最终的标记阶段（final marking pass）会被分解到主线程和已经在执行的GC 线程。最后清扫阶段由后台GC 线程完成，并且将无法到达的（unreachable）的对象重新加入分配池。</p>
+<p><img src="/picture/1559463144069.png" alt="1559463144069"></p>
+<p>上面内容都来自ChakraCore的wiki文档</p>
+<h3 id="JIT-pipeline"><a href="#JIT-pipeline" class="headerlink" title="JIT pipeline"></a>JIT pipeline</h3><p><img src="/picture/1559475003058.png" alt="1559475003058"></p>
+<p>JIT编译的主要步骤：</p>
+<ul>
+<li>IRBulilderPhase:根据bytecode生成IR(中间码)</li>
+<li>InlinePhase: 检查是否可以内联某些内容</li>
+<li>FGBuildPhase: 通过IR构建控制流程图CFG</li>
+<li>GlobOptPhase: 全局优化器<ul>
+<li>SimpleJit </li>
+<li>FullJit </li>
+</ul>
+</li>
+<li>LowererPhase: 减少IR 依赖机器的操作 </li>
+<li>RegAllocPhase</li>
+</ul>
+<p>FullJit: （它通过了3次CFG，一次向后=，一次向前，最后是另一次向后）</p>
+<p><img src="/picture/1559476654120.png" alt="1559476654120"></p>
+<p><img src="/picture/1559476662882.png" alt="1559476662882"></p>
+<p><img src="/picture/1559476589034.png" alt="1559476589034"></p>
+<p><strong>Backward pass</strong></p>
+<p>向后经过每个块。对于每个块, 向后进行指令信息搜集。为每个块收集其后续块的信息，在处理新块时合并每个后续块。可以执行一些简单的优化, 如指令重写、某些折叠优化等..</p>
+<p>同时搜集一些未来优化时可能用上的信息。</p>
+<p><strong>Forward pass</strong></p>
+<p>向前经过每个块，对每个块的每条指令调用不同的方法来处理(用来处理某些指令的方法，比如switch语句)</p>
+<p>在处理新块时合并每个前任块的信息，同时这里会生成真正优化的代码。</p>
+<p><strong>Symbol liveness and kill mechanism</strong></p>
+<p><img src="/picture/1559479879332.png" alt="1559479879332"></p>
+<p><img src="/picture/1559479976387.png" alt="1559479976387"></p>
+<p>这个机制很容易出现问题，错误的一个主要来源是JIT在需要时无法杀死某些信息</p>
+<p><strong>Forward pass : Loops</strong></p>
+<p><img src="/picture/1559480428074.png" alt="1559480428074"></p>
+<p><img src="/picture/1559480445986.png" alt="1559480445986"></p>
+<p><strong>Deadstore pass</strong></p>
+<p><img src="/picture/1559480624383.png" alt="1559480624383"></p>
+<h3 id="REFERENCE"><a href="#REFERENCE" class="headerlink" title="REFERENCE"></a>REFERENCE</h3><ul>
+<li><a href="https://msrnd-cdn-stor.azureedge.net/bluehat/bluehatil/2019/assets/doc/Attacking%20Edge%20Through%20the%20JavaScript%20Just-In-Time%20Compiler.pdf" target="_blank" rel="noopener">https://msrnd-cdn-stor.azureedge.net/bluehat/bluehatil/2019/assets/doc/Attacking%20Edge%20Through%20the%20JavaScript%20Just-In-Time%20Compiler.pdf</a></li>
+<li><a href="https://github.com/Microsoft/ChakraCore/wiki/Architecture-Overview" target="_blank" rel="noopener">https://github.com/Microsoft/ChakraCore/wiki/Architecture-Overview</a></li>
+</ul>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+      <div>
+        
+
+
+
+
+  
+
+
+
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>zs0zrc</li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    
+    <a href="http://yoursite.com/2019/05/28/2019-5-28-ChakraCore基础/" title="ChakraCore基础知识笔记">http://yoursite.com/2019/05/28/2019-5-28-ChakraCore基础/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/zh-CN" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！</li>
+</ul>
+
+      </div>
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/ChakraCore/" rel="tag"># ChakraCore</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/05/13/2019-5-13-JavaScriptCore的基础知识/" rel="next" title="JavaScriptCore的基础知识">
+                <i class="fa fa-chevron-left"></i> JavaScriptCore的基础知识
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/06/01/2019-6-1-CVE-2018-8372/" rel="prev" title="CVE-2018-8372">
+                CVE-2018-8372 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar.jpg" alt="zs0zrc">
+            
+              <p class="site-author-name" itemprop="name">zs0zrc</p>
+              <div class="site-description motion-element" itemprop="description">zs0zrc's blog</div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">53</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                      <a href="/categories/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">13</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                      <a href="/tags/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">20</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://github.com/zszcr" title="GitHub &rarr; https://github.com/zszcr" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://twitter.com/1PFjclRQBHRAuEE" title="Twitter &rarr; https://twitter.com/1PFjclRQBHRAuEE" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+                </span>
+              
+            </div>
+          
+
+          
+             <div class="cc-license motion-element" itemprop="license">
+              
+              
+                
+              
+              
+              
+              <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/zh-CN" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+             </div>
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                Links
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://23r3f.github.io/" title="https://23r3f.github.io/" rel="noopener" target="_blank">23R3F</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://myhackerworld.top/" title="http://myhackerworld.top/" rel="noopener" target="_blank">D4rk3r</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://m4x.fun/" title="http://m4x.fun/" rel="noopener" target="_blank">M4X</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://n132.github.io/" title="https://n132.github.io/" rel="noopener" target="_blank">n13r</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://aluvion.github.io/" title="https://aluvion.github.io/" rel="noopener" target="_blank">Twings</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://littleredlie.github.io/" title="https://littleredlie.github.io/" rel="noopener" target="_blank">LittleRed</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://glarcy.github.io/" title="https://glarcy.github.io/" rel="noopener" target="_blank">Glarcy</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#ChakraCore简介"><span class="nav-number">1.</span> <span class="nav-text">ChakraCore简介</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#结构："><span class="nav-number">1.1.</span> <span class="nav-text">结构：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#基本执行流程："><span class="nav-number">1.2.</span> <span class="nav-text">基本执行流程：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#JIT编译器"><span class="nav-number">1.3.</span> <span class="nav-text">JIT编译器</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#垃圾回收"><span class="nav-number">1.4.</span> <span class="nav-text">垃圾回收</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#JIT-pipeline"><span class="nav-number">2.</span> <span class="nav-text">JIT pipeline</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#REFERENCE"><span class="nav-number">3.</span> <span class="nav-text">REFERENCE</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2018 – <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">zs0zrc</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.8.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a> v7.1.0</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.1.0"></script>
+
+  <script src="/js/motion.js?v=7.1.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/schemes/muse.js?v=7.1.0"></script>
+
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.1.0"></script>
+<script src="/js/post-details.js?v=7.1.0"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.0"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+
+  
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
