@@ -14,7 +14,7 @@
   
 
 
-<html class="theme-next mist use-motion" lang="zh-Hans">
+<html class="theme-next pisces use-motion" lang="zh-Hans">
 <head><meta name="generator" content="Hexo 3.8.0">
   <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -70,7 +70,7 @@
   var NexT = window.NexT || {};
   var CONFIG = {
     root: '/',
-    scheme: 'Mist',
+    scheme: 'Pisces',
     version: '7.1.0',
     sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
     back2top: true,
@@ -104,8 +104,8 @@
 <meta property="og:site_name" content="zs0zrc">
 <meta property="og:description" content="ChakraCore简介结构： 基本执行流程：当一个函数第一次执行时，ChakraCore 的语法解析器（parser）产生一个抽象语法树（AST）来代表这个函数的源码，随后AST 会被翻译为字节码（bytecode），这些字节码将由ChakraCore 解释器直接执行。在解释执行期间解释器会收集一些程序信息，如类型信息、调用次数，这些信息会被用来帮助JIT 编译器生成高度优化的机器码。当Chak">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="a:/workstation/Hexo/source/picture/1559462902531.png">
-<meta property="og:image" content="a:/workstation/Hexo/source/picture/1559462547485.png">
+<meta property="og:image" content="http://yoursite.com/picture/1559462902531.png">
+<meta property="og:image" content="http://yoursite.com/picture/1559462547485.png">
 <meta property="og:image" content="http://yoursite.com/picture/1559463103759.png">
 <meta property="og:image" content="http://yoursite.com/picture/1559463144069.png">
 <meta property="og:image" content="http://yoursite.com/picture/1559475003058.png">
@@ -117,11 +117,11 @@
 <meta property="og:image" content="http://yoursite.com/picture/1559480428074.png">
 <meta property="og:image" content="http://yoursite.com/picture/1559480445986.png">
 <meta property="og:image" content="http://yoursite.com/picture/1559480624383.png">
-<meta property="og:updated_time" content="2019-06-04T07:11:31.752Z">
+<meta property="og:updated_time" content="2019-06-06T03:46:46.761Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="ChakraCore基础知识笔记">
 <meta name="twitter:description" content="ChakraCore简介结构： 基本执行流程：当一个函数第一次执行时，ChakraCore 的语法解析器（parser）产生一个抽象语法树（AST）来代表这个函数的源码，随后AST 会被翻译为字节码（bytecode），这些字节码将由ChakraCore 解释器直接执行。在解释执行期间解释器会收集一些程序信息，如类型信息、调用次数，这些信息会被用来帮助JIT 编译器生成高度优化的机器码。当Chak">
-<meta name="twitter:image" content="a:/workstation/Hexo/source/picture/1559462902531.png">
+<meta name="twitter:image" content="http://yoursite.com/picture/1559462902531.png">
 
 
 
@@ -313,9 +313,6 @@
   
 
   
-    
-
-  
 
   
 </nav>
@@ -343,6 +340,9 @@
       <div class="main-inner">
         <div class="content-wrap">
           
+            
+
+          
           <div id="content" class="content">
             
 
@@ -367,7 +367,7 @@
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="zs0zrc">
       <meta itemprop="description" content="zs0zrc's blog">
-      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="image" content="/images/avatar.png">
     </span>
 
     <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
@@ -422,7 +422,7 @@
                 
                   <span class="post-meta-item-text">更新于</span>
                 
-                <time title="修改时间：2019-06-04 15:11:31" itemprop="dateModified" datetime="2019-06-04T15:11:31+08:00">2019-06-04</time>
+                <time title="修改时间：2019-06-06 11:46:46" itemprop="dateModified" datetime="2019-06-06T11:46:46+08:00">2019-06-06</time>
               
             
           </span>
@@ -474,11 +474,11 @@
       
 
       
-        <h3 id="ChakraCore简介"><a href="#ChakraCore简介" class="headerlink" title="ChakraCore简介"></a>ChakraCore简介</h3><h4 id="结构："><a href="#结构：" class="headerlink" title="结构："></a>结构：</h4><p><img src="A:/workstation/Hexo/source/picture/1559462902531.png" alt="1559462902531"></p>
+        <h3 id="ChakraCore简介"><a href="#ChakraCore简介" class="headerlink" title="ChakraCore简介"></a>ChakraCore简介</h3><h4 id="结构："><a href="#结构：" class="headerlink" title="结构："></a>结构：</h4><p><img src="/picture/1559462902531.png" alt="1559462902531"></p>
 <h4 id="基本执行流程："><a href="#基本执行流程：" class="headerlink" title="基本执行流程："></a>基本执行流程：</h4><p>当一个函数第一次执行时，ChakraCore 的语法解析器（parser）产生一个抽象语法树（AST）来代表这个函数的源码，随后AST 会被翻译为字节码（bytecode），这些字节码将由ChakraCore 解释器直接执行。在解释执行期间解释器会收集一些程序信息，如类型信息、调用次数，这些信息会被用来帮助JIT 编译器生成高度优化的机器码。当ChakraCore 在解释器中发现一个函数或者循环体（loop-body）被多次执行时，会将其送入后台JIT 编译队列为这个函数生成优化的代码。一旦这些优化代码准备就绪，ChakraCore 就会替换函数和循环的入口到这些新代码，之后的执行将远快于之前的解释执行。</p>
-<p>ChakraCore 的后台JIT 编译器借助解释器生成的profile 数据来推断可能出现的模式，从而生成高度优化的本地代码。当得到JavaScript 代码的某些动态特性后，如果代码行为打破了基于profile 的预测，就会进行bailout，而bailout会放弃执行JIT代码转回使用解释器继续执行字节码，同时继续收集更多的配置文件数据。为了平衡JIT 编译时间与内存占用，ChakraCore 并不在一个函数每次释出时编译它，而是利用缓存下来的编译结果直到释出次数达到一定的门槛，之后才会迫使代码重新被JIT 编译并且抛弃旧的编译结果。</p>
-<p><img src="A:/workstation/Hexo/source/picture/1559462547485.png" alt="1559462547485"></p>
-<h4 id="JIT编译器"><a href="#JIT编译器" class="headerlink" title="JIT编译器"></a>JIT编译器</h4><p>ChakraCore 拥有两级JIT 编译器。在同一个后台线程中，ChakraCore 有一个完全JIT 编译器（Full JIT Compiler) 用来产生高度优化的代码；还有一个简单JIT 编译器（Simple JIT Compiler），这是一个有较少优化版本的完全JIT 编译器。在执行管线中，ChkaraCore 首先将解释执行的函数换入简单JIT 编译器，然后才是完全JIT 编译。在大多数情况下，简单JIT 编译耗时少于完全JIT 编译，所以相比单级JIT，这种架构有助于更快启动app 和网页。多一个简单JIT 的另外一个优势是，当”释出“发生时，函数的执行可以更快地从解释切换到简单JIT 编译，直到完全JIT 编译的代码就绪。简单JIT 编译的代码执行管线依然继续收集profile 信息以供完全JIT 编译器使用。</p>
+<p>ChakraCore 的后台JIT 编译器借助解释器生成的profile 数据来推断可能出现的模式，从而生成高度优化的本地代码。当得到JavaScript 代码的某些动态特性后，如果代码行为打破了基于profile 的预测，就会进行bailout，而bailout会放弃执行JIT代码转回使用解释器继续执行字节码，同时继续收集更多的配置文件数据。为了平衡JIT 编译时间与内存占用，ChakraCore 并不在一个函数每次释出时编译它，而是利用缓存下来的编译结果直到执行次数达到一定的门槛，之后才会迫使代码重新被JIT 编译并且抛弃旧的编译结果。</p>
+<p><img src="/picture/1559462547485.png" alt="1559462547485"></p>
+<h4 id="JIT编译器"><a href="#JIT编译器" class="headerlink" title="JIT编译器"></a>JIT编译器</h4><p>ChakraCore 拥有两级JIT 编译器。在同一个后台线程中，ChakraCore 有一个完全JIT 编译器（Full JIT Compiler) 用来产生高度优化的代码；还有一个简单JIT 编译器（Simple JIT Compiler），这是一个有较少优化版本的完全JIT 编译器。在执行管线中，ChakraCore 首先将解释执行的函数换入简单JIT 编译器，然后才是完全JIT 编译。在大多数情况下，简单JIT 编译耗时少于完全JIT 编译，所以相比单级JIT，这种架构有助于更快启动app 和网页。多一个Simple JIT 的另外一个优势是，当”释出“发生时，函数的执行可以更快地从解释切换到简单JIT 编译，直到完全JIT 编译的代码就绪。简单JIT 编译的代码执行管线依然继续收集profile 信息以供完全JIT 编译器使用。     </p>
 <p>无论何时，只要有潜在的未被利用的硬件资源，ChakraCore 也可为后台JIT 编译器产生多个并行线程。存在多个后台JIT 编译线程时，ChakraCore 的简单JIT 编译和完全JIT 编译的工作都会被分摊到多个编译线程上进行跨线程编译。这有助于在总体上减少JIT 编译延迟。</p>
 <p><img src="/picture/1559463103759.png" alt="1559463103759"></p>
 <h4 id="垃圾回收"><a href="#垃圾回收" class="headerlink" title="垃圾回收"></a>垃圾回收</h4><p>ChakraCore 拥有一个分代式标记清扫垃圾回收器，它支持并行、部分回收。当完全并行GC 被初始化，ChakraCore 的后台GC 会进行一个初始标记阶段，然后重新扫描（rescan）来找出在这个初始标记阶段被主线程修改的对象，随后再运行第二个标记阶段来标记重新扫描时被修改的对象。当第二个标记阶段扫描结束后，主线程暂停执行并启动最终的重新扫描（final rescan），之后最终的标记阶段（final marking pass）会被分解到主线程和已经在执行的GC 线程。最后清扫阶段由后台GC 线程完成，并且将无法到达的（unreachable）的对象重新加入分配池。</p>
@@ -498,7 +498,7 @@
 <li>LowererPhase: 减少IR 依赖机器的操作 </li>
 <li>RegAllocPhase</li>
 </ul>
-<p>FullJit: （它通过了3次CFG，一次向后=，一次向前，最后是另一次向后）</p>
+<p>FullJit: （它通过了3次CFG，一次向后，一次向前，最后是另一次向后）</p>
 <p><img src="/picture/1559476654120.png" alt="1559476654120"></p>
 <p><img src="/picture/1559476662882.png" alt="1559476662882"></p>
 <p><img src="/picture/1559476589034.png" alt="1559476589034"></p>
@@ -651,7 +651,7 @@
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
             
-              <img class="site-author-image" itemprop="image" src="/images/avatar.jpg" alt="zs0zrc">
+              <img class="site-author-image" itemprop="image" src="/images/avatar.png" alt="zs0zrc">
             
               <p class="site-author-name" itemprop="name">zs0zrc</p>
               <div class="site-description motion-element" itemprop="description">zs0zrc's blog</div>
@@ -707,6 +707,8 @@
                     
                       
                     
+                      
+                    
                     <span class="site-state-item-count">13</span>
                     <span class="site-state-item-name">分类</span>
                   </a>
@@ -723,6 +725,8 @@
                     
                   
                     
+                    
+                      
                     
                       
                     
@@ -917,7 +921,7 @@
 
 
 
-  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a> v7.1.0</div>
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.1.0</div>
 
 
 
@@ -1005,8 +1009,9 @@
   
 
 
-  <script src="/js/schemes/muse.js?v=7.1.0"></script>
+  <script src="/js/affix.js?v=7.1.0"></script>
 
+  <script src="/js/schemes/pisces.js?v=7.1.0"></script>
 
 
 
