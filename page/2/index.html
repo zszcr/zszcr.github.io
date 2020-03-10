@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zh-Hans">
+<html lang="zh-CN">
 
 
 
@@ -57,7 +57,7 @@
           
           
           <li class="nav-item">
-            <a class="nav-link" href="/">Home</a>
+            <a class="nav-link" href="/">首页</a>
           </li>
         
           
@@ -65,7 +65,7 @@
           
           
           <li class="nav-item">
-            <a class="nav-link" href="/archives/">Archives</a>
+            <a class="nav-link" href="/archives/">归档</a>
           </li>
         
           
@@ -73,7 +73,7 @@
           
           
           <li class="nav-item">
-            <a class="nav-link" href="/categories/">Categories</a>
+            <a class="nav-link" href="/categories/">分类</a>
           </li>
         
           
@@ -81,7 +81,7 @@
           
           
           <li class="nav-item">
-            <a class="nav-link" href="/tags/">Tags</a>
+            <a class="nav-link" href="/tags/">标签</a>
           </li>
         
           
@@ -89,7 +89,7 @@
           
           
           <li class="nav-item">
-            <a class="nav-link" href="/about/">About</a>
+            <a class="nav-link" href="/about/">关于</a>
           </li>
         
           
@@ -97,7 +97,7 @@
           
           
           <li class="nav-item">
-            <a class="nav-link" href="/links/">Links</a>
+            <a class="nav-link" href="/links/">友链</a>
           </li>
         
         
@@ -229,59 +229,6 @@ vm_dispatcher:调度器，解释opcode，并选择对应的handle函数执行，
           <i class="iconfont icon-tag"></i>
           
             <a href="/tags/Vmare-protect/">Vmare protect</a>&nbsp;
-          
-        
-      </div>
-    </div>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <div class="col-12 col-md-12 mx-auto index-info">
-      <a href="/2018/11/26/2018-11-26-Vulnhub-Billu_b0x-靶机的渗透测试学习记录/">
-        <p class="h4 index-header">Vulnhub-Billu_b0x 靶机的渗透测试学习记录</p>
-      </a>
-
-      <a href="/2018/11/26/2018-11-26-Vulnhub-Billu_b0x-靶机的渗透测试学习记录/">
-        
-        
-          
-        
-        <div class="index-excerpt">
-          <div class="index-text mb-1">靶机Vulnhub–Billu_b0x
-下载链接
-目标Boot to root：通过各种方式获取虚拟机的root权限。
-我的攻击机是kali。靶机直接用VMware打开就行了，设置网络模式为NAT。这个靶机打开后是要登陆的，因为不知道用户名和密码，所以没法登陆，开机就好了。
-
-​    
-工具
-nmap 发现目标ip，并进行端口扫描及服务识别
-dirb  爆破目录
-dirbuster 爆破目录
-sqlmap  用来进行sql注入
-蚁剑  文档  管理webshell
-kali虚拟机
-
-收集信息
-发现ip
-
-nmap -sP 192.168.133.1/24
--sP参数代表着ping扫描， 扫描</div>
-        </div>
-      </a>
-
-      <div class="index-btm">
-        
-          <i class="iconfont icon-riqi2"></i>&nbsp;2018-11-26&nbsp;&nbsp;
-        
-        
-        
-          <i class="iconfont icon-tag"></i>
-          
-            <a href="/tags/web/">web</a>&nbsp;
-          
-            <a href="/tags/渗透测试/">渗透测试</a>&nbsp;
           
         
       </div>
@@ -616,6 +563,57 @@ typedef struct tcache_entry        //tcache_entry 是用来链接chunk的结构�
     </div>
   </div>
 
+  <div class="row mx-auto index-card">
+    
+    
+    <div class="col-12 col-md-12 mx-auto index-info">
+      <a href="/2018/10/27/2018-10-27-BSides-Delhi-CTF-2018-writeup/">
+        <p class="h4 index-header">BSides Delhi CTF 2018 writeup</p>
+      </a>
+
+      <a href="/2018/10/27/2018-10-27-BSides-Delhi-CTF-2018-writeup/">
+        
+        
+          
+        
+        <div class="index-excerpt">
+          <div class="index-text mb-1">easypeasy防护机制：
+☁  easy  checksec easypeasy  
+[*] &#39;/home/zs0zrc/pwn/ BSides/easy/easypeasy&#39;
+    Arch:     amd64-64-little
+    RELRO:    Partial RELRO
+    Stack:    Canary found
+    NX:       NX enabled
+    PIE:      No PIE (0x400000)
+简单的运行了下，好像是让我们输入寄存器的值，一直循环输入
+
+简单逆向下，程序主要逻辑在child函数中。
+void _</div>
+        </div>
+      </a>
+
+      <div class="index-btm">
+        
+          <i class="iconfont icon-riqi2"></i>&nbsp;2018-10-27&nbsp;&nbsp;
+        
+        
+          <i class="iconfont icon-inbox"></i>
+          
+            <a href="/categories/CTF-s-writeup/">CTF&#39;s writeup</a>&nbsp;
+          &nbsp;
+        
+        
+          <i class="iconfont icon-tag"></i>
+          
+            <a href="/tags/writeup/">writeup</a>&nbsp;
+          
+            <a href="/tags/pwn/">pwn</a>&nbsp;
+          
+        
+      </div>
+    </div>
+  </div>
+
 
 
   <nav aria-label="index posts navigation">
@@ -651,7 +649,7 @@ typedef struct tcache_entry        //tcache_entry 是用来链接chunk的结构�
   <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header text-center">
-        <h4 class="modal-title w-100 font-weight-bold">Search</h4>
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
         <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -659,7 +657,7 @@ typedef struct tcache_entry        //tcache_entry 是用来链接chunk的结构�
       <div class="modal-body mx-3">
         <div class="md-form mb-5">
           <input type="text" id="local-search-input" class="form-control validate">
-          <label data-error="x" data-success="v" for="local-search-input">keyword</label>
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
         </div>
         <div class="list-group" id="local-search-result"></div>
       </div>
