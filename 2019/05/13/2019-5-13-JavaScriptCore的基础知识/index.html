@@ -1,483 +1,178 @@
 <!DOCTYPE html>
+<html lang="zh-Hans">
 
 
 
 
 
-
-
-
-
-
-
-
-  
-
-
-<html class="theme-next pisces use-motion" lang="zh-Hans">
 <head><meta name="generator" content="Hexo 3.8.0">
   <meta charset="UTF-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
-<meta name="theme-color" content="#222">
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
-
-<link rel="stylesheet" href="/css/main.css?v=7.1.0">
-
-
-  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.0">
-
-
-  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.1.0">
-
-
-  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.1.0">
-
-
-  <link rel="mask-icon" href="/images/logo.svg?v=7.1.0" color="#222">
-
-
-
-
-
-
-
-<script id="hexo.configurations">
-  var NexT = window.NexT || {};
-  var CONFIG = {
-    root: '/',
-    scheme: 'Pisces',
-    version: '7.1.0',
-    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
-    back2top: true,
-    back2top_sidebar: false,
-    fancybox: false,
-    fastclick: false,
-    lazyload: false,
-    tabs: true,
-    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
-    algolia: {
-      applicationID: '',
-      apiKey: '',
-      indexName: '',
-      hits: {"per_page":10},
-      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
-    }
-  };
-</script>
-
-
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/apple-touch-icon.png">
+  <link rel="icon" type="image/png" href="/img/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
   
+  <meta name="description" content="zs0zrc&#39;s blog">
+  <meta name="author" content="zs0zrc">
+  <meta name="keywords" content="pwn CTF security anythings">
+  <title>JavaScriptCore的基础知识 - zs0zrc</title>
+
+  <link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/5.12.1/css/all.min.css">
+<link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdn.staticfile.org/mdbootstrap/4.13.0/css/mdb.min.css">
+<link rel="stylesheet" href="https://cdn.staticfile.org/github-markdown-css/3.0.1/github-markdown.min.css">
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1067060_qzomjdt8bmp.css">
 
 
+  <link rel="stylesheet" href="/lib/prettify/tomorrow-night-eighties.min.css">
+
+<link rel="stylesheet" href="/css/main.css">
 
 
-  <meta name="description" content="最近在学习JSC的相关知识，这里写篇博客简单记录一下。 JavaScriptCore简介JavaScriptCore是一个JS 引擎，是专门负责处理javascript代码的虚拟机，简写为JSC，一般会附在浏览器中。 它是一个C++实现的开源项目，使用Apple提供的JavaScriptCore框架。我们可以在Objective-C或者基于C的程序中执行Javascript代码，也可以向JavaS">
-<meta name="keywords" content="js_exploit">
-<meta property="og:type" content="article">
-<meta property="og:title" content="JavaScriptCore的基础知识">
-<meta property="og:url" content="http://yoursite.com/2019/05/13/2019-5-13-JavaScriptCore的基础知识/index.html">
-<meta property="og:site_name" content="zs0zrc">
-<meta property="og:description" content="最近在学习JSC的相关知识，这里写篇博客简单记录一下。 JavaScriptCore简介JavaScriptCore是一个JS 引擎，是专门负责处理javascript代码的虚拟机，简写为JSC，一般会附在浏览器中。 它是一个C++实现的开源项目，使用Apple提供的JavaScriptCore框架。我们可以在Objective-C或者基于C的程序中执行Javascript代码，也可以向JavaS">
-<meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="https://s1.51cto.com/oss/201806/22/36a0ffb0376b9c473bae330645cd7c29.jpg-wh_600x-s_2244584687.jpg">
-<meta property="og:image" content="http://yoursite.com/picture/1557810204143.png">
-<meta property="og:image" content="http://yoursite.com/picture/1557819327079.png">
-<meta property="og:image" content="http://yoursite.com/picture/1557819807736.png">
-<meta property="og:image" content="http://yoursite.com/picture/1557820522010.png">
-<meta property="og:image" content="http://yoursite.com/picture/1557820973774.png">
-<meta property="og:image" content="http://yoursite.com/picture/1557823212207.png">
-<meta property="og:image" content="http://yoursite.com/picture/1557822194099.png">
-<meta property="og:image" content="http://yoursite.com/picture/1557926168168.png">
-<meta property="og:image" content="http://yoursite.com/picture/1557926605893.png">
-<meta property="og:image" content="http://yoursite.com/picture/1557927046793.png">
-<meta property="og:image" content="http://yoursite.com/picture/1557927954080.png">
-<meta property="og:updated_time" content="2019-05-19T16:22:39.176Z">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="JavaScriptCore的基础知识">
-<meta name="twitter:description" content="最近在学习JSC的相关知识，这里写篇博客简单记录一下。 JavaScriptCore简介JavaScriptCore是一个JS 引擎，是专门负责处理javascript代码的虚拟机，简写为JSC，一般会附在浏览器中。 它是一个C++实现的开源项目，使用Apple提供的JavaScriptCore框架。我们可以在Objective-C或者基于C的程序中执行Javascript代码，也可以向JavaS">
-<meta name="twitter:image" content="https://s1.51cto.com/oss/201806/22/36a0ffb0376b9c473bae330645cd7c29.jpg-wh_600x-s_2244584687.jpg">
+  <link rel="stylesheet" href="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.css">
 
 
+<!-- 自定义样式保持在最底部 -->
 
-
-
-  
-  
-  <link rel="canonical" href="http://yoursite.com/2019/05/13/2019-5-13-JavaScriptCore的基础知识/">
-
-
-
-<script id="page.configurations">
-  CONFIG.page = {
-    sidebar: "",
-  };
-</script>
-
-  <title>JavaScriptCore的基础知识 | zs0zrc</title>
-  
-
-
-
-
-
-
-
-
-
-
-
-
-  <noscript>
-  <style>
-  .use-motion .motion-element,
-  .use-motion .brand,
-  .use-motion .menu-item,
-  .sidebar-inner,
-  .use-motion .post-block,
-  .use-motion .pagination,
-  .use-motion .comments,
-  .use-motion .post-header,
-  .use-motion .post-body,
-  .use-motion .collection-title { opacity: initial; }
-
-  .use-motion .logo,
-  .use-motion .site-title,
-  .use-motion .site-subtitle {
-    opacity: initial;
-    top: initial;
-  }
-
-  .use-motion .logo-line-before i { left: initial; }
-  .use-motion .logo-line-after i { right: initial; }
-  </style>
-</noscript>
 
 </head>
 
-<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
 
-  
-  
-    
-  
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">&nbsp;<strong>zs0zrc</strong>&nbsp;</a>
 
-  <div class="container sidebar-position-left page-post-detail">
-    <div class="headband"></div>
-
-    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
-      <div class="header-inner"><div class="site-brand-wrapper">
-  <div class="site-meta">
-    
-
-    <div class="custom-logo-site-title">
-      <a href="/" class="brand" rel="start">
-        <span class="logo-line-before"><i></i></span>
-        <span class="site-title">zs0zrc</span>
-        <span class="logo-line-after"><i></i></span>
-      </a>
-    </div>
-    
-    
-  </div>
-
-  <div class="site-nav-toggle">
-    <button aria-label="切换导航栏">
-      <span class="btn-bar"></span>
-      <span class="btn-bar"></span>
-      <span class="btn-bar"></span>
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
     </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/">Home</a>
+          </li>
+        
+          
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/archives/">Archives</a>
+          </li>
+        
+          
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/categories/">Categories</a>
+          </li>
+        
+          
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/tags/">Tags</a>
+          </li>
+        
+          
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/about/">About</a>
+          </li>
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;&nbsp;<i class="iconfont icon-search"></i>&nbsp;&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
   </div>
-</div>
-
-
-
-<nav class="site-nav">
-  
-    <ul id="menu" class="menu">
-      
-        
-        
-        
-          
-          <li class="menu-item menu-item-home">
-
-    
-    
-    
-      
-    
-
-    
-
-    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
-
-  </li>
-        
-        
-        
-          
-          <li class="menu-item menu-item-about">
-
-    
-    
-    
-      
-    
-
-    
-
-    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
-
-  </li>
-        
-        
-        
-          
-          <li class="menu-item menu-item-tags">
-
-    
-    
-    
-      
-    
-
-    
-
-    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
-
-  </li>
-        
-        
-        
-          
-          <li class="menu-item menu-item-categories">
-
-    
-    
-    
-      
-    
-
-    
-
-    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
-
-  </li>
-        
-        
-        
-          
-          <li class="menu-item menu-item-archives">
-
-    
-    
-    
-      
-    
-
-    
-
-    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
-
-  </li>
-
-      
-      
-    </ul>
-  
-
-  
-
-  
 </nav>
 
-
-
-  
-
-
-
-</div>
-    </header>
-
-    
-  
-  
-
-  
-
-  <a href="https://github.com/zszcr" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewbox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"/><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"/><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"/></svg></a>
-
-
-
-    <main id="main" class="main">
-      <div class="main-inner">
-        <div class="content-wrap">
-          
-            
-
-          
-          <div id="content" class="content">
-            
-
-  <div id="posts" class="posts-expand">
-    
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/05/13/2019-5-13-JavaScriptCore的基础知识/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="zs0zrc">
-      <meta itemprop="description" content="zs0zrc's blog">
-      <meta itemprop="image" content="/images/avatar.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="zs0zrc">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">JavaScriptCore的基础知识
-
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2019-05-13 12:50:05" itemprop="dateCreated datePublished" datetime="2019-05-13T12:50:05+08:00">2019-05-13</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2019-05-20 00:22:39" itemprop="dateModified" datetime="2019-05-20T00:22:39+08:00">2019-05-20</time>
-              
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/JS-Engine/" itemprop="url" rel="index"><span itemprop="name">JS-Engine</span></a></span>
-
-                
-                
+    <div class="view intro-2" id="background" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask rgba-black-light flex-center">
+          <div class="container text-center white-text fadeInUp">
+            <span class="h2" id="subtitle">
               
             </span>
-          
 
-          
             
+              
+                <p class="mt-3 post-meta">
+                  <i class="fas fa-calendar-alt" aria-hidden="true"></i>
+                  Monday, May 13th 2019, 12:50 pm
+                </p>
+              
+
+              <p class="mt-1">
+                
+                  
+                  <span class="post-meta">
+                    <i class="far fa-chart-bar"></i>
+                    2k 字
+                  </span>
+                
+
+                
+                  
+                  <span class="post-meta">
+                      <i class="far fa-clock"></i>
+                      7 分钟
+                  </span>
+                
+
+                
+                  <!-- 不蒜子统计文章PV -->
+                  
+                  <span id="busuanzi_container_page_pv" class="post-meta" style="display: none">
+                    <i class="far fa-eye" aria-hidden="true"></i>
+                    <span id="busuanzi_value_page_pv"></span> 次
+                  </span>
+                
+              </p>
             
-          
+          </div>
 
           
-          
-
-          
-
-          
-
-          
-
         </div>
-      </header>
-    
+      </div>
+    </div>
+  </header>
 
+  <main>
     
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
       
 
-      
-        <p>最近在学习JSC的相关知识，这里写篇博客简单记录一下。</p>
+<div class="container-fluid">
+  <div class="row">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-md">
+      <div class="container nopadding-md" id="board-ctn">
+        <div class="py-5 z-depth-3" id="board">
+          <div class="post-content mx-auto" id="post">
+            
+            <div class="markdown-body">
+              <p>最近在学习JSC的相关知识，这里写篇博客简单记录一下。</p>
 <h3 id="JavaScriptCore简介"><a href="#JavaScriptCore简介" class="headerlink" title="JavaScriptCore简介"></a>JavaScriptCore简介</h3><p>JavaScriptCore是一个JS 引擎，是专门负责处理javascript代码的虚拟机，简写为JSC，一般会附在浏览器中。</p>
 <p>它是一个C++实现的开源项目，使用Apple提供的JavaScriptCore框架。我们可以在Objective-C或者基于C的程序中执行Javascript代码，也可以向JavaScript环境中插入一些自定义的对象。</p>
 <p>JavaScript 引擎在解析源码后将其转换为抽象语法树（AST），基于 AST，解释器便可以开始工作并产生字节码，此时引擎正在执行 JavaScript 代码。</p>
-<p><img src="https://s1.51cto.com/oss/201806/22/36a0ffb0376b9c473bae330645cd7c29.jpg-wh_600x-s_2244584687.jpg" alt="img"></p>
+<p><img src="https://s1.51cto.com/oss/201806/22/36a0ffb0376b9c473bae330645cd7c29.jpg-wh_600x-s_2244584687.jpg" srcset="/img/loading.gif" alt="img"></p>
 <p>为了使它执行得更快，可以将字节码与分析数据（profiling data）一起发给优化编译器JIT。优化编译器根据已有的分析数据做出特定假设，然后生成高度优化的机器码。如果在某点上一个假设被证明是不正确的，那么优化编译器会去优化并回退至解释器部分</p>
 <h3 id="JavaScriptCore的组成"><a href="#JavaScriptCore的组成" class="headerlink" title="JavaScriptCore的组成"></a>JavaScriptCore的组成</h3><p>JavaScriptCore主要由以下模块组成：</p>
 <p>参考<a href="https://trac.webkit.org/wiki/JavaScriptCore" target="_blank" rel="noopener">wiki JavaScriptCore</a></p>
@@ -489,7 +184,7 @@
 <li>DFG 低延迟优化的JIT</li>
 <li>FTL 高通量优化的JIT</li>
 </ul>
-<h3 id="JavaScriptCore基本组件"><a href="#JavaScriptCore基本组件" class="headerlink" title="JavaScriptCore基本组件"></a>JavaScriptCore基本组件</h3><p><img src="/picture/1557810204143.png" alt="1557810204143"></p>
+<h3 id="JavaScriptCore基本组件"><a href="#JavaScriptCore基本组件" class="headerlink" title="JavaScriptCore基本组件"></a>JavaScriptCore基本组件</h3><p><img src="/picture/1557810204143.png" srcset="/img/loading.gif" alt="1557810204143"></p>
 <p>基本组件的作用</p>
 <ul>
 <li><p>Parser</p>
@@ -521,11 +216,11 @@
 </ul>
 <h3 id="JavaScriptCore值的表现形式"><a href="#JavaScriptCore值的表现形式" class="headerlink" title="JavaScriptCore值的表现形式"></a>JavaScriptCore值的表现形式</h3><p>JSC使用一项叫NaN-boxing的技术。NaN-boxing利用多位模式呈现，因此这些位中的其他值可以被编码。具体来说，每个IEEE 754(IEEE二进制浮点数算术标准)规定了浮点数所有指数位用不等于零的分数表示Nan-boxing。对于双精度值，这就由2 ^ 51个不同的位模式（忽略符号位并将第一个小数位设置为1，所以这也可以表示nullptr）。在64位平台上，目前只有48位用于寻址，其余32位整数和指针也就可以进行编码。</p>
 <p>JSC具体规则实现在JSValue.h文件中实现</p>
-<p><img src="/picture/1557819327079.png" alt="1557819327079"></p>
+<p><img src="/picture/1557819327079.png" srcset="/img/loading.gif" alt="1557819327079"></p>
 <p>前十六位表示已编码的JSValue的类型，这个方案通过对数值执行64位整数加法来对双精度进行编码。在这个操作后没有编码的双精度值将以模式0x0000或0xffff开始。在执行浮点数运算前，必须通过反转该操作作为解码。标志0x0000用来表示指针或者其他标志的立即数。布尔值、空值和未定义的值由特定的、无效的指针表示。</p>
 <h3 id="JavaScript对象与数组"><a href="#JavaScript对象与数组" class="headerlink" title="JavaScript对象与数组"></a>JavaScript对象与数组</h3><h4 id="JavaScript对象模型"><a href="#JavaScript对象模型" class="headerlink" title="JavaScript对象模型"></a>JavaScript对象模型</h4><p>在js中，除了五种原始类型（即数字，字符串，布尔值，null，undefined）之外的都是对象。</p>
 <p>ECMAScript 规范基本上将所有对象定义为由字符串键值映射到 property 属性的字典，可以使用点运算符（foo.bar）或通过方括号（foo[‘bar’]）来访问属性。</p>
-<p><img src="/picture/1557819807736.png" alt="1557819807736"></p>
+<p><img src="/picture/1557819807736.png" srcset="/img/loading.gif" alt="1557819807736"></p>
 <p>每个property属性的字典都有四个属性，见上图。除了[[Value]]， 还规定了以下属性</p>
 <ul>
 <li>[[Writable]] 决定该属性是否可以被重新赋值；</li>
@@ -533,13 +228,13 @@
 <li>[[Configurable]] 决定该属性是否可被删除。</li>
 </ul>
 <p>javascript如何获取一个对象的属性</p>
-<p><img src="/picture/1557820522010.png" alt="1557820522010"></p>
+<p><img src="/picture/1557820522010.png" srcset="/img/loading.gif" alt="1557820522010"></p>
 <h4 id="数组"><a href="#数组" class="headerlink" title="数组"></a>数组</h4><p>数组被定义为特殊的对象，它是具有特殊的“length”的对象，length的值总是等于最高元素的索引加一。索引被限制在0-2^32 - 2的范围间，数组最多只能有2^32-1项。</p>
-<p><img src="/picture/1557820973774.png" alt="1557820973774"></p>
+<p><img src="/picture/1557820973774.png" srcset="/img/loading.gif" alt="1557820973774"></p>
 <h4 id="对象在内存中的存储"><a href="#对象在内存中的存储" class="headerlink" title="对象在内存中的存储"></a>对象在内存中的存储</h4><h5 id="通用的"><a href="#通用的" class="headerlink" title="通用的"></a>通用的</h5><p>只存在一个对象时，它会使用上面所讲的对象的存储的字典数据结构。它包含用字符串表示的键值，指向各自的属性值。</p>
-<p><img src="/picture/1557823212207.png" alt="1557823212207"></p>
+<p><img src="/picture/1557823212207.png" srcset="/img/loading.gif" alt="1557823212207"></p>
 <p>而具有相同键值属性的不同对象在内存中的存储和上面所讲的不同。它多了一个叫shape的东西，shape包含了除[[Value]]外的所有属性名，并且包含了JSObject内部元素的偏移量，方便JSC去查找对象属性的值。每个具有相同键值属性的对象都会指向这个shape实例。</p>
-<p><img src="/picture/1557822194099.png" alt="1557822194099"></p>
+<p><img src="/picture/1557822194099.png" srcset="/img/loading.gif" alt="1557822194099"></p>
 <p>不同的JavaScript引擎都使用了shape做优化，但称呼不一样</p>
 <ul>
 <li>学术论文称它们为 Hidden Classes（容易与 JavaScript 中的类概念混淆）</li>
@@ -549,28 +244,49 @@
 <li>SpiderMonkey 称他们为 Shapes</li>
 </ul>
 <h5 id="JSC的实现"><a href="#JSC的实现" class="headerlink" title="JSC的实现"></a>JSC的实现</h5><p>在JSC内部，JSC将对象的属性和对象的元素存储在同一个内存区域，并且在对象本身中存储指向该区域的指针。指针指向这个内存区域的中间，以这个指针分隔，左边是它的属性（低地址），右边是它的元素 还有一个小标题位于指向包含元素向量长度的地址之前，形如：（也称Butterfly）</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">--------------------------------------------------------</span><br><span class="line">.. | propY | propX | length | elem0 | elem1 | elem2 | ..</span><br><span class="line">--------------------------------------------------------</span><br><span class="line">                            ^</span><br><span class="line">                            |</span><br><span class="line">            +---------------+</span><br><span class="line">            |</span><br><span class="line">  +-------------+</span><br><span class="line">  | Some Object |</span><br><span class="line">  +-------------+</span><br></pre></td></tr></table></figure>
-<p>但是在JSC中，对象的存储不仅仅是Butterfly，还有内联存储。</p>
+<pre><code>--------------------------------------------------------
+.. | propY | propX | length | elem0 | elem1 | elem2 | ..
+--------------------------------------------------------
+                            ^
+                            |
+            +---------------+
+            |
+  +-------------+
+  | Some Object |
+  +-------------+
+</code></pre><p>但是在JSC中，对象的存储不仅仅是Butterfly，还有内联存储。</p>
 <p>JSObject的内联：（默认6个索引值）</p>
 <p>一个小demo</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">obj = &#123;<span class="string">'a'</span>: <span class="number">0x1337</span>, <span class="string">'b'</span>: <span class="literal">false</span>, <span class="string">'c'</span>: <span class="number">13.37</span>, <span class="string">'d'</span>: [<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>]&#125;;</span><br><span class="line">obj1 = &#123;<span class="string">'a'</span>:<span class="number">0x1111</span>,<span class="string">'b'</span>:<span class="literal">true</span>,<span class="string">'c'</span>:<span class="number">1.123</span>,<span class="string">'d'</span>:[<span class="number">1</span>,<span class="number">2</span>],<span class="string">'e'</span>:<span class="number">1</span>,<span class="string">'f'</span>:<span class="number">2</span>,<span class="string">'g'</span>:<span class="number">3</span>&#125;;</span><br><span class="line">obj2 = &#123;<span class="string">'a'</span>:<span class="number">0x1111</span>,<span class="string">'b'</span>:<span class="literal">true</span>,<span class="string">'c'</span>:<span class="number">1.123</span>,<span class="string">'d'</span>:[<span class="number">1</span>,<span class="number">2</span>],<span class="string">'e'</span>:<span class="number">1</span>,<span class="string">'f'</span>:<span class="number">2</span>,<span class="string">'g'</span>:<span class="number">3</span> , <span class="string">'1'</span>:<span class="string">'123'</span>&#125;;</span><br><span class="line">print(describe(obj));</span><br><span class="line">print(describe(obj1));</span><br><span class="line">print(describe(obj2));</span><br></pre></td></tr></table></figure>
+<pre><code class="js">obj = {&#39;a&#39;: 0x1337, &#39;b&#39;: false, &#39;c&#39;: 13.37, &#39;d&#39;: [1,2,3,4]};
+obj1 = {&#39;a&#39;:0x1111,&#39;b&#39;:true,&#39;c&#39;:1.123,&#39;d&#39;:[1,2],&#39;e&#39;:1,&#39;f&#39;:2,&#39;g&#39;:3};
+obj2 = {&#39;a&#39;:0x1111,&#39;b&#39;:true,&#39;c&#39;:1.123,&#39;d&#39;:[1,2],&#39;e&#39;:1,&#39;f&#39;:2,&#39;g&#39;:3 , &#39;1&#39;:&#39;123&#39;};
+print(describe(obj));
+print(describe(obj1));
+print(describe(obj2));
+</code></pre>
 <p>输出结果：</p>
-<p><img src="/picture/1557926168168.png" alt="1557926168168"></p>
+<p><img src="/picture/1557926168168.png" srcset="/img/loading.gif" alt="1557926168168"></p>
 <p>可以发现对象的属性6个就会使用butterfly来存储多出的属性</p>
 <p>调试，观察内存情况</p>
 <p>obj对象的内存情况：</p>
-<p><img src="/picture/1557926605893.png" alt="1557926605893"></p>
+<p><img src="/picture/1557926605893.png" srcset="/img/loading.gif" alt="1557926605893"></p>
 <p>其中第一个4字节是JSCell；第二个是Butterfly指针，它是空的，因为所有的属性都存储在内联中。接下来是四个属性的内联JSValue槽：一个integer，false，一个double和一个JSObject指针。JSCell后四位是这个对象的StructureID 。</p>
 <p>obj2对象的内存情况：</p>
-<p><img src="/picture/1557927046793.png" alt="1557927046793"></p>
+<p><img src="/picture/1557927046793.png" srcset="/img/loading.gif" alt="1557927046793"></p>
 <p>因为它属性多于6个，所以它分配了一个butterfly来存储多出的属性。</p>
-<h4 id="不同C-类构建JSC对象的关系图"><a href="#不同C-类构建JSC对象的关系图" class="headerlink" title="不同C++类构建JSC对象的关系图"></a>不同C++类构建JSC对象的关系图</h4><p><img src="/picture/1557927954080.png" alt="1557927954080"></p>
+<h4 id="不同C-类构建JSC对象的关系图"><a href="#不同C-类构建JSC对象的关系图" class="headerlink" title="不同C++类构建JSC对象的关系图"></a>不同C++类构建JSC对象的关系图</h4><p><img src="/picture/1557927954080.png" srcset="/img/loading.gif" alt="1557927954080"></p>
 <h3 id="JavaScript函数"><a href="#JavaScript函数" class="headerlink" title="JavaScript函数"></a>JavaScript函数</h3><ul>
 <li><p>arguments</p>
 <p>  <code>arguments</code>对象是所有（非箭头）函数中都可用的<strong>局部变量</strong>。可以使用<code>arguments</code>对象在函数中引用函数的参数。此对象包含传递给函数的每个参数，第一个参数在索引0处。</p>
 <p>  假设一个函数传递了三个参数</p>
-  <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">arguments</span>[<span class="number">0</span>]</span><br><span class="line"><span class="built_in">arguments</span>[<span class="number">1</span>]</span><br><span class="line"><span class="built_in">arguments</span>[<span class="number">2</span>]</span><br><span class="line"><span class="comment">//可以通过arguments来引用函数的参数</span></span><br></pre></td></tr></table></figure>
+<pre><code class="js">  arguments[0]
+  arguments[1]
+  arguments[2]
+  //可以通过arguments来引用函数的参数
+</code></pre>
 </li>
+</ul>
+<ul>
 <li><p>.call 和 .apply函数</p>
 <p>  通过给定的”this”对象和参数来调用它们</p>
 <p>  call()接收一个参数列表，apply()接收一个参数数组</p>
@@ -585,551 +301,278 @@
 <li><a href="https://segmentfault.com/a/1190000011155023" target="_blank" rel="noopener">https://segmentfault.com/a/1190000011155023</a></li>
 </ul>
 
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-      
-    
-    
-
-    
-      <div>
-        
-
-
-
-
-  
-
-
-
-<ul class="post-copyright">
-  <li class="post-copyright-author">
-    <strong>本文作者： </strong>zs0zrc</li>
-  <li class="post-copyright-link">
-    <strong>本文链接：</strong>
-    
-    <a href="http://yoursite.com/2019/05/13/2019-5-13-JavaScriptCore的基础知识/" title="JavaScriptCore的基础知识">http://yoursite.com/2019/05/13/2019-5-13-JavaScriptCore的基础知识/</a>
-  </li>
-  <li class="post-copyright-license">
-    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/zh-CN" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！</li>
-</ul>
-
-      </div>
-    
-
-    <footer class="post-footer">
-      
-        <div class="post-tags">
-          
-            <a href="/tags/js-exploit/" rel="tag"># js_exploit</a>
-          
-        </div>
-      
-
-      
-      
-      
-
-      
-        <div class="post-nav">
-          <div class="post-nav-next post-nav-item">
-            
-              <a href="/2019/05/11/2019-5-11-CVE-2016-4622-(2016-10-27)的简单复现/" rel="next" title="CVE-2016-4622复现">
-                <i class="fa fa-chevron-left"></i> CVE-2016-4622复现
-              </a>
-            
-          </div>
-
-          <span class="post-nav-divider"></span>
-
-          <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2019/05/28/2019-5-28-ChakraCore基础/" rel="prev" title="ChakraCore基础知识笔记">
-                ChakraCore基础知识笔记 <i class="fa fa-chevron-right"></i>
-              </a>
-            
-          </div>
-        </div>
-      
-
-      
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-  </div>
-
-
-          </div>
-          
-
-  
-
-
-
-        </div>
-        
-          
-  
-  <div class="sidebar-toggle">
-    <div class="sidebar-toggle-line-wrap">
-      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
-      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
-      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
-    </div>
-  </div>
-
-  <aside id="sidebar" class="sidebar">
-    <div class="sidebar-inner">
-
-      
-
-      
-        <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
-            文章目录
-          </li>
-          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
-            站点概览
-          </li>
-        </ul>
-      
-
-      <div class="site-overview-wrap sidebar-panel">
-        <div class="site-overview">
-          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-            
-              <img class="site-author-image" itemprop="image" src="/images/avatar.png" alt="zs0zrc">
-            
-              <p class="site-author-name" itemprop="name">zs0zrc</p>
-              <div class="site-description motion-element" itemprop="description">zs0zrc's blog</div>
-          </div>
-
-          
-            <nav class="site-state motion-element">
-              
-                <div class="site-state-item site-state-posts">
+            </div>
+            <hr>
+            <div>
+              <p>
                 
-                  <a href="/archives/">
-                
-                    <span class="site-state-item-count">53</span>
-                    <span class="site-state-item-name">日志</span>
-                  </a>
-                </div>
-              
-
-              
+                  <span>
+                <i class="iconfont icon-inbox"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/JS-Engine/">JS-Engine</a>
+                      &nbsp;
+                    
+                  </span>&nbsp;&nbsp;
                 
                 
-                <div class="site-state-item site-state-categories">
-                  
+                  <span>
+                <i class="iconfont icon-tag"></i>
                     
-                      <a href="/categories/">
+                      <a class="hover-with-bg" href="/tags/js-exploit/">js_exploit</a>
                     
-                  
-                    
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                    <span class="site-state-item-count">13</span>
-                    <span class="site-state-item-name">分类</span>
-                  </a>
-                </div>
-              
-
-              
+                  </span>
                 
-                
-                <div class="site-state-item site-state-tags">
-                  
-                    
-                      <a href="/tags/">
-                    
-                  
-                    
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                    <span class="site-state-item-count">20</span>
-                    <span class="site-state-item-name">标签</span>
-                  </a>
-                </div>
+              </p>
               
-            </nav>
-          
-
-          
-
-          
-
-          
-            <div class="links-of-author motion-element">
-              
-                <span class="links-of-author-item">
-                  
-                  
-                    
-                  
-                  
-                    
-                  
-                  <a href="https://github.com/zszcr" title="GitHub &rarr; https://github.com/zszcr" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
-                </span>
-              
-                <span class="links-of-author-item">
-                  
-                  
-                    
-                  
-                  
-                    
-                  
-                  <a href="https://twitter.com/1PFjclRQBHRAuEE" title="Twitter &rarr; https://twitter.com/1PFjclRQBHRAuEE" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
-                </span>
+                <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a href="https://zh.wikipedia.org/wiki/Wikipedia:CC_BY-SA_3.0%E5%8D%8F%E8%AE%AE%E6%96%87%E6%9C%AC" rel="nofollow noopener">CC BY-SA 3.0协议</a> 。转载请注明出处！</p>
               
             </div>
-          
-
-          
-             <div class="cc-license motion-element" itemprop="license">
-              
-              
-                
-              
-              
-              
-              <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/zh-CN" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
-             </div>
-          
-
-          
-          
-            <div class="links-of-blogroll motion-element links-of-blogroll-block">
-              <div class="links-of-blogroll-title">
-                <i class="fa  fa-fw fa-link"></i>
-                Links
-              </div>
-              <ul class="links-of-blogroll-list">
-                
-                  <li class="links-of-blogroll-item">
-                    <a href="https://23r3f.github.io/" title="https://23r3f.github.io/" rel="noopener" target="_blank">23R3F</a>
-                  </li>
-                
-                  <li class="links-of-blogroll-item">
-                    <a href="http://myhackerworld.top/" title="http://myhackerworld.top/" rel="noopener" target="_blank">D4rk3r</a>
-                  </li>
-                
-                  <li class="links-of-blogroll-item">
-                    <a href="http://m4x.fun/" title="http://m4x.fun/" rel="noopener" target="_blank">M4X</a>
-                  </li>
-                
-                  <li class="links-of-blogroll-item">
-                    <a href="https://n132.github.io/" title="https://n132.github.io/" rel="noopener" target="_blank">n13r</a>
-                  </li>
-                
-                  <li class="links-of-blogroll-item">
-                    <a href="https://aluvion.github.io/" title="https://aluvion.github.io/" rel="noopener" target="_blank">Twings</a>
-                  </li>
-                
-                  <li class="links-of-blogroll-item">
-                    <a href="https://littleredlie.github.io/" title="https://littleredlie.github.io/" rel="noopener" target="_blank">LittleRed</a>
-                  </li>
-                
-                  <li class="links-of-blogroll-item">
-                    <a href="https://glarcy.github.io/" title="https://glarcy.github.io/" rel="noopener" target="_blank">Glarcy</a>
-                  </li>
-                
-              </ul>
-            </div>
-          
-
-          
-            
-          
-          
-
-        </div>
-      </div>
-
-      
-      <!--noindex-->
-        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
-          <div class="post-toc">
 
             
-            
-            
-            
-
-            
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#JavaScriptCore简介"><span class="nav-number">1.</span> <span class="nav-text">JavaScriptCore简介</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#JavaScriptCore的组成"><span class="nav-number">2.</span> <span class="nav-text">JavaScriptCore的组成</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#JavaScriptCore基本组件"><span class="nav-number">3.</span> <span class="nav-text">JavaScriptCore基本组件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#JavaScriptCore值的表现形式"><span class="nav-number">4.</span> <span class="nav-text">JavaScriptCore值的表现形式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#JavaScript对象与数组"><span class="nav-number">5.</span> <span class="nav-text">JavaScript对象与数组</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#JavaScript对象模型"><span class="nav-number">5.1.</span> <span class="nav-text">JavaScript对象模型</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#数组"><span class="nav-number">5.2.</span> <span class="nav-text">数组</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#对象在内存中的存储"><span class="nav-number">5.3.</span> <span class="nav-text">对象在内存中的存储</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#通用的"><span class="nav-number">5.3.1.</span> <span class="nav-text">通用的</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#JSC的实现"><span class="nav-number">5.3.2.</span> <span class="nav-text">JSC的实现</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#不同C-类构建JSC对象的关系图"><span class="nav-number">5.4.</span> <span class="nav-text">不同C++类构建JSC对象的关系图</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#JavaScript函数"><span class="nav-number">6.</span> <span class="nav-text">JavaScript函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Reference"><span class="nav-number">7.</span> <span class="nav-text">Reference</span></a></li></ol></div>
-            
-
           </div>
         </div>
-      <!--/noindex-->
-      
-
-      
-
-    </div>
-  </aside>
-  
-
-
-        
       </div>
-    </main>
-
-    <footer id="footer" class="footer">
-      <div class="footer-inner">
-        <div class="copyright">&copy; 2018 – <span itemprop="copyrightYear">2020</span>
-  <span class="with-love" id="animate">
-    <i class="fa fa-user"></i>
-  </span>
-  <span class="author" itemprop="copyrightHolder">zs0zrc</span>
-
-  
-
-  
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc-start"></div>
+<div id="toc">
+  <p class="h5"><i class="far fa-list-alt"></i>&nbsp;TOC</p>
+  <div id="tocbot"></div>
 </div>
 
-
-  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.8.0</div>
-
-
-
-  <span class="post-meta-divider">|</span>
-
-
-
-  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.1.0</div>
-
-
-
-
-        
-
-
-
-
-
-
-
-
-        
-      </div>
-    </footer>
-
-    
-      <div class="back-to-top">
-        <i class="fa fa-arrow-up"></i>
-        
       </div>
     
+  </div>
+</div>
+
+<!-- Custom -->
+
 
     
+  </main>
+
+  
+    <a class="z-depth-1" id="scroll-top-button" href="#" role="button">
+      <i class="fa fa-chevron-up scroll-top-arrow" aria-hidden="true"></i>
+    </a>
+  
+
+  
+    <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">Search</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">keyword</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+  
+
+  
+
+  
+
+  <footer class="mt-5">
+  <div class="text-center py-3">
+    <div>
+      <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><b>Hexo</b></a>
+      <i class="iconfont icon-love"></i>
+      <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"> <b>Fluid</b></a>
+    </div>
+    
+  <div>
+    
+      <!-- 不蒜子统计PV -->
+      
+      <span id="busuanzi_container_site_pv" style="display: none">
+      总访问量 <span id="busuanzi_value_site_pv"></span> 次
+    </span>
+    
+    
+      <!-- 不蒜子统计UV -->
+      
+      <span id="busuanzi_container_site_uv" style="display: none">
+      总访客数 <span id="busuanzi_value_site_uv"></span> 人
+    </span>
+    
+  </div>
+
 
     
 
     
   </div>
+</footer>
 
-  
-
-<script>
-  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
-    window.Promise = null;
-  }
-</script>
-
-
+<!-- SCRIPTS -->
+<script src="https://cdn.staticfile.org/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://cdn.staticfile.org/popper.js/1.16.1/umd/popper.min.js"></script>
+<script src="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/js/bootstrap.min.js"></script>
+<script src="https://cdn.staticfile.org/mdbootstrap/4.13.0/js/mdb.min.js"></script>
+<script src="/js/main.js"></script>
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  <script src="/js/lazyload.js"></script>
 
 
 
   
-  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+  <script src="https://cdn.staticfile.org/tocbot/4.10.0/tocbot.min.js"></script>
+  <script>
+    $(document).ready(function () {
+      var navHeight = $('#navbar').height();
+      var post = $('#post');
+      var toc = $('#toc');
+      var tocLimMax = post.offset().top + post.height() - navHeight;
 
-  
-  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+      $(window).scroll(function () {
+        var tocLimMin = $('#toc-start').offset().top - navHeight;
+        var scroH = document.body.scrollTop + document.documentElement.scrollTop;
 
-  
-  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
-
-
-  
-
-
-  <script src="/js/utils.js?v=7.1.0"></script>
-
-  <script src="/js/motion.js?v=7.1.0"></script>
-
-
-
-  
-  
-
-
-  <script src="/js/affix.js?v=7.1.0"></script>
-
-  <script src="/js/schemes/pisces.js?v=7.1.0"></script>
-
-
-
-  
-  <script src="/js/scrollspy.js?v=7.1.0"></script>
-<script src="/js/post-details.js?v=7.1.0"></script>
-
-
-
-  
-
-
-  <script src="/js/next-boot.js?v=7.1.0"></script>
-
-
-  
-
-  
-
-  
-
-  
-
-
-  
-
-
-  
+        if (tocLimMin <= scroH && scroH <= tocLimMax) {
+          toc.css({
+            'display': 'block',
+            'position': 'fixed',
+            'top': navHeight,
+          });
+        } else if (scroH <= tocLimMin) {
+          toc.css({
+            'position': '',
+            'top': '',
+          });
+        } else if (scroH > tocLimMax) {
+          toc.css('display', 'none');
+        }
+      });
+      tocbot.init({
+        tocSelector: '#tocbot',
+        contentSelector: '.post-content',
+        headingSelector: 'h1,h2,h3,h4,h5,h6',
+        linkClass: 'tocbot-link',
+        activeLinkClass: 'tocbot-active-link',
+        listClass: 'tocbot-list',
+        isCollapsedClass: 'tocbot-is-collapsed',
+        collapsibleClass: 'tocbot-is-collapsible',
+        scrollSmooth: true,
+      });
+      if ($('.toc-list-item').length > 0) {
+        $('#toc > p').css('visibility', 'visible');
+      }
+      var offset = $('#board-ctn').css('margin-right')
+      $('#toc-ctn').css({
+        'right': offset
+      })
+    });
+  </script>
 
 
 
 
-  
 
-  
 
-  
 
-  
+  <script defer src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
 
-  
 
-  
 
-  
 
-  
+<!-- Plugins -->
 
-  
 
-  
 
-  
+  <script src="https://cdn.staticfile.org/prettify/188.0.0/prettify.min.js"></script>
+  <script>
+    $(document).ready(function () {
+      $('pre').addClass('prettyprint  linenums');
+      prettyPrint();
+    })
+  </script>
 
-  
 
-  
 
-  
+  <script src="https://cdn.staticfile.org/typed.js/2.0.11/typed.min.js"></script>
+  <script>
+    var typed = new Typed('#subtitle', {
+      strings: [
+        '  ',
+        "JavaScriptCore的基础知识&nbsp;",
+      ],
+      cursorChar: "_",
+      typeSpeed: 70,
+      loop: false,
+    });
+    typed.stop();
+    $(document).ready(function () {
+      $(".typed-cursor").addClass("h2");
+      typed.start();
+    });
+  </script>
+
+
+
+  <script src="https://cdn.staticfile.org/anchor-js/4.2.2/anchor.min.js"></script>
+  <script>
+    anchors.options = {
+      placement: "right",
+      visible: "hover",
+      
+    };
+    var el = "h1,h2,h3,h4,h5,h6".split(",");
+    var res = [];
+    for (item of el) {
+      res.push(".markdown-body > " + item)
+    }
+    anchors.add(res.join(", "))
+  </script>
+
+
+
+  <script src="/js/local-search.js"></script>
+  <script>
+    var path = "/local-search.xml";
+    var inputArea = document.querySelector("#local-search-input");
+    inputArea.onclick = function () {
+      getSearchFile(path);
+      this.onclick = null
+    }
+  </script>
+
+
+
+  <script src="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.js"></script>
+  <script>
+    $("#post img:not(.no-zoom img, img[no-zoom])").each(
+      function () {
+        var element = document.createElement("a");
+        $(element).attr("data-fancybox", "images");
+        $(element).attr("href", $(this).attr("src"));
+        $(this).wrap(element);
+      }
+    );
+  </script>
+
+
+
+
+
+
+
+
+
+
+
 
 </body>
 </html>

