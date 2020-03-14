@@ -8,7 +8,7 @@
 <head><meta name="generator" content="Hexo 3.8.0">
   <meta charset="UTF-8">
   <link rel="apple-touch-icon" sizes="76x76" href="/img/apple-touch-icon.png">
-  <link rel="icon" type="image/png" href="/img/favicon.png">
+  <link rel="icon" type="image/png" href="/img/image3.jpg">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   
@@ -144,6 +144,163 @@
               <div class="col-12 col-md-10 m-auto">
                 
 
+
+  <div class="row mx-auto index-card">
+    
+    
+    <div class="col-12 col-md-12 mx-auto index-info">
+      <a href="/2018/09/21/2018-9-21-ida的常见操作/">
+        <p class="h4 index-header">IDA的常见操作</p>
+      </a>
+
+      <a href="/2018/09/21/2018-9-21-ida的常见操作/">
+        
+        
+          
+        
+        <div class="index-excerpt">
+          <div class="index-text mb-1">
+IDA-python的使用：常用的api get_bytes(address,count)从address处读取count个字节的内容
+patch_bytes(address,buf),将adress地址处patch成buf的内容
+Xrefsto(address,flags=0) 找到所有引用了adress的地址
+byte(address) 获取address地址的一个字节的内容
+
+
+一些IDA常用的快捷键：
+
+跳转到特定地址 ： G
+查询交叉引用： X
+查找字符串： alt + t
+拍摄快照：ctrl+shift+w
+重新定义变量数据类型 : y
+undefine一个 函数： u
+crea</div>
+        </div>
+      </a>
+
+      <div class="index-btm">
+        
+          <i class="iconfont icon-riqi2"></i>&nbsp;2018-09-21&nbsp;&nbsp;
+        
+        
+          <i class="iconfont icon-inbox"></i>
+          
+            <a href="/categories/TOOL/">TOOL</a>&nbsp;
+          &nbsp;
+        
+        
+          <i class="iconfont icon-tag"></i>
+          
+            <a href="/tags/pwn/">pwn</a>&nbsp;
+          
+        
+      </div>
+    </div>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <div class="col-12 col-md-12 mx-auto index-info">
+      <a href="/2018/09/20/2018-9-14-gdb/">
+        <p class="h4 index-header">gdb常用命令</p>
+      </a>
+
+      <a href="/2018/09/20/2018-9-14-gdb/">
+        
+        
+          
+        
+        <div class="index-excerpt">
+          <div class="index-text mb-1">gdb
+基础调试命令
+s step，si步入
+n 执行下一条指令 ni步入
+b 在某处下断点，可以用
+b * adrress
+b function_name
+info b 查看断点信息
+delete 删除所有断点
+c 继续
+r 执行
+disas addr 查看addr处前后的反汇编代码
+disas functions 参看fucntion函数的反汇编代码
+显示内存数据
+p 系列
+p system/main 显示某个函数地址
+p $esp 显示寄存器
+p/x p/a p/b p/s。。。
+p 0xff - 0xea 计算器
+print &amp;VarName 查看变量地址
+p * 0xffff</div>
+        </div>
+      </a>
+
+      <div class="index-btm">
+        
+          <i class="iconfont icon-riqi2"></i>&nbsp;2018-09-20&nbsp;&nbsp;
+        
+        
+          <i class="iconfont icon-inbox"></i>
+          
+            <a href="/categories/TOOL/">TOOL</a>&nbsp;
+          &nbsp;
+        
+        
+          <i class="iconfont icon-tag"></i>
+          
+            <a href="/tags/pwn/">pwn</a>&nbsp;
+          
+        
+      </div>
+    </div>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <div class="col-12 col-md-12 mx-auto index-info">
+      <a href="/2018/09/20/2018-9-22-very_overflow-writeup/">
+        <p class="h4 index-header">very_overflow writeup</p>
+      </a>
+
+      <a href="/2018/09/20/2018-9-22-very_overflow-writeup/">
+        
+        
+          
+        
+        <div class="index-excerpt">
+          <div class="index-text mb-1">防护机制：
+[*] &#39;/home/zs0zrc/pwn/Scoreboard/very_overflow/very_overflow&#39;
+    Arch:     i386-32-little
+    RELRO:    Partial RELRO
+    Stack:    No canary found
+    NX:       NX enabled
+    PIE:      No PIE (0x8048000)
+
+只开启了NX，并且程序是32位的。简单的运行了下，发现程序有4个功能。题目提供了源码就不用ida看了。这个程序模拟一个node的分配系统，但是没有用到堆，而</div>
+        </div>
+      </a>
+
+      <div class="index-btm">
+        
+          <i class="iconfont icon-riqi2"></i>&nbsp;2018-09-20&nbsp;&nbsp;
+        
+        
+          <i class="iconfont icon-inbox"></i>
+          
+            <a href="/categories/hackme-inndy-writeup/">hackme.inndy_writeup</a>&nbsp;
+          &nbsp;
+        
+        
+          <i class="iconfont icon-tag"></i>
+          
+            <a href="/tags/writeup/">writeup</a>&nbsp;
+          
+        
+      </div>
+    </div>
+  </div>
 
   <div class="row mx-auto index-card">
     
@@ -497,153 +654,6 @@ malloc 一个很大的数目（负有符号整数），top chunk 的位置加上
             <a href="/tags/pwn/">pwn</a>&nbsp;
           
             <a href="/tags/houseofxxx/">houseofxxx</a>&nbsp;
-          
-        
-      </div>
-    </div>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <div class="col-12 col-md-12 mx-auto index-info">
-      <a href="/2018/05/11/2018-5-11-raas-writeup/">
-        <p class="h4 index-header">raas writeup</p>
-      </a>
-
-      <a href="/2018/05/11/2018-5-11-raas-writeup/">
-        
-        
-          
-        
-        <div class="index-excerpt">
-          <div class="index-text mb-1">hint:This is a Record-as-a-Service!And also our fist heap-based challenge.Tips: use after free同时题目给了源码很明显这是一个UAF漏洞的利用
-防护机制：
-
-题目的数据结构：
-struct record {
-    void (*print)(struct record *);
-    void (*free)(struct record *);
-    union {
-        int integer;
-        char *string;
-    };
-};
-
-题目用来free的函数
-v</div>
-        </div>
-      </a>
-
-      <div class="index-btm">
-        
-          <i class="iconfont icon-riqi2"></i>&nbsp;2018-05-11&nbsp;&nbsp;
-        
-        
-          <i class="iconfont icon-inbox"></i>
-          
-            <a href="/categories/hackme-inndy-writeup/">hackme.inndy_writeup</a>&nbsp;
-          &nbsp;
-        
-        
-          <i class="iconfont icon-tag"></i>
-          
-            <a href="/tags/writeup/">writeup</a>&nbsp;
-          
-            <a href="/tags/pwn/">pwn</a>&nbsp;
-          
-        
-      </div>
-    </div>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <div class="col-12 col-md-12 mx-auto index-info">
-      <a href="/2018/05/11/2018-5-11-rsbo-1-和-rsbo-2-writeup/">
-        <p class="h4 index-header">rsbo-1 和 rsbo-2 writeup</p>
-      </a>
-
-      <a href="/2018/05/11/2018-5-11-rsbo-1-和-rsbo-2-writeup/">
-        
-        
-          
-        
-        <div class="index-excerpt">
-          <div class="index-text mb-1">这两道题的文件是一样的，不过一个没要求getshell，一个要求getshll
-rsbo-1防护机制:只开启了堆栈不可执行题目hint: ROP, open, read很明显要要用ROP调用执行open()函数打开flag文件 然后用read()函数读取文件ida反编译代码**
-它先执行init函数 ，打开“/home/ctf/flag”文件，然后读到buf上，再用随机数将buf的内容破坏，最后用memset将buf的内容清零。然后执行read_80_bytes()函数，这里存在溢出点，具体需要填充的字节为108，这个函数读取0x80个字节的内容到v5上，然后将返回值赋给v8,接下来的一个fo</div>
-        </div>
-      </a>
-
-      <div class="index-btm">
-        
-          <i class="iconfont icon-riqi2"></i>&nbsp;2018-05-11&nbsp;&nbsp;
-        
-        
-          <i class="iconfont icon-inbox"></i>
-          
-            <a href="/categories/hackme-inndy-writeup/">hackme.inndy_writeup</a>&nbsp;
-          &nbsp;
-        
-        
-          <i class="iconfont icon-tag"></i>
-          
-            <a href="/tags/writeup/">writeup</a>&nbsp;
-          
-            <a href="/tags/pwn/">pwn</a>&nbsp;
-          
-        
-      </div>
-    </div>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <div class="col-12 col-md-12 mx-auto index-info">
-      <a href="/2018/05/10/2018-5-10-echo-和-echo2-writeup/">
-        <p class="h4 index-header">echo 和 echo2 writeup</p>
-      </a>
-
-      <a href="/2018/05/10/2018-5-10-echo-和-echo2-writeup/">
-        
-        
-          
-        
-        <div class="index-excerpt">
-          <div class="index-text mb-1">hackme.inndy 的echo 和 echo2
-echo防护机制：
-
-32位的开启了NX的程序ida反编译一下：
-
-很明显的一个格式化字符串漏洞，加上程序中存在system函数，所以可以将printf_got覆盖成system函数，再传入”/bin/sh” 来getshell这里我用了pwntools库中的fmtstr_payload()函数
-exp:
-from pwn import*
-context.log_level= &quot;debug&quot;
-
-p = remote(&#39;hackme.inndy.tw&#39;,7711) 
-#p = process(&#39;./</div>
-        </div>
-      </a>
-
-      <div class="index-btm">
-        
-          <i class="iconfont icon-riqi2"></i>&nbsp;2018-05-10&nbsp;&nbsp;
-        
-        
-          <i class="iconfont icon-inbox"></i>
-          
-            <a href="/categories/hackme-inndy-writeup/">hackme.inndy_writeup</a>&nbsp;
-          &nbsp;
-        
-        
-          <i class="iconfont icon-tag"></i>
-          
-            <a href="/tags/writeup/">writeup</a>&nbsp;
-          
-            <a href="/tags/pwn/">pwn</a>&nbsp;
           
         
       </div>

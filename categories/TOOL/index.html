@@ -8,14 +8,14 @@
 <head><meta name="generator" content="Hexo 3.8.0">
   <meta charset="UTF-8">
   <link rel="apple-touch-icon" sizes="76x76" href="/img/apple-touch-icon.png">
-  <link rel="icon" type="image/png" href="/img/favicon.png">
+  <link rel="icon" type="image/png" href="/img/image3.jpg">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   
   <meta name="description" content="zs0zrc&#39;s blog">
   <meta name="author" content="zs0zrc">
   <meta name="keywords" content="pwn CTF security anythings">
-  <title>分类 - TOOL - zs0zrc</title>
+  <title>分类 - tool - zs0zrc</title>
 
   <link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/5.12.1/css/all.min.css">
 <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/css/bootstrap.min.css">
@@ -141,40 +141,16 @@
                 
 
 <div class="list-group">
-<!--  <p class="h4">共计 5 篇文章</p>-->
+<!--  <p class="h4">共计 1 篇文章</p>-->
   <hr>
   
     
       
-      <p class="h5">2018</p>
+      <p class="h5">2020</p>
     
-    <a href="/2018/10/07/2018-10-7-Ubuntu主题Flatabulous安装/" class="list-group-item list-group-item-action">
-      <span class="archive-post-title">Ubuntu主题Flatabulous安装</span>
-      <span style="float: right;">10-07</span>
-    </a>
-  
-    
-    <a href="/2018/09/21/2018-9-21-ida的常见操作/" class="list-group-item list-group-item-action">
-      <span class="archive-post-title">IDA的常见操作</span>
-      <span style="float: right;">09-21</span>
-    </a>
-  
-    
-    <a href="/2018/09/20/2018-9-14-gdb/" class="list-group-item list-group-item-action">
-      <span class="archive-post-title">gdb常用命令</span>
-      <span style="float: right;">09-20</span>
-    </a>
-  
-    
-    <a href="/2018/09/20/2018-9-20-leak_libc/" class="list-group-item list-group-item-action">
-      <span class="archive-post-title">用来泄露libc的一些工具</span>
-      <span style="float: right;">09-20</span>
-    </a>
-  
-    
-    <a href="/2018/09/16/2018-9-16-pwnenv/" class="list-group-item list-group-item-action">
-      <span class="archive-post-title">pwn环境</span>
-      <span style="float: right;">09-16</span>
+    <a href="/2020/03/13/2020-3-13-curl用法/" class="list-group-item list-group-item-action">
+      <span class="archive-post-title">curl命令行工具的用法</span>
+      <span style="float: right;">03-13</span>
     </a>
   
 </div>
@@ -322,7 +298,7 @@
     var typed = new Typed('#subtitle', {
       strings: [
         '  ',
-        "分类 - TOOL&nbsp;",
+        "分类 - tool&nbsp;",
       ],
       cursorChar: "_",
       typeSpeed: 70,
@@ -341,6 +317,57 @@
   <script>
     anchors.options = {
       placement: "right",
+      visible: "hover",
+      
+    };
+    var el = "h1,h2,h3,h4,h5,h6".split(",");
+    var res = [];
+    for (item of el) {
+      res.push(".markdown-body > " + item)
+    }
+    anchors.add(res.join(", "))
+  </script>
+
+
+
+  <script src="/js/local-search.js"></script>
+  <script>
+    var path = "/local-search.xml";
+    var inputArea = document.querySelector("#local-search-input");
+    inputArea.onclick = function () {
+      getSearchFile(path);
+      this.onclick = null
+    }
+  </script>
+
+
+
+  <script src="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.js"></script>
+  <script>
+    $("#post img:not(.no-zoom img, img[no-zoom])").each(
+      function () {
+        var element = document.createElement("a");
+        $(element).attr("data-fancybox", "images");
+        $(element).attr("href", $(this).attr("src"));
+        $(this).wrap(element);
+      }
+    );
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>
+",
       visible: "hover",
       
     };

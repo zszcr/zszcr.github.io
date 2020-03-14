@@ -8,7 +8,7 @@
 <head><meta name="generator" content="Hexo 3.8.0">
   <meta charset="UTF-8">
   <link rel="apple-touch-icon" sizes="76x76" href="/img/apple-touch-icon.png">
-  <link rel="icon" type="image/png" href="/img/favicon.png">
+  <link rel="icon" type="image/png" href="/img/image3.jpg">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   
@@ -144,6 +144,140 @@
               <div class="col-12 col-md-10 m-auto">
                 
 
+
+  <div class="row mx-auto index-card">
+    
+    
+    <div class="col-12 col-md-12 mx-auto index-info">
+      <a href="/2018/11/05/2018-11-5-【上海市大学生网络安全大赛】baby_arm复现/">
+        <p class="h4 index-header">【上海市大学生网络安全大赛】pwn复现</p>
+      </a>
+
+      <a href="/2018/11/05/2018-11-5-【上海市大学生网络安全大赛】baby_arm复现/">
+        
+        
+          
+        
+        <div class="index-excerpt">
+          <div class="index-text mb-1">baby_arm题如其名，这是一道arm下的pwn，用file查看了下文件信息
+zs0zrc@zs0zrc-PC:~/pwn/babyarm$ file arm_pwn 
+arm_pwn: ELF 64-bit LSB executable, ARM aarch64, version 1 (SYSV), dynamically linked, interpreter /lib/ld-linux-aarch64.so.1, for GNU/Linux 3.7.0, BuildID[sha1]=e988eaee79fd41139699d813eac0c375dbddba43, stripped
+这</div>
+        </div>
+      </a>
+
+      <div class="index-btm">
+        
+          <i class="iconfont icon-riqi2"></i>&nbsp;2018-11-05&nbsp;&nbsp;
+        
+        
+        
+          <i class="iconfont icon-tag"></i>
+          
+            <a href="/tags/pwn/">pwn</a>&nbsp;
+          
+            <a href="/tags/ARM/">ARM</a>&nbsp;
+          
+        
+      </div>
+    </div>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <div class="col-12 col-md-12 mx-auto index-info">
+      <a href="/2018/10/30/2018-10-30-tcache下的堆利用的学习/">
+        <p class="h4 index-header">tcache下的堆利用的学习</p>
+      </a>
+
+      <a href="/2018/10/30/2018-10-30-tcache下的堆利用的学习/">
+        
+        
+          
+        
+        <div class="index-excerpt">
+          <div class="index-text mb-1">最近做国际赛的题，遇到了tcache下的堆利用，之前没有接触过tcache机制，所以就来学习一下，主要是围绕howtoheap来学习，做下笔记。
+tcache机制是glibc-2.26新增的机制，主要是用来提升堆管理的性能，但是它的安全机制几乎没有….所以搞事就容易很多了，混子pwn手的福音
+基础知识tcache的两个新增的结构体
+typedef struct tcache_entry        //tcache_entry 是用来链接chunk的结构体，*next指向下一个chunk的 
+{                              //user data
+  struc</div>
+        </div>
+      </a>
+
+      <div class="index-btm">
+        
+          <i class="iconfont icon-riqi2"></i>&nbsp;2018-10-30&nbsp;&nbsp;
+        
+        
+          <i class="iconfont icon-inbox"></i>
+          
+            <a href="/categories/Heap-Exploitation/">Heap_Exploitation</a>&nbsp;
+          &nbsp;
+        
+        
+          <i class="iconfont icon-tag"></i>
+          
+            <a href="/tags/pwn/">pwn</a>&nbsp;
+          
+            <a href="/tags/housetoheap/">housetoheap</a>&nbsp;
+          
+        
+      </div>
+    </div>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <div class="col-12 col-md-12 mx-auto index-info">
+      <a href="/2018/10/27/2018-10-27-BSides-Delhi-CTF-2018-writeup/">
+        <p class="h4 index-header">BSides Delhi CTF 2018 writeup</p>
+      </a>
+
+      <a href="/2018/10/27/2018-10-27-BSides-Delhi-CTF-2018-writeup/">
+        
+        
+          
+        
+        <div class="index-excerpt">
+          <div class="index-text mb-1">easypeasy防护机制：
+☁  easy  checksec easypeasy  
+[*] &#39;/home/zs0zrc/pwn/ BSides/easy/easypeasy&#39;
+    Arch:     amd64-64-little
+    RELRO:    Partial RELRO
+    Stack:    Canary found
+    NX:       NX enabled
+    PIE:      No PIE (0x400000)
+简单的运行了下，好像是让我们输入寄存器的值，一直循环输入
+
+简单逆向下，程序主要逻辑在child函数中。
+void _</div>
+        </div>
+      </a>
+
+      <div class="index-btm">
+        
+          <i class="iconfont icon-riqi2"></i>&nbsp;2018-10-27&nbsp;&nbsp;
+        
+        
+          <i class="iconfont icon-inbox"></i>
+          
+            <a href="/categories/CTF-s-writeup/">CTF&#39;s writeup</a>&nbsp;
+          &nbsp;
+        
+        
+          <i class="iconfont icon-tag"></i>
+          
+            <a href="/tags/writeup/">writeup</a>&nbsp;
+          
+            <a href="/tags/pwn/">pwn</a>&nbsp;
+          
+        
+      </div>
+    </div>
+  </div>
 
   <div class="row mx-auto index-card">
     
@@ -297,53 +431,6 @@ sudo apt-get install flatabulous-theme</div>
     
     
     <div class="col-12 col-md-12 mx-auto index-info">
-      <a href="/2018/10/07/2018-10-7-初探arm下的pwn/">
-        <p class="h4 index-header">初探arm下的pwn</p>
-      </a>
-
-      <a href="/2018/10/07/2018-10-7-初探arm下的pwn/">
-        
-        
-          
-        
-        <div class="index-excerpt">
-          <div class="index-text mb-1">最近做了下InCTF，第一道pwn题就是arm架构的，之前没有接触过，就学习一下
-基础知识可以看下维基百科的arm架构 ，介绍的挺详细的
-arm下的通用寄存器
-
-函数调用约定：
-
-ARM：参数1~参数4 分别保存到 R0~R3 寄存器中 ，剩下的参数从右往左依次入栈，被调用者实现栈平衡，返回值存放在 R0 中。 
-ARM64：参数1~参数8 分别保存到 X0~X7 寄存器中 ，剩下的参数从右往左依次入栈，被调用者实现栈平衡，返回值存放在 X0 中。 
-
-arm下的pc相当于eip或者rip，保存着下一条要执行的指令的地址
-环境准备这里我没装新的虚拟机，我直接在ubuntu16.04装的环境
-
-</div>
-        </div>
-      </a>
-
-      <div class="index-btm">
-        
-          <i class="iconfont icon-riqi2"></i>&nbsp;2018-10-07&nbsp;&nbsp;
-        
-        
-        
-          <i class="iconfont icon-tag"></i>
-          
-            <a href="/tags/pwn/">pwn</a>&nbsp;
-          
-            <a href="/tags/ARM/">ARM</a>&nbsp;
-          
-        
-      </div>
-    </div>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <div class="col-12 col-md-12 mx-auto index-info">
       <a href="/2018/10/07/2018-10-7-pwnable.tw-writeup/">
         <p class="h4 index-header">pwnable.tw writeup</p>
       </a>
@@ -383,6 +470,53 @@ arm下的pc相当于eip或者rip，保存着下一条要执行的指令的地址
             <a href="/tags/pwn/">pwn</a>&nbsp;
           
             <a href="/tags/pwnable-tw/">pwnable.tw</a>&nbsp;
+          
+        
+      </div>
+    </div>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <div class="col-12 col-md-12 mx-auto index-info">
+      <a href="/2018/10/07/2018-10-7-初探arm下的pwn/">
+        <p class="h4 index-header">初探arm下的pwn</p>
+      </a>
+
+      <a href="/2018/10/07/2018-10-7-初探arm下的pwn/">
+        
+        
+          
+        
+        <div class="index-excerpt">
+          <div class="index-text mb-1">最近做了下InCTF，第一道pwn题就是arm架构的，之前没有接触过，就学习一下
+基础知识可以看下维基百科的arm架构 ，介绍的挺详细的
+arm下的通用寄存器
+
+函数调用约定：
+
+ARM：参数1~参数4 分别保存到 R0~R3 寄存器中 ，剩下的参数从右往左依次入栈，被调用者实现栈平衡，返回值存放在 R0 中。 
+ARM64：参数1~参数8 分别保存到 X0~X7 寄存器中 ，剩下的参数从右往左依次入栈，被调用者实现栈平衡，返回值存放在 X0 中。 
+
+arm下的pc相当于eip或者rip，保存着下一条要执行的指令的地址
+环境准备这里我没装新的虚拟机，我直接在ubuntu16.04装的环境
+
+</div>
+        </div>
+      </a>
+
+      <div class="index-btm">
+        
+          <i class="iconfont icon-riqi2"></i>&nbsp;2018-10-07&nbsp;&nbsp;
+        
+        
+        
+          <i class="iconfont icon-tag"></i>
+          
+            <a href="/tags/pwn/">pwn</a>&nbsp;
+          
+            <a href="/tags/ARM/">ARM</a>&nbsp;
           
         
       </div>
@@ -483,153 +617,6 @@ bandit2这关它将密码存在 spaces in this filename这个文件中，但是�
           <i class="iconfont icon-tag"></i>
           
             <a href="/tags/bandit/">bandit</a>&nbsp;
-          
-        
-      </div>
-    </div>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <div class="col-12 col-md-12 mx-auto index-info">
-      <a href="/2018/10/04/2018-10-4-BugkuCTF-RE-writeup/">
-        <p class="h4 index-header">BugkuCTF RE writeup</p>
-      </a>
-
-      <a href="/2018/10/04/2018-10-4-BugkuCTF-RE-writeup/">
-        
-        
-          
-        
-        <div class="index-excerpt">
-          <div class="index-text mb-1">最近想搞下逆向，就去刷了下BugkuCTF的逆向题
-Easy_vb这是一道VB的逆向，下了个VB Decomoplier,反编译一下就可以看到flag了
-
-easy_re拿ida打开文件，在比较语句那下个断点，动态调试，在内存中就可以看到flag了
-int __cdecl main(int argc, const char **argv, const char **envp)
-{
-  int v3; // eax
-  __int128 v5; // [esp+0h] [ebp-44h]
-  __int64 v6; // [esp+10h] [ebp-34h]
-  int v7; // [esp</div>
-        </div>
-      </a>
-
-      <div class="index-btm">
-        
-          <i class="iconfont icon-riqi2"></i>&nbsp;2018-10-04&nbsp;&nbsp;
-        
-        
-          <i class="iconfont icon-inbox"></i>
-          
-            <a href="/categories/BugkuCTF-RE-writeup/">BugkuCTF RE writeup</a>&nbsp;
-          &nbsp;
-        
-        
-          <i class="iconfont icon-tag"></i>
-          
-            <a href="/tags/writeup/">writeup</a>&nbsp;
-          
-            <a href="/tags/Reverse/">Reverse</a>&nbsp;
-          
-        
-      </div>
-    </div>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <div class="col-12 col-md-12 mx-auto index-info">
-      <a href="/2018/10/04/2018-10-3-petbook-writeup/">
-        <p class="h4 index-header">petbook writeup</p>
-      </a>
-
-      <a href="/2018/10/04/2018-10-3-petbook-writeup/">
-        
-        
-          
-        
-        <div class="index-excerpt">
-          <div class="index-text mb-1">防护机制：
-[*] &#39;/home/zs0zrc/pwn/Scoreboard/petbook/petbook&#39;
-    Arch:     amd64-64-little
-    RELRO:    Partial RELRO
-    Stack:    Canary found
-    NX:       NX enabled
-    PIE:      No PIE (0x400000)
-    FORTIFY:  Enabled
-
-开启了NX和Canary还有 FORTIFY
-FORTIFY是用来检测缓存区溢出的一个机制，感觉好像没什么用，详情参考这篇博客
-逆出来的use</div>
-        </div>
-      </a>
-
-      <div class="index-btm">
-        
-          <i class="iconfont icon-riqi2"></i>&nbsp;2018-10-04&nbsp;&nbsp;
-        
-        
-          <i class="iconfont icon-inbox"></i>
-          
-            <a href="/categories/hackme-inndy-writeup/">hackme.inndy_writeup</a>&nbsp;
-          &nbsp;
-        
-        
-          <i class="iconfont icon-tag"></i>
-          
-            <a href="/tags/writeup/">writeup</a>&nbsp;
-          
-            <a href="/tags/pwn/">pwn</a>&nbsp;
-          
-        
-      </div>
-    </div>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <div class="col-12 col-md-12 mx-auto index-info">
-      <a href="/2018/10/03/2018-10-2-echo3-writeup/">
-        <p class="h4 index-header">echo3 writeup</p>
-      </a>
-
-      <a href="/2018/10/03/2018-10-2-echo3-writeup/">
-        
-        
-          
-        
-        <div class="index-excerpt">
-          <div class="index-text mb-1">防护机制：
-[*] &#39;/home/zs0zrc/pwn/Scoreboard/echo3/echo3&#39;
-    Arch:     i386-32-little
-    RELRO:    Partial RELRO
-    Stack:    Canary found
-    NX:       NX enabled
-    PIE:      No PIE (0x8048000)
-这道题是echo 和echo2的升级版，也是一个格式化字符串漏洞，不过它将printf的格式化字符串放到了bss段上去了。一般来说格式化字符串在bss段的话，就要在栈上构造跳板，通过跳板实现任意地</div>
-        </div>
-      </a>
-
-      <div class="index-btm">
-        
-          <i class="iconfont icon-riqi2"></i>&nbsp;2018-10-03&nbsp;&nbsp;
-        
-        
-          <i class="iconfont icon-inbox"></i>
-          
-            <a href="/categories/hackme-inndy-writeup/">hackme.inndy_writeup</a>&nbsp;
-          &nbsp;
-        
-        
-          <i class="iconfont icon-tag"></i>
-          
-            <a href="/tags/writeup/">writeup</a>&nbsp;
-          
-            <a href="/tags/pwn/">pwn</a>&nbsp;
           
         
       </div>

@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+
+
+
+
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/apple-touch-icon.png">
+  <link rel="icon" type="image/png" href="/img/image3.jpg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="description" content="zs0zrc&#39;s blog">
+  <meta name="author" content="zs0zrc">
+  <meta name="keywords" content="pwn CTF security anythings">
+  <title>HTTP学习笔记 - zs0zrc</title>
+
+  <link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/5.12.1/css/all.min.css">
+<link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdn.staticfile.org/mdbootstrap/4.13.0/css/mdb.min.css">
+<link rel="stylesheet" href="https://cdn.staticfile.org/github-markdown-css/3.0.1/github-markdown.min.css">
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1067060_qzomjdt8bmp.css">
+
+
+  <link rel="stylesheet" href="/lib/prettify/tomorrow-night-eighties.min.css">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+  <link rel="stylesheet" href="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.css">
+
+
+<!-- 自定义样式保持在最底部 -->
+
+
+</head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">&nbsp;<strong>zs0zrc</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/">首页</a>
+          </li>
+        
+          
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/archives/">归档</a>
+          </li>
+        
+          
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/categories/">分类</a>
+          </li>
+        
+          
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/tags/">标签</a>
+          </li>
+        
+          
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/about/">关于</a>
+          </li>
+        
+          
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/links/">友链</a>
+          </li>
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;&nbsp;<i class="iconfont icon-search"></i>&nbsp;&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="view intro-2" id="background" parallax=true
+         style="background: url('/img/image1.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask rgba-black-light flex-center">
+          <div class="container text-center white-text fadeInUp">
+            <span class="h2" id="subtitle">
+              
+            </span>
+
+            
+              
+                <p class="mt-3 post-meta">
+                  <i class="fas fa-calendar-alt" aria-hidden="true"></i>
+                  星期三, 三月 11日 2020, 4:04 下午
+                </p>
+              
+
+              <p class="mt-1">
+                
+                  
+                  <span class="post-meta">
+                    <i class="far fa-chart-bar"></i>
+                    1.8k 字
+                  </span>
+                
+
+                
+                  
+                  <span class="post-meta">
+                      <i class="far fa-clock"></i>
+                      6 分钟
+                  </span>
+                
+
+                
+                  <!-- 不蒜子统计文章PV -->
+                  
+                  <span id="busuanzi_container_page_pv" class="post-meta" style="display: none">
+                    <i class="far fa-eye" aria-hidden="true"></i>
+                    <span id="busuanzi_value_page_pv"></span> 次
+                  </span>
+                
+              </p>
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-md">
+      <div class="container nopadding-md" id="board-ctn">
+        <div class="py-5 z-depth-3" id="board">
+          <div class="post-content mx-auto" id="post">
+            
+              <p class="note note-warning">本文最后更新于：星期五, 三月 13日 2020, 2:51 下午</p>
+            
+            <div class="markdown-body">
+              <p>最近开始学习了，为了找回学习状态，复习下计网，准备将几个常用的重要的协议都复习一遍。</p>
+<h3 id="HTTP学习笔记"><a href="#HTTP学习笔记" class="headerlink" title="HTTP学习笔记"></a>HTTP学习笔记</h3><h4 id="HTTP简介"><a href="#HTTP简介" class="headerlink" title="HTTP简介"></a>HTTP简介</h4><p>HTTP是 Hypertext Transfer Protocol 的缩写，也就是超文本传输协议，根据RFC定义，HTTP是分布式协作超媒体信息系统的应用级协议。简单的说就是位于应用层的协议，用于从www服务器传输超文本到本地浏览器。它是一种通用的，无状态的协议。</p>
+<h4 id="HTTP的特点"><a href="#HTTP的特点" class="headerlink" title="HTTP的特点"></a>HTTP的特点</h4><ul>
+<li><p>HTTP是无连接的</p>
+<p>它每次连接只能处理一个请求，服务端处理完客户端的请求，并受到客户端的回应后，就会断开连接</p>
+</li>
+<li><p>HTTP是媒体独立的</p>
+<p>只要服务器和客户端知道如何处理数据内容，任何类型的数据都可以通过HTTP发送，客户端和服务器需要指定MIME-type，也就是数据内容类型。</p>
+</li>
+<li><p>HTTP是无状态的</p>
+<p>HTTP协议是无状态协议，无状态指的是它对事务处理没有记忆能力。假设如果后续需要用到前面的信息，那么它就需要重传，这会导致每次连接传送的数据量增大。但是从另一方面来说，如果不需要先前信息，那么它的应答又会比较快</p>
+</li>
+</ul>
+<h4 id="HTTP消息结构"><a href="#HTTP消息结构" class="headerlink" title="HTTP消息结构"></a>HTTP消息结构</h4><h5 id="客户端请求消息"><a href="#客户端请求消息" class="headerlink" title="客户端请求消息"></a>客户端请求消息</h5><ul>
+<li><p>基本格式：  请求行（request line）、请求头部（header）、空行和请求数据 </p>
+<p><img src="/picture/image-20200312153550763.png" srcset="/img/loading.gif" alt="image-20200312153550763"></p>
+<ul>
+<li>请求行：说明请求类型，要访问的资源以及所使用的HTTP版本</li>
+<li>请求头部：用来说明服务器要使用的附加信息</li>
+<li>空行：这个是必须的，即使请求数据为空，也必须有空行</li>
+<li>请求数据：就是数据啊</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li><p>请求方法：</p>
+<p>HTTP中一共定义了8种请求方法</p>
+<ul>
+<li>OPTIONS：返回服务器针对特定资源所支持的HTTP请求方法。也可以利用向Web服务器发送’*’的请求来测试服务器的功能性。</li>
+<li>HEAD：向服务器索要与GET请求相一致的响应，只不过响应体将不会被返回。这一方法可以在不必传输整个响应内容的情况下，就可以获取包含在响应消息头中的元信息。</li>
+<li>GET：向特定的资源发出请求。 </li>
+<li>POST：向指定资源提交数据进行处理请求（例如提交表单或者上传文件）。数据被包含在请求体中。</li>
+<li>POST请求可能会导致新的资源的创建和/或已有资源的修改。 PUT：向指定资源位置上传其最新内容。 </li>
+<li>DELETE：请求服务器删除Request-URI所标识的资源。 </li>
+<li>TRACE：回显服务器收到的请求，主要用于测试或诊断。 </li>
+<li>CONNECT： HTTP/1.1 协议中预留给能够将连接改为管道方式的代理服务器。</li>
+</ul>
+</li>
+</ul>
+<h5 id="服务器响应消息"><a href="#服务器响应消息" class="headerlink" title="服务器响应消息"></a>服务器响应消息</h5><ul>
+<li><p>基本格式：  状态行、消息报头、空行和响应正文。   </p>
+<p><img src="/picture/image-20200312160727570.png" srcset="/img/loading.gif" alt="image-20200312160727570"></p>
+<ul>
+<li>状态行：由HTTP协议版本号，状态码以及状态消息三部分构成</li>
+<li>消息报头：用来说明客户端要用的一些附加消息</li>
+<li>空行：位于消息报头之后，必须的</li>
+<li>响应正文：服务器返回给客户端的信息</li>
+</ul>
+</li>
+</ul>
+<h5 id="响应头和请求头"><a href="#响应头和请求头" class="headerlink" title="响应头和请求头"></a>响应头和请求头</h5><ul>
+<li><p>响应头</p>
+<p>根据MDN web文档上的定义，响应头被用于http响应中并且和响应消息主体无关的那一类 <a href="https://developer.mozilla.org/zh-CN/docs/Glossary/header" target="_blank" rel="noopener">HTTP header</a>。像<a href="https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Headers/Age" target="_blank" rel="noopener"><code>Age</code></a>, <a href="https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Headers/Location" target="_blank" rel="noopener"><code>Location</code></a> 和 <a href="https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Headers/Server" target="_blank" rel="noopener"><code>Server</code></a>都属于响应头，他们被用于描述响应 </p>
+</li>
+<li><p>请求头</p>
+<p> <strong>请求头</strong>是 <a href="https://developer.mozilla.org/zh-CN/docs/Glossary/header" target="_blank" rel="noopener">HTTP 头</a>的一种，它可在 HTTP 请求中使用，并且和请求主体无关 。某些请求头如 <a href="https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Headers/Accept" target="_blank" rel="noopener"><code>Accept</code></a>、<a href="https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Headers/Accept-Language" target="_blank" rel="noopener"><code>Accept-*</code></a>、 <a href="https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Headers/If-Modified-Since" target="_blank" rel="noopener"><code>If-*</code></a> 允许执行条件请求。某些请求头如：<a href="https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Headers/Cookie" target="_blank" rel="noopener"><code>Cookie</code></a>, <a href="https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Headers/User-Agent" target="_blank" rel="noopener"><code>User-Agent</code></a> 和 <a href="https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Headers/Referer" target="_blank" rel="noopener"><code>Referer</code></a> 描述了请求本身以确保服务端能返回正确的响应。 </p>
+</li>
+<li><p>header</p>
+<p>用于传递一些附加信息，基本格式： 键： 值， 冒号后面要加一个空格</p>
+</li>
+</ul>
+<h6 id="常见的header"><a href="#常见的header" class="headerlink" title="常见的header"></a>常见的header</h6><ul>
+<li><p>响应和请求常见通用header</p>
+<p><img src="/picture/image-20200312164722066.png" srcset="/img/loading.gif" alt="image-20200312164722066"></p>
+</li>
+<li><p>常见请求header</p>
+<p><img src="/picture/image-20200312164833198.png" srcset="/img/loading.gif" alt="image-20200312164833198"></p>
+</li>
+<li><p>常见响应header</p>
+<p><img src="/picture/image-20200312164901855.png" srcset="/img/loading.gif" alt="image-20200312164901855"></p>
+</li>
+</ul>
+<p>header的含义可以查腾讯云社区的<a href="https://cloud.tencent.com/developer/chapter/13542" target="_blank" rel="noopener">开发者手册</a></p>
+<h4 id="HTTP状态码"><a href="#HTTP状态码" class="headerlink" title="HTTP状态码"></a>HTTP状态码</h4><p>定义： <strong>HTTP状态码</strong>是用以表示<a href="https://zh.wikipedia.org/wiki/網頁伺服器" target="_blank" rel="noopener">网页服务器</a><a href="https://zh.wikipedia.org/wiki/超文本传输协议" target="_blank" rel="noopener">超文本传输协议</a>响应状态的3位数字代码 </p>
+<h5 id="HTTP状态码分类"><a href="#HTTP状态码分类" class="headerlink" title="HTTP状态码分类"></a>HTTP状态码分类</h5><ul>
+<li>1xx:信息响应类，表示接收到请求并且继续处理</li>
+<li>2xx:处理成功响应类，表示动作被成功接收、理解和接受</li>
+<li>3xx:重定向响应类，为了完成指定的动作，必须接受进一步处理</li>
+<li>4xx:客户端错误，客户请求包含语法错误或者是不能正确执行</li>
+<li>5xx:服务端错误，服务器不能正确执行一个正确的请求</li>
+</ul>
+<p><img src="/picture/image-20200312165614159.png" srcset="/img/loading.gif" alt="image-20200312165614159">   </p>
+<p>状态码具体含义也可以看<a href="[https://zh.wikipedia.org/wiki/HTTP%E7%8A%B6%E6%80%81%E7%A0%81](https://zh.wikipedia.org/wiki/HTTP状态码">维基百科定义</a> )</p>
+<h5 id="常见的HTTP状态码"><a href="#常见的HTTP状态码" class="headerlink" title="常见的HTTP状态码"></a>常见的HTTP状态码</h5><ul>
+<li><p>2xx</p>
+<ul>
+<li><strong>200 OK</strong>- 请求成功，如果是非head请求，服务器返回的响应头都会包括body数据</li>
+<li><strong>204 No Content</strong> : 常见的成功状态码，与200 OK基本相同，但是没有body数据</li>
+<li><strong>206 Partial Content</strong> ：应用于HTTP分块下载或者断电续传，表示响应返回的body数据并不是资源的全部，而是其中的一部分。</li>
+</ul>
+</li>
+<li><p>3xx</p>
+<ul>
+<li><strong>301 Moved Permanently</strong> ： 资源（网页等）被永久转移到其它URL，说明请求的资源不存在了。</li>
+<li><strong>302 Found</strong> ：表示临时重定向，说明请求的资源还在，但是暂时需要另一个URL来访问</li>
+</ul>
+<p>301和302都会在响应头使用字段Location，指明后续要跳转的URL</p>
+<ul>
+<li><strong>304 Not Modified</strong> ：不具备跳转含义，表示资源未修改，重定向已存在的缓存文件，也成为缓存重定向，用于缓存控制。</li>
+</ul>
+</li>
+<li><p>4xx</p>
+<ul>
+<li><p><strong>400 Bad Request</strong> ：表示客户端请求的报文有错误</p>
+</li>
+<li><p><strong>401 Unauthorized</strong>：服务端要求身份验证</p>
+</li>
+<li><strong>403 Forbidden</strong> ：表示服务器禁止访问资源，并不是客户端的请求错误</li>
+<li><strong>404 Not Found</strong>  ：请求的资源（网页等）不存在</li>
+<li><strong>405 Method Not Allow</strong>：请求方法不支持</li>
+</ul>
+</li>
+<li><p>5xx</p>
+<ul>
+<li><strong>500 Internal Server Error</strong> ：表示服务器发生了错误，具体是什么的错误就不知道了</li>
+<li><strong>501 Not Implemented</strong> ：表示 客户端请求的功能还不支持</li>
+<li><strong>502 Bad Gateway</strong> ：通常是服务器作为网关或者代理时返回的错误码，表示服务器自身工作正常，访问后端服务器发生了错误</li>
+<li><strong>503 Service Unavailable</strong> ：表示服务器当前很忙，暂时无法响应服务</li>
+</ul>
+</li>
+</ul>
+<h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><p>HTTP协议基础的东西大致就这么多了，但是HTTP协议还有好多内容，比如Access control CORS 、Authentication访问和认证机制、Caching缓存机制等等，那些内容感觉每个点都可以单独写一篇文章，等以后慢慢看，看腾讯云社区的<a href="https://cloud.tencent.com/developer/doc/1117" target="_blank" rel="noopener">开发者手册</a>来学习，也会去读一读HTTP协议的RFC文档。</p>
+<h4 id="Reference"><a href="#Reference" class="headerlink" title="Reference:"></a>Reference:</h4><ul>
+<li><a href="https://www.jianshu.com/p/e544b7a76dac" target="_blank" rel="noopener">https://www.jianshu.com/p/e544b7a76dac</a> </li>
+<li><a href="https://zh.wikipedia.org/wiki/HTTP状态码" target="_blank" rel="noopener">https://zh.wikipedia.org/wiki/HTTP%E7%8A%B6%E6%80%81%E7%A0%81</a> </li>
+<li><a href="https://www.runoob.com/http/http-methods.html" target="_blank" rel="noopener">https://www.runoob.com/http/http-methods.html</a> </li>
+<li><a href="https://segmentfault.com/a/1190000006689786" target="_blank" rel="noopener">https://segmentfault.com/a/1190000006689786</a> </li>
+<li><a href="https://www.jianshu.com/p/80e25cb1d81a" target="_blank" rel="noopener">https://www.jianshu.com/p/80e25cb1d81a</a> </li>
+</ul>
+
+            </div>
+            <hr>
+            <div>
+              <p>
+                
+                  <span>
+                <i class="iconfont icon-inbox"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/HTTP/">HTTP</a>
+                      &nbsp;
+                    
+                  </span>&nbsp;&nbsp;
+                
+                
+              </p>
+              
+                <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a href="https://zh.wikipedia.org/wiki/Wikipedia:CC_BY-SA_3.0%E5%8D%8F%E8%AE%AE%E6%96%87%E6%9C%AC" rel="nofollow noopener">CC BY-SA 3.0协议</a> 。转载请注明出处！</p>
+              
+            </div>
+
+            
+              <!-- Comments -->
+              <div class="comments" id="comments">
+                
+                
+  <script defer src="https://utteranc.es/client.js" repo="zszcr/comment" issue-term="pathname" label="utterances" theme="github-light" crossorigin="anonymous" async>
+  </script>
+
+
+              </div>
+            
+          </div>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc-start"></div>
+<div id="toc">
+  <p class="h5"><i class="far fa-list-alt"></i>&nbsp;目录</p>
+  <div id="tocbot"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+  </main>
+
+  
+    <a class="z-depth-1" id="scroll-top-button" href="#" role="button">
+      <i class="fa fa-chevron-up scroll-top-arrow" aria-hidden="true"></i>
+    </a>
+  
+
+  
+    <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+  
+
+  
+
+  
+
+  <footer class="mt-5">
+  <div class="text-center py-3">
+    <div>
+      <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><b>Hexo</b></a>
+      <i class="iconfont icon-love"></i>
+      <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"> <b>Fluid</b></a>
+    </div>
+    
+  <div>
+    
+      <!-- 不蒜子统计PV -->
+      
+      <span id="busuanzi_container_site_pv" style="display: none">
+      总访问量 <span id="busuanzi_value_site_pv"></span> 次
+    </span>
+    
+    
+      <!-- 不蒜子统计UV -->
+      
+      <span id="busuanzi_container_site_uv" style="display: none">
+      总访客数 <span id="busuanzi_value_site_uv"></span> 人
+    </span>
+    
+  </div>
+
+
+    
+
+    
+  </div>
+</footer>
+
+<!-- SCRIPTS -->
+<script src="https://cdn.staticfile.org/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://cdn.staticfile.org/popper.js/1.16.1/umd/popper.min.js"></script>
+<script src="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/js/bootstrap.min.js"></script>
+<script src="https://cdn.staticfile.org/mdbootstrap/4.13.0/js/mdb.min.js"></script>
+<script src="/js/main.js"></script>
+
+
+  <script src="/js/lazyload.js"></script>
+
+
+
+  
+  <script src="https://cdn.staticfile.org/tocbot/4.10.0/tocbot.min.js"></script>
+  <script>
+    $(document).ready(function () {
+      var navHeight = $('#navbar').height();
+      var post = $('#post');
+      var toc = $('#toc');
+      var tocLimMax = post.offset().top + post.height() - navHeight;
+
+      $(window).scroll(function () {
+        var tocLimMin = $('#toc-start').offset().top - navHeight;
+        var scroH = document.body.scrollTop + document.documentElement.scrollTop;
+
+        if (tocLimMin <= scroH && scroH <= tocLimMax) {
+          toc.css({
+            'display': 'block',
+            'position': 'fixed',
+            'top': navHeight,
+          });
+        } else if (scroH <= tocLimMin) {
+          toc.css({
+            'position': '',
+            'top': '',
+          });
+        } else if (scroH > tocLimMax) {
+          toc.css('display', 'none');
+        }
+      });
+      tocbot.init({
+        tocSelector: '#tocbot',
+        contentSelector: '.post-content',
+        headingSelector: 'h1,h2,h3,h4,h5,h6',
+        linkClass: 'tocbot-link',
+        activeLinkClass: 'tocbot-active-link',
+        listClass: 'tocbot-list',
+        isCollapsedClass: 'tocbot-is-collapsed',
+        collapsibleClass: 'tocbot-is-collapsible',
+        scrollSmooth: true,
+      });
+      if ($('.toc-list-item').length > 0) {
+        $('#toc > p').css('visibility', 'visible');
+      }
+      var offset = $('#board-ctn').css('margin-right')
+      $('#toc-ctn').css({
+        'right': offset
+      })
+    });
+  </script>
+
+
+
+
+
+
+
+  <script defer src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+<!-- Plugins -->
+
+
+  
+
+  
+    <!-- Google Analytics -->
+    <script defer>
+      (function (i, s, o, g, r, a, m) {
+        i['GoogleAnalyticsObject'] = r;
+        i[r] = i[r] || function () {
+          (i[r].q = i[r].q || []).push(arguments)
+        }, i[r].l = 1 * new Date();
+        a = s.createElement(o),
+          m = s.getElementsByTagName(o)[0];
+        a.async = 1;
+        a.src = g;
+        m.parentNode.insertBefore(a, m)
+      })(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
+
+      ga('create', 'UA-160202176-1', 'auto');
+      ga('send', 'pageview');
+    </script>
+  
+
+  
+
+  
+
+  
+
+
+
+  <script src="https://cdn.staticfile.org/prettify/188.0.0/prettify.min.js"></script>
+  <script>
+    $(document).ready(function () {
+      $('pre').addClass('prettyprint  linenums');
+      prettyPrint();
+    })
+  </script>
+
+
+
+  <script src="https://cdn.staticfile.org/typed.js/2.0.11/typed.min.js"></script>
+  <script>
+    var typed = new Typed('#subtitle', {
+      strings: [
+        '  ',
+        "HTTP学习笔记&nbsp;",
+      ],
+      cursorChar: "_",
+      typeSpeed: 70,
+      loop: false,
+    });
+    typed.stop();
+    $(document).ready(function () {
+      $(".typed-cursor").addClass("h2");
+      typed.start();
+    });
+  </script>
+
+
+
+  <script src="https://cdn.staticfile.org/anchor-js/4.2.2/anchor.min.js"></script>
+  <script>
+    anchors.options = {
+      placement: "right",
+      visible: "hover",
+      
+    };
+    var el = "h1,h2,h3,h4,h5,h6".split(",");
+    var res = [];
+    for (item of el) {
+      res.push(".markdown-body > " + item)
+    }
+    anchors.add(res.join(", "))
+  </script>
+
+
+
+  <script src="/js/local-search.js"></script>
+  <script>
+    var path = "/local-search.xml";
+    var inputArea = document.querySelector("#local-search-input");
+    inputArea.onclick = function () {
+      getSearchFile(path);
+      this.onclick = null
+    }
+  </script>
+
+
+
+  <script src="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.js"></script>
+  <script>
+    $("#post img:not(.no-zoom img, img[no-zoom])").each(
+      function () {
+        var element = document.createElement("a");
+        $(element).attr("data-fancybox", "images");
+        $(element).attr("href", $(this).attr("src"));
+        $(this).wrap(element);
+      }
+    );
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>
