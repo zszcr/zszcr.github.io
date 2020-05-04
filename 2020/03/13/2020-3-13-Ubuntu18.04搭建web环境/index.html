@@ -133,7 +133,7 @@
                   
                   <span class="post-meta">
                     <i class="far fa-chart-bar"></i>
-                    1.2k 字
+                    1.5k 字
                   </span>
                 
 
@@ -141,7 +141,7 @@
                   
                   <span class="post-meta">
                       <i class="far fa-clock"></i>
-                      5 分钟
+                      6 分钟
                   </span>
                 
 
@@ -175,7 +175,7 @@
         <div class="py-5 z-depth-3" id="board">
           <div class="post-content mx-auto" id="post">
             
-              <p class="note note-warning">本文最后更新于：星期五, 三月 13日 2020, 4:33 下午</p>
+              <p class="note note-warning">本文最后更新于：星期日, 四月 5日 2020, 6:40 晚上</p>
             
             <div class="markdown-body">
               <h3 id="Ubuntu18-04搭建web环境"><a href="#Ubuntu18-04搭建web环境" class="headerlink" title="Ubuntu18.04搭建web环境"></a>Ubuntu18.04搭建web环境</h3><p>如题所示，我准备在Ubuntu18.04搭建一个web环境，要安装的东西有Apache、Mysql、PHP，本来是想在直接我的服务器上捣鼓的，但是第一次搞，怕把我白嫖来的服务器搞坏，所以先拿虚拟机练练手，写篇文章记录下。</p>
@@ -204,6 +204,19 @@
 </li>
 </ul>
 <h5 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h5><ul>
+<li><p>配置apache允许的用户</p>
+<pre><code>创建组：groupadd apache
+创建用户:useradd -r -g apache apache
+</code></pre><p>在apache的配置文件apache2.conf中设置User和Group</p>
+<p><img src="/picture/image-20200402110527857.png" srcset="/img/loading.gif" alt="image-20200402110527857"></p>
+<p>修改网站根目录的所有者以及网站文件权限</p>
+<pre><code>root@ubuntu:/var/www# chown -R apache:apache .
+root@ubuntu:/var/www/html# chmod 744 -R .
+</code></pre><p>重启apache</p>
+<pre><code>sudo systemctl restart apache2
+</code></pre></li>
+</ul>
+<ul>
 <li><p>查看apache2配置</p>
 <pre><code>sudo apachectl -S
 </code></pre><p><img src="/picture/image-20200313152829219.png" srcset="/img/loading.gif" alt="image-20200313152829219">这条命令会打印出apache的配置的具体信息，其中主要的是VirtualHost configuration，它给出了apache当前使用的配置文件，要注意的是 这里显示的配置文件路径<code>/etc/apache2/sites-enabled/000-default.conf</code>这个只是一个软连接，真正的配置文件在<code>/etc/apache2/sites-available/</code>下。</p>
@@ -317,15 +330,42 @@ mysql&gt;flush privileges;
 <p>重启apache</p>
 <pre><code>sudo systemctl restart apache2
 </code></pre><p>写个index.php测试一下是否修改成功</p>
-<pre><code class="php">echo &quot;hello world~&quot;
+<pre><code class="php">&lt; ? echo &quot;hello world~&quot;;?&gt;
 </code></pre>
 <p>然后访问就可以看apache选择了index.php文件了</p>
-<p><img src="/picture/image-20200313163159065.png" srcset="/img/loading.gif" alt="image-20200313163159065"></p>
 <p>这样，一个基本的web环境就搭建成功了。</p>
-<h4 id="REFERENCE"><a href="#REFERENCE" class="headerlink" title="REFERENCE"></a>REFERENCE</h4><ul>
+<h3 id="通过docker搭建web环境"><a href="#通过docker搭建web环境" class="headerlink" title="通过docker搭建web环境"></a>通过docker搭建web环境</h3><p><strong>更新一下怎么通过docker搭建基本web环境</strong></p>
+<p>环境还是ubuntu18.04</p>
+<ul>
+<li><p>首先给docker加加速</p>
+<p>往  /etc/docker/daemon.json  写入下面的内容：</p>
+<blockquote>
+<p>{“registry-mirrors”:[“<a href="https://registry.docker-cn.com&quot;]}" target="_blank" rel="noopener">https://registry.docker-cn.com&quot;]}</a> </p>
+</blockquote>
+<p>然后重启服务</p>
+<blockquote>
+<p>$ <strong>sudo</strong> systemctl daemon-reload<br>$ <strong>sudo</strong> systemctl restart docker </p>
+</blockquote>
+</li>
+</ul>
+<p>阿西吧，f**k，一直出奇奇怪怪的问题。折腾了一天，发现了个更简单的办法……直接拖对应的镜像下来就好了</p>
+<p>命令：</p>
+<pre><code>docker container run -p 80:80 -d \
+  --rm \
+  --name lamp \
+  --volume &quot;$PWD/&quot;:/var/www/html \
+  php:5.6-apache
+</code></pre><p>参数作用：</p>
+<pre><code>-p 80:80 将容器80端口映射到主机的80端口上
+--rm ： 容器停止后自动删除
+--name：指定容器名字
+-d ：容器以后台形式运行
+--volum &quot;$PWD/&quot;:/var/www/html : 将当前目录$PWD映射到容器中的/var/www/html 
+</code></pre><h4 id="REFERENCE"><a href="#REFERENCE" class="headerlink" title="REFERENCE"></a>REFERENCE</h4><ul>
 <li><a href="https://luomuxiaoxiao.com/?p=707" target="_blank" rel="noopener">https://luomuxiaoxiao.com/?p=707</a> </li>
 <li><a href="https://blog.csdn.net/hanshileiai/article/details/46967081" target="_blank" rel="noopener">https://blog.csdn.net/hanshileiai/article/details/46967081</a> </li>
 <li><a href="https://www.howtoing.com/how-to-install-the-apache-web-server-on-ubuntu-18-04-quickstart" target="_blank" rel="noopener">https://www.howtoing.com/how-to-install-the-apache-web-server-on-ubuntu-18-04-quickstart</a> </li>
+<li><a href="https://www.ruanyifeng.com/blog/2018/02/docker-wordpress-tutorial.html" target="_blank" rel="noopener">https://www.ruanyifeng.com/blog/2018/02/docker-wordpress-tutorial.html</a> </li>
 </ul>
 
             </div>

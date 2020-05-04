@@ -149,6 +149,266 @@
     
     
     <div class="col-12 col-md-12 mx-auto index-info">
+      <a href="/2019/05/28/2019-5-28-ChakraCore基础/">
+        <p class="h4 index-header">ChakraCore基础知识笔记</p>
+      </a>
+
+      <a href="/2019/05/28/2019-5-28-ChakraCore基础/">
+        
+        
+          
+        
+        <div class="index-excerpt">
+          <div class="index-text mb-1">ChakraCore简介结构：
+基本执行流程：当一个函数第一次执行时，ChakraCore 的语法解析器（parser）产生一个抽象语法树（AST）来代表这个函数的源码，随后AST 会被翻译为字节码（bytecode），这些字节码将由ChakraCore 解释器直接执行。在解释执行期间解释器会收集一些程序信息，如类型信息、调用次数，这些信息会被用来帮助JIT 编译器生成高度优化的机器码。当ChakraCore 在解释器中发现一个函数或者循环体（loop-body）被多次执行时，会将其送入后台JIT 编译队列为这个函数生成优化的代码。一旦这些优化代码准备就绪，ChakraCore 就会替换函数和</div>
+        </div>
+      </a>
+
+      <div class="index-btm">
+        
+          <i class="iconfont icon-riqi2"></i>&nbsp;2019-05-28&nbsp;&nbsp;
+        
+        
+          <i class="iconfont icon-inbox"></i>
+          
+            <a href="/categories/JS-Engine/">JS-Engine</a>&nbsp;
+          &nbsp;
+        
+        
+          <i class="iconfont icon-tag"></i>
+          
+            <a href="/tags/ChakraCore/">ChakraCore</a>&nbsp;
+          
+        
+      </div>
+    </div>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <div class="col-12 col-md-12 mx-auto index-info">
+      <a href="/2019/05/13/2019-5-13-JavaScriptCore的基础知识/">
+        <p class="h4 index-header">JavaScriptCore的基础知识</p>
+      </a>
+
+      <a href="/2019/05/13/2019-5-13-JavaScriptCore的基础知识/">
+        
+        
+          
+        
+        <div class="index-excerpt">
+          <div class="index-text mb-1">最近在学习JSC的相关知识，这里写篇博客简单记录一下。
+JavaScriptCore简介JavaScriptCore是一个JS 引擎，是专门负责处理javascript代码的虚拟机，简写为JSC，一般会附在浏览器中。
+它是一个C++实现的开源项目，使用Apple提供的JavaScriptCore框架。我们可以在Objective-C或者基于C的程序中执行Javascript代码，也可以向JavaScript环境中插入一些自定义的对象。
+JavaScript 引擎在解析源码后将其转换为抽象语法树（AST），基于 AST，解释器便可以开始工作并产生字节码，此时引擎正在执行 JavaScript 代</div>
+        </div>
+      </a>
+
+      <div class="index-btm">
+        
+          <i class="iconfont icon-riqi2"></i>&nbsp;2019-05-13&nbsp;&nbsp;
+        
+        
+          <i class="iconfont icon-inbox"></i>
+          
+            <a href="/categories/JS-Engine/">JS-Engine</a>&nbsp;
+          &nbsp;
+        
+        
+          <i class="iconfont icon-tag"></i>
+          
+            <a href="/tags/js-exploit/">js_exploit</a>&nbsp;
+          
+        
+      </div>
+    </div>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <div class="col-12 col-md-12 mx-auto index-info">
+      <a href="/2019/05/11/2019-5-11-CVE-2016-4622-(2016-10-27)的简单复现/">
+        <p class="h4 index-header">CVE-2016-4622复现</p>
+      </a>
+
+      <a href="/2019/05/11/2019-5-11-CVE-2016-4622-(2016-10-27)的简单复现/">
+        
+        
+          
+        
+        <div class="index-excerpt">
+          <div class="index-text mb-1">基本环境搭建编译JSC历时差不多两天的失败，网上的编译教程基本都是很久以前的，跟着他们做会报很多错，最后编译成功的jsc也运行不了，一运行就会crash….. 但是，我在github上找到了一个大佬写的教程，是可以成功的，并且他提供了编译好的 jsc以及 对应的动态链接库。
+大佬github地址
+环境： Ubuntu18.10
+JSC编译
+# sudo apt install libicu-dev python ruby bison flex cmake build-essential ninja-build git gperf
+$ git clone git://git.webkit.org</div>
+        </div>
+      </a>
+
+      <div class="index-btm">
+        
+          <i class="iconfont icon-riqi2"></i>&nbsp;2019-05-11&nbsp;&nbsp;
+        
+        
+          <i class="iconfont icon-inbox"></i>
+          
+            <a href="/categories/CVE/">CVE</a>&nbsp;
+          &nbsp;
+        
+        
+          <i class="iconfont icon-tag"></i>
+          
+            <a href="/tags/js-exploit/">js_exploit</a>&nbsp;
+          
+        
+      </div>
+    </div>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <div class="col-12 col-md-12 mx-auto index-info">
+      <a href="/2019/04/16/2019-4-16-largebin-attack/">
+        <p class="h4 index-header">largebin attack</p>
+      </a>
+
+      <a href="/2019/04/16/2019-4-16-largebin-attack/">
+        
+        
+          
+        
+        <div class="index-excerpt">
+          <div class="index-text mb-1">largebin的一些学习记录
+基础知识largebin在源码中的定义：（版本2.23）4
+#define largebin_index_32(sz)                                                \
+  (((((unsigned long) (sz)) &gt;&gt; 6) &lt;= 38) ?  56 + (((unsigned long) (sz)) &gt;&gt; 6) :\
+   ((((unsigned long) (sz)) &gt;&gt; 9) &lt;= 20) ?  91 + (((unsigned long) (s</div>
+        </div>
+      </a>
+
+      <div class="index-btm">
+        
+          <i class="iconfont icon-riqi2"></i>&nbsp;2019-04-16&nbsp;&nbsp;
+        
+        
+        
+          <i class="iconfont icon-tag"></i>
+          
+            <a href="/tags/pwn/">pwn</a>&nbsp;
+          
+            <a href="/tags/largebin/">largebin</a>&nbsp;
+          
+        
+      </div>
+    </div>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <div class="col-12 col-md-12 mx-auto index-info">
+      <a href="/2019/03/26/2019-3-26-0CTFTCTF2019-PWN-复现/">
+        <p class="h4 index-header">0CTF/TCTF2019 PWN 复现</p>
+      </a>
+
+      <a href="/2019/03/26/2019-3-26-0CTFTCTF2019-PWN-复现/">
+        
+        
+          
+        
+        <div class="index-excerpt">
+          <div class="index-text mb-1">很棒，不愧是腾讯搞的比赛，题目质量很高。然而自闭pwn手做自闭了，一个人看真的很容易看自闭。但是每次看到自闭了说不看了，结果过了会又回去看了，真香。这里赛后复现下pwn题。
+zerotask防护机制：
+☁  zerotask [master] ⚡  checksec task 
+[*] &#39;/home/zs0zrc/game/TCTF2019/pwn/zerotask_pwn/zerotask/task&#39;
+    Arch:     amd64-64-little
+    RELRO:    Partial RELRO
+    Stack:    Canary found
+   </div>
+        </div>
+      </a>
+
+      <div class="index-btm">
+        
+          <i class="iconfont icon-riqi2"></i>&nbsp;2019-03-26&nbsp;&nbsp;
+        
+        
+          <i class="iconfont icon-inbox"></i>
+          
+            <a href="/categories/CTF-s-writeup/">CTF&#39;s writeup</a>&nbsp;
+          &nbsp;
+        
+        
+          <i class="iconfont icon-tag"></i>
+          
+            <a href="/tags/writeup/">writeup</a>&nbsp;
+          
+            <a href="/tags/pwn/">pwn</a>&nbsp;
+          
+        
+      </div>
+    </div>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <div class="col-12 col-md-12 mx-auto index-info">
+      <a href="/2019/03/18/2019-3-18-tcache下的几道pwn题/">
+        <p class="h4 index-header">tcache下的几道pwn题</p>
+      </a>
+
+      <a href="/2019/03/18/2019-3-18-tcache下的几道pwn题/">
+        
+        
+          
+        
+        <div class="index-excerpt">
+          <div class="index-text mb-1">最近在刷题，这里做几道跟tcache机制相关的题目。
+下载地址
+LCTF2018 easy_heap防护机制：
+☁  easy_heap  checksec easy_heap 
+[*] &#39;/home/zs0zrc/pwn/tcache/easy_heap/easy_heap&#39;
+    Arch:     amd64-64-little
+    RELRO:    Full RELRO
+    Stack:    Canary found
+    NX:       NX enabled
+    PIE:      PIE enabled
+程序很简单，一共有三个功能
+1.mal</div>
+        </div>
+      </a>
+
+      <div class="index-btm">
+        
+          <i class="iconfont icon-riqi2"></i>&nbsp;2019-03-18&nbsp;&nbsp;
+        
+        
+          <i class="iconfont icon-inbox"></i>
+          
+            <a href="/categories/Heap-Exploitation/">Heap_Exploitation</a>&nbsp;
+          &nbsp;
+        
+        
+          <i class="iconfont icon-tag"></i>
+          
+            <a href="/tags/pwn/">pwn</a>&nbsp;
+          
+            <a href="/tags/tcache/">tcache</a>&nbsp;
+          
+        
+      </div>
+    </div>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <div class="col-12 col-md-12 mx-auto index-info">
       <a href="/2019/03/08/2018-9-30-堆利用的总结/">
         <p class="h4 index-header">堆利用的一些总结</p>
       </a>
@@ -344,297 +604,11 @@ boot.sh
     </div>
   </div>
 
-  <div class="row mx-auto index-card">
-    
-    
-    <div class="col-12 col-md-12 mx-auto index-info">
-      <a href="/2019/01/13/2019-11-13-逆向虚拟机保护学习/">
-        <p class="h4 index-header">逆向学习之虚拟机保护</p>
-      </a>
-
-      <a href="/2019/01/13/2019-11-13-逆向虚拟机保护学习/">
-        
-        
-          
-        
-        <div class="index-excerpt">
-          <div class="index-text mb-1">考试周终于过去了，是时候又要开始学习了。所以就研究下逆向中的虚拟机保护技术，下面记录下学习的过程，以及一些收获。
-基础概念逆向中的虚拟机保护是一种基于虚拟机的代码保护技术。它将基于x86汇编系统中的可执行代码转换为字节码指令系统的代码，来达到不被轻易逆向和篡改的目的。简单点说就是将程序的代码转换自定义的操作码(opcode)，然后在程序执行时再通过解释这些操作码，选择对应的函数执行，从而实现程序原有的功能。
-vm_start：虚拟机的入口函数，对虚拟机环境进行初始化
-vm_dispatcher:调度器，解释opcode，并选择对应的handle函数执行，当handle执行完后会跳回这里，形成一</div>
-        </div>
-      </a>
-
-      <div class="index-btm">
-        
-          <i class="iconfont icon-riqi2"></i>&nbsp;2019-01-13&nbsp;&nbsp;
-        
-        
-          <i class="iconfont icon-inbox"></i>
-          
-            <a href="/categories/REVERSE/">REVERSE</a>&nbsp;
-          &nbsp;
-        
-        
-          <i class="iconfont icon-tag"></i>
-          
-            <a href="/tags/Vmare-protect/">Vmare protect</a>&nbsp;
-          
-        
-      </div>
-    </div>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <div class="col-12 col-md-12 mx-auto index-info">
-      <a href="/2018/11/20/2018-11-20-2018-高校网络信息安全管理运维挑战赛-pwn-writeup/">
-        <p class="h4 index-header">2018-高校网络信息安全管理运维挑战赛-pwn-writeup</p>
-      </a>
-
-      <a href="/2018/11/20/2018-11-20-2018-高校网络信息安全管理运维挑战赛-pwn-writeup/">
-        
-        
-          
-        
-        <div class="index-excerpt">
-          <div class="index-text mb-1">挂机pwn手，赛后复现…….各位大佬是真的强
-hack防护机制：
-☁  HACK  checksec hack 
-[*] &#39;/home/zs0zrc/game/gaoxiaoyunwei/HACK/hack&#39;
-    Arch:     i386-32-little
-    RELRO:    Partial RELRO
-    Stack:    No canary found
-    NX:       NX enabled
-    PIE:      No PIE (0x8048000)
-程序逻辑
-int __cdecl main(int argc, const char</div>
-        </div>
-      </a>
-
-      <div class="index-btm">
-        
-          <i class="iconfont icon-riqi2"></i>&nbsp;2018-11-20&nbsp;&nbsp;
-        
-        
-          <i class="iconfont icon-inbox"></i>
-          
-            <a href="/categories/CTF-s-writeup/">CTF&#39;s writeup</a>&nbsp;
-          &nbsp;
-        
-        
-          <i class="iconfont icon-tag"></i>
-          
-            <a href="/tags/writeup/">writeup</a>&nbsp;
-          
-            <a href="/tags/pwn/">pwn</a>&nbsp;
-          
-        
-      </div>
-    </div>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <div class="col-12 col-md-12 mx-auto index-info">
-      <a href="/2018/11/19/2018-11-19-SUCTF-招新赛-2018-writeup/">
-        <p class="h4 index-header">SUCTF 招新赛 2018 writeup</p>
-      </a>
-
-      <a href="/2018/11/19/2018-11-19-SUCTF-招新赛-2018-writeup/">
-        
-        
-          
-        
-        <div class="index-excerpt">
-          <div class="index-text mb-1">前段时间做了下SUCTF的招新赛的pwn题，题目还是很友好的，适合新手。但是一直没有写writeup，现在有时间就把writeup写了。
-basic-pwn简单的栈溢出
-直接上exp:
-from pwn import*
-p = process(&#39;pwn&#39;)
-payload = &#39;a&#39;*280 + p64(0x4005c7)
-p.sendline(payload)
-p.interactive()
-
-stack也是简单栈溢出，和basic-pwn差不多
-exp:
-from pwn import*
-p=process(&quot;./pwn&quot;)
-payloa</div>
-        </div>
-      </a>
-
-      <div class="index-btm">
-        
-          <i class="iconfont icon-riqi2"></i>&nbsp;2018-11-19&nbsp;&nbsp;
-        
-        
-          <i class="iconfont icon-inbox"></i>
-          
-            <a href="/categories/CTF-s-writeup/">CTF&#39;s writeup</a>&nbsp;
-          &nbsp;
-        
-        
-          <i class="iconfont icon-tag"></i>
-          
-            <a href="/tags/writeup/">writeup</a>&nbsp;
-          
-            <a href="/tags/pwn/">pwn</a>&nbsp;
-          
-        
-      </div>
-    </div>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <div class="col-12 col-md-12 mx-auto index-info">
-      <a href="/2018/11/14/2018-11-14-SQL注入学习/">
-        <p class="h4 index-header">SQL注入学习</p>
-      </a>
-
-      <a href="/2018/11/14/2018-11-14-SQL注入学习/">
-        
-        
-          
-        
-        <div class="index-excerpt">
-          <div class="index-text mb-1">SQL学习笔记
-SQL基础注释语句单行注释：
-
-以“#”号开头,直到该行行尾,全部都是注释内容
-以“– ”号开头,直到该行行尾,全部都是注释内容。（“– ”与注释内容之间要加有空格）
-
-多行注释：  /……/，“/”用于注释文字的开头，“/”用于注释文字的结尾。
-常用函数
-user()：当前数据库用户
-database()：当前数据库名
-version()：当前使用的数据库版本
-@@datadir：数据库存储数据路径
-concat()：联合数据，用于联合两条数据结果。如 concat(username,0x3a,password)
-group_concat()：和 concat() 类似，如 </div>
-        </div>
-      </a>
-
-      <div class="index-btm">
-        
-          <i class="iconfont icon-riqi2"></i>&nbsp;2018-11-14&nbsp;&nbsp;
-        
-        
-        
-          <i class="iconfont icon-tag"></i>
-          
-            <a href="/tags/web/">web</a>&nbsp;
-          
-            <a href="/tags/SQL注入/">SQL注入</a>&nbsp;
-          
-        
-      </div>
-    </div>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <div class="col-12 col-md-12 mx-auto index-info">
-      <a href="/2018/11/13/2018-11-13-SQL注入和XSS的简单学习笔记/">
-        <p class="h4 index-header">SQL注入和XSS的简单学习笔记</p>
-      </a>
-
-      <a href="/2018/11/13/2018-11-13-SQL注入和XSS的简单学习笔记/">
-        
-        
-          
-        
-        <div class="index-excerpt">
-          <div class="index-text mb-1">混子pwn手来学点web的东西了，网络攻防课程要求做的作业
-SQL注入原理
-将SQL 代码插入或添加到应用（用户）的输入参数中，之后再讲这些参数传递给后台的 SQL 服务器加以解析并执行的攻击。 
-
-形成原因：
-
-web开发人员没有在将从web表单、cookie、输入参数等收到的值传给SQL查询前进行检查
-
-漏洞复现平台 ：    NPMserv    目标：NPMserv 中的一个政府网站   (本地搭的一个环境)
-
-
-判断注入点
- http://127.0.0.1/info_show.php?info_id=140 and 1=1        有回显
- http://127.0.0.1/</div>
-        </div>
-      </a>
-
-      <div class="index-btm">
-        
-          <i class="iconfont icon-riqi2"></i>&nbsp;2018-11-13&nbsp;&nbsp;
-        
-        
-        
-          <i class="iconfont icon-tag"></i>
-          
-            <a href="/tags/web/">web</a>&nbsp;
-          
-        
-      </div>
-    </div>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <div class="col-12 col-md-12 mx-auto index-info">
-      <a href="/2018/11/05/2018-11-5-arm-pwn环境搭建/">
-        <p class="h4 index-header">arm-pwn环境搭建</p>
-      </a>
-
-      <a href="/2018/11/05/2018-11-5-arm-pwn环境搭建/">
-        
-        
-          
-        
-        <div class="index-excerpt">
-          <div class="index-text mb-1">最近打的比赛，做arm-pwn发现自己环境有点问题，就像新搭一个基于deepin系统的环境，下面记录下搭环境的过程
-镜像 
-先装好deepin虚拟机，然后开始配环境
-
-基本环境的安装
-
-gdb-multiarch, git , vim, gdb ,binfmt 用来 识别文件格式
-
-  sudo apt-get update
-  sudo apt-get install git gdb gdb-multiarch vim
-  sudo apt-get install &quot;binfmt*&quot;
-
-安装gef
-wget -O ~/.gdbinit-gef.py -q https://</div>
-        </div>
-      </a>
-
-      <div class="index-btm">
-        
-          <i class="iconfont icon-riqi2"></i>&nbsp;2018-11-05&nbsp;&nbsp;
-        
-        
-        
-          <i class="iconfont icon-tag"></i>
-          
-            <a href="/tags/pwn/">pwn</a>&nbsp;
-          
-            <a href="/tags/ARM/">ARM</a>&nbsp;
-          
-        
-      </div>
-    </div>
-  </div>
-
 
 
   <nav aria-label="index posts navigation">
     <span class="pagination pg-blue justify-content-center mt-5" id="pagination">
-      <a class="extend prev" rel="prev" href="/"><i class="fas fa-angle-double-left"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><span class="space">&hellip;</span><a class="page-number" href="/page/6/">6</a><a class="extend next" rel="next" href="/page/3/"><i class="fas fa-angle-double-right"></i></a>
+      <a class="extend prev" rel="prev" href="/"><i class="fas fa-angle-double-left"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/">7</a><a class="extend next" rel="next" href="/page/3/"><i class="fas fa-angle-double-right"></i></a>
     </span>
   </nav>
   

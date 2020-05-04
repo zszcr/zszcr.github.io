@@ -149,6 +149,304 @@
     
     
     <div class="col-12 col-md-12 mx-auto index-info">
+      <a href="/2018/10/16/2018-10-14-护网杯wp及复现/">
+        <p class="h4 index-header">护网杯wp及复现</p>
+      </a>
+
+      <a href="/2018/10/16/2018-10-14-护网杯wp及复现/">
+        
+        
+          
+        
+        <div class="index-excerpt">
+          <div class="index-text mb-1">昨天刚打完护网杯线上赛，被自己菜哭，菜的真实，所以现在来赛后复现了
+start签到题，就是覆盖栈上的变量为特定的值，有点新奇的就是有一个变量要覆盖成小数0.1
+0.1 在内存中存储形式为 0x3fb999999999999a
+exp：
+#!/usr/bin/env python
+from pwn import *
+local = 0
+
+if local:
+    p = process(&#39;./gettingstart&#39;)
+    elf = ELF(&#39;./gettingstart&#39;)
+    libc = elf.libc
+else:
+    host = &#</div>
+        </div>
+      </a>
+
+      <div class="index-btm">
+        
+          <i class="iconfont icon-riqi2"></i>&nbsp;2018-10-16&nbsp;&nbsp;
+        
+        
+          <i class="iconfont icon-inbox"></i>
+          
+            <a href="/categories/CTF-s-writeup/">CTF&#39;s writeup</a>&nbsp;
+          &nbsp;
+        
+        
+          <i class="iconfont icon-tag"></i>
+          
+            <a href="/tags/writeup/">writeup</a>&nbsp;
+          
+            <a href="/tags/pwn/">pwn</a>&nbsp;
+          
+        
+      </div>
+    </div>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <div class="col-12 col-md-12 mx-auto index-info">
+      <a href="/2018/10/07/2018-10-7-Ubuntu主题Flatabulous安装/">
+        <p class="h4 index-header">Ubuntu主题Flatabulous安装</p>
+      </a>
+
+      <a href="/2018/10/07/2018-10-7-Ubuntu主题Flatabulous安装/">
+        
+        
+          
+        
+        <div class="index-excerpt">
+          <div class="index-text mb-1">最近看到一个超好看的Ubuntu主题 —-&gt; Flatabulous
+大致长这样子，我的Ubuntu版本是 16.04 ，所以之前的ubuntu-tweak就没用了， 我改用gnome-tweak-tool
+
+
+首先装一个 gnome-tweak-tool
+sudo apt-get install gnome-tweak-tool
+
+然后安装Flatabulous这个主题
+第一种方法：
+sudo add-apt-repository ppa:noobslab/themes
+sudo apt-get update
+sudo apt-get install flatabulous-theme</div>
+        </div>
+      </a>
+
+      <div class="index-btm">
+        
+          <i class="iconfont icon-riqi2"></i>&nbsp;2018-10-07&nbsp;&nbsp;
+        
+        
+          <i class="iconfont icon-inbox"></i>
+          
+            <a href="/categories/TOOL/">TOOL</a>&nbsp;
+          &nbsp;
+        
+        
+          <i class="iconfont icon-tag"></i>
+          
+            <a href="/tags/Ubuntu/">Ubuntu</a>&nbsp;
+          
+        
+      </div>
+    </div>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <div class="col-12 col-md-12 mx-auto index-info">
+      <a href="/2018/10/07/2018-10-7-pwnable.tw-writeup/">
+        <p class="h4 index-header">pwnable.tw writeup</p>
+      </a>
+
+      <a href="/2018/10/07/2018-10-7-pwnable.tw-writeup/">
+        
+        
+          
+        
+        <div class="index-excerpt">
+          <div class="index-text mb-1">start  防护机制：
+0 % checksec start 
+[*] &#39;/home/zs0zrc/pwn/pwnable.tw/start/start&#39;
+    Arch:     i386-32-little
+    RELRO:    No RELRO
+    Stack:    No canary found
+    NX:       NX disabled
+    PIE:      No PIE (0x8048000)
+  用ida看了下程序，发现只有十几行汇编代码
+  .text:08048060 ; =============== S U B R O U T</div>
+        </div>
+      </a>
+
+      <div class="index-btm">
+        
+          <i class="iconfont icon-riqi2"></i>&nbsp;2018-10-07&nbsp;&nbsp;
+        
+        
+          <i class="iconfont icon-inbox"></i>
+          
+            <a href="/categories/CTF-s-writeup/">CTF&#39;s writeup</a>&nbsp;
+          &nbsp;
+        
+        
+          <i class="iconfont icon-tag"></i>
+          
+            <a href="/tags/pwn/">pwn</a>&nbsp;
+          
+            <a href="/tags/pwnable-tw/">pwnable.tw</a>&nbsp;
+          
+        
+      </div>
+    </div>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <div class="col-12 col-md-12 mx-auto index-info">
+      <a href="/2018/10/07/2018-10-7-初探arm下的pwn/">
+        <p class="h4 index-header">初探arm下的pwn</p>
+      </a>
+
+      <a href="/2018/10/07/2018-10-7-初探arm下的pwn/">
+        
+        
+          
+        
+        <div class="index-excerpt">
+          <div class="index-text mb-1">最近做了下InCTF，第一道pwn题就是arm架构的，之前没有接触过，就学习一下
+基础知识可以看下维基百科的arm架构 ，介绍的挺详细的
+arm下的通用寄存器
+
+函数调用约定：
+
+ARM：参数1~参数4 分别保存到 R0~R3 寄存器中 ，剩下的参数从右往左依次入栈，被调用者实现栈平衡，返回值存放在 R0 中。 
+ARM64：参数1~参数8 分别保存到 X0~X7 寄存器中 ，剩下的参数从右往左依次入栈，被调用者实现栈平衡，返回值存放在 X0 中。 
+
+arm下的pc相当于eip或者rip，保存着下一条要执行的指令的地址
+环境准备这里我没装新的虚拟机，我直接在ubuntu16.04装的环境
+
+</div>
+        </div>
+      </a>
+
+      <div class="index-btm">
+        
+          <i class="iconfont icon-riqi2"></i>&nbsp;2018-10-07&nbsp;&nbsp;
+        
+        
+        
+          <i class="iconfont icon-tag"></i>
+          
+            <a href="/tags/pwn/">pwn</a>&nbsp;
+          
+            <a href="/tags/ARM/">ARM</a>&nbsp;
+          
+        
+      </div>
+    </div>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <div class="col-12 col-md-12 mx-auto index-info">
+      <a href="/2018/10/06/2018-10-6-pwnable.kr-writeup/">
+        <p class="h4 index-header">pwnable.kr writeup</p>
+      </a>
+
+      <a href="/2018/10/06/2018-10-6-pwnable.kr-writeup/">
+        
+        
+          
+        
+        <div class="index-excerpt">
+          <div class="index-text mb-1">感觉pwnable.tw有点点难，还是先做pwnable.kr好了，writeup都会写在这篇文章里
+bof这题给了二进制文件和源码
+源码：
+#include &lt;stdio.h&gt;
+#include &lt;string.h&gt;
+#include &lt;stdlib.h&gt;
+void func(int key){
+    char overflowme[32];
+    printf(&quot;overflow me : &quot;);
+    gets(overflowme);    // smash me!
+    if(key == 0xcafebabe){
+  </div>
+        </div>
+      </a>
+
+      <div class="index-btm">
+        
+          <i class="iconfont icon-riqi2"></i>&nbsp;2018-10-06&nbsp;&nbsp;
+        
+        
+          <i class="iconfont icon-inbox"></i>
+          
+            <a href="/categories/CTF-s-writeup/">CTF&#39;s writeup</a>&nbsp;
+          &nbsp;
+        
+        
+          <i class="iconfont icon-tag"></i>
+          
+            <a href="/tags/pwn/">pwn</a>&nbsp;
+          
+            <a href="/tags/pwnable-kr/">pwnable.kr</a>&nbsp;
+          
+        
+      </div>
+    </div>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <div class="col-12 col-md-12 mx-auto index-info">
+      <a href="/2018/10/05/2018-10-5-Wargames--bandit-通关教程/">
+        <p class="h4 index-header">Wargames--bandit 通关教程</p>
+      </a>
+
+      <a href="/2018/10/05/2018-10-5-Wargames--bandit-通关教程/">
+        
+        
+          
+        
+        <div class="index-excerpt">
+          <div class="index-text mb-1">这是一个让人熟悉linux操作的一个wargame，挺有意思的 网站
+bandit0直接ssh连上去，cat readme 拿到下一关的密码
+
+密码：boJ9jbbUNNfktd78OOpsqOltutMc3MY1
+
+bandit1这一关它将密码藏在 - 文件中，以’-‘作为文件名，代表标准输入流或者标准输出流，要显示 ‘-‘文件的内容
+需要用 cat ./- 来打印出来
+
+密码：CV1DtqXWVFXTvM2F0k09SHz0YwRINYA9
+
+bandit2这关它将密码存在 spaces in this filename这个文件中，但是直接cat 的话不行，要在文件名左右加上”，
+通过 c</div>
+        </div>
+      </a>
+
+      <div class="index-btm">
+        
+          <i class="iconfont icon-riqi2"></i>&nbsp;2018-10-05&nbsp;&nbsp;
+        
+        
+          <i class="iconfont icon-inbox"></i>
+          
+            <a href="/categories/wargames/">wargames</a>&nbsp;
+          &nbsp;
+        
+        
+          <i class="iconfont icon-tag"></i>
+          
+            <a href="/tags/bandit/">bandit</a>&nbsp;
+          
+        
+      </div>
+    </div>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <div class="col-12 col-md-12 mx-auto index-info">
       <a href="/2018/10/04/2018-10-4-BugkuCTF-RE-writeup/">
         <p class="h4 index-header">BugkuCTF RE writeup</p>
       </a>
@@ -344,306 +642,11 @@ int service()
     </div>
   </div>
 
-  <div class="row mx-auto index-card">
-    
-    
-    <div class="col-12 col-md-12 mx-auto index-info">
-      <a href="/2018/09/24/2018-9-24-tictactoe2-writeup/">
-        <p class="h4 index-header">tictactoe2 writeup</p>
-      </a>
-
-      <a href="/2018/09/24/2018-9-24-tictactoe2-writeup/">
-        
-        
-          
-        
-        <div class="index-excerpt">
-          <div class="index-text mb-1">防护机制：
-[*] &#39;/home/zs0zrc/pwn/Scoreboard/tictactoe/tictactoe&#39;
-    Arch:     i386-32-little
-    RELRO:    Partial RELRO
-    Stack:    Canary found
-    NX:       NX enabled
-    PIE:      No PIE (0x8048000)
-这题文件和tictactoe1是一样的，只不过这个要求getshell，漏洞点也就是一个任意地址写，我对着分析了半天除了想到将n修改成0，使得可以进行9次任意地址写 ，就想不到什么</div>
-        </div>
-      </a>
-
-      <div class="index-btm">
-        
-          <i class="iconfont icon-riqi2"></i>&nbsp;2018-09-24&nbsp;&nbsp;
-        
-        
-          <i class="iconfont icon-inbox"></i>
-          
-            <a href="/categories/hackme-inndy-writeup/">hackme.inndy_writeup</a>&nbsp;
-          &nbsp;
-        
-        
-          <i class="iconfont icon-tag"></i>
-          
-            <a href="/tags/writeup/">writeup</a>&nbsp;
-          
-            <a href="/tags/pwn/">pwn</a>&nbsp;
-          
-        
-      </div>
-    </div>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <div class="col-12 col-md-12 mx-auto index-info">
-      <a href="/2018/09/24/2018-9-24-tictactoe-writeup/">
-        <p class="h4 index-header">tictactoe1 writeup</p>
-      </a>
-
-      <a href="/2018/09/24/2018-9-24-tictactoe-writeup/">
-        
-        
-          
-        
-        <div class="index-excerpt">
-          <div class="index-text mb-1">防护机制：
-[*] &#39;/home/zs0zrc/pwn/Scoreboard/tictactoe/tictactoe&#39;
-    Arch:     i386-32-little
-    RELRO:    Partial RELRO
-    Stack:    Canary found
-    NX:       NX enabled
-    PIE:      No PIE (0x8048000)
-这个程序是模拟下三子棋的机器人，程序的漏洞在
-unsigned int sub_8048A4B()
-{
-  int v1; // [esp+4h] [ebp-14h]
-  char</div>
-        </div>
-      </a>
-
-      <div class="index-btm">
-        
-          <i class="iconfont icon-riqi2"></i>&nbsp;2018-09-24&nbsp;&nbsp;
-        
-        
-          <i class="iconfont icon-inbox"></i>
-          
-            <a href="/categories/hackme-inndy-writeup/">hackme.inndy_writeup</a>&nbsp;
-          &nbsp;
-        
-        
-          <i class="iconfont icon-tag"></i>
-          
-            <a href="/tags/writeup/">writeup</a>&nbsp;
-          
-            <a href="/tags/pwn/">pwn</a>&nbsp;
-          
-        
-      </div>
-    </div>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <div class="col-12 col-md-12 mx-auto index-info">
-      <a href="/2018/09/24/2018-9-24-DefCamp-CTF-pwn题简单复现/">
-        <p class="h4 index-header">DCTF Quals 2018 pwn题简单复现</p>
-      </a>
-
-      <a href="/2018/09/24/2018-9-24-DefCamp-CTF-pwn题简单复现/">
-        
-        
-          
-        
-        <div class="index-excerpt">
-          <div class="index-text mb-1">这个比赛我就做出了第一道pwn….C++逆向真的是看到脑壳疼，还有一个pwn题用到了CVE-2018-11235 ….真的是打扰了
-
-lucky
-这道题是猜随机数，只是这题目是用C++写的，逆向看的有点难受
-因为随机数的seed在栈上，加上它在输入name时，用了strcpy函数，没有限制输入的长度，所以可以覆盖seed的值为0x61616161。加上它在输入名字后又srand了一次，所以seed就被我们控制了，产生的随机数也就是确定的。
-ida反编译看到的代码是长这样的
- 
-
-
-  生成随机数的源码
-  #include &lt;stdlib.h&gt;
-  #include &lt;std</div>
-        </div>
-      </a>
-
-      <div class="index-btm">
-        
-          <i class="iconfont icon-riqi2"></i>&nbsp;2018-09-24&nbsp;&nbsp;
-        
-        
-          <i class="iconfont icon-inbox"></i>
-          
-            <a href="/categories/CTF-s-writeup/">CTF&#39;s writeup</a>&nbsp;
-          &nbsp;
-        
-        
-          <i class="iconfont icon-tag"></i>
-          
-            <a href="/tags/writeup/">writeup</a>&nbsp;
-          
-            <a href="/tags/pwn/">pwn</a>&nbsp;
-          
-        
-      </div>
-    </div>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <div class="col-12 col-md-12 mx-auto index-info">
-      <a href="/2018/09/23/2018-9-22-notepad-writeup/">
-        <p class="h4 index-header">notepad writeup</p>
-      </a>
-
-      <a href="/2018/09/23/2018-9-22-notepad-writeup/">
-        
-        
-          
-        
-        <div class="index-excerpt">
-          <div class="index-text mb-1">防护机制：
-[*] &#39;/home/zs0zrc/pwn/Scoreboard/notepad/notepad&#39;
-    Arch:     i386-32-little
-    RELRO:    Partial RELRO
-    Stack:    Canary found
-    NX:       NX enabled
-    PIE:      No PIE (0x8048000)
-这题的漏洞主要在于 notepad_open函数中的menu函数，它对输入的上界进行了检查，但是没对下界进行检查，导致可以输入比 ‘a’小的字符,加上它根据menu的返回值来确定调用函数的</div>
-        </div>
-      </a>
-
-      <div class="index-btm">
-        
-          <i class="iconfont icon-riqi2"></i>&nbsp;2018-09-23&nbsp;&nbsp;
-        
-        
-          <i class="iconfont icon-inbox"></i>
-          
-            <a href="/categories/hackme-inndy-writeup/">hackme.inndy_writeup</a>&nbsp;
-          &nbsp;
-        
-        
-          <i class="iconfont icon-tag"></i>
-          
-            <a href="/tags/writeup/">writeup</a>&nbsp;
-          
-            <a href="/tags/pwn/">pwn</a>&nbsp;
-          
-        
-      </div>
-    </div>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <div class="col-12 col-md-12 mx-auto index-info">
-      <a href="/2018/09/22/2018-9-22-onepunch-writeup/">
-        <p class="h4 index-header">onepunch writeup</p>
-      </a>
-
-      <a href="/2018/09/22/2018-9-22-onepunch-writeup/">
-        
-        
-          
-        
-        <div class="index-excerpt">
-          <div class="index-text mb-1">防护机制：
-[*] &#39;/home/zs0zrc/pwn/Scoreboard/onepunch/onepunch&#39;
-    Arch:     amd64-64-little
-    RELRO:    Partial RELRO
-    Stack:    Canary found
-    NX:       NX enabled
-    PIE:      No PIE (0x400000)
-程序的ida反编译出来的代码很短：
-int __cdecl main(int argc, const char **argv, const char **envp)
-{
-  int v</div>
-        </div>
-      </a>
-
-      <div class="index-btm">
-        
-          <i class="iconfont icon-riqi2"></i>&nbsp;2018-09-22&nbsp;&nbsp;
-        
-        
-          <i class="iconfont icon-inbox"></i>
-          
-            <a href="/categories/hackme-inndy-writeup/">hackme.inndy_writeup</a>&nbsp;
-          &nbsp;
-        
-        
-          <i class="iconfont icon-tag"></i>
-          
-            <a href="/tags/writeup/">writeup</a>&nbsp;
-          
-            <a href="/tags/pwn/">pwn</a>&nbsp;
-          
-        
-      </div>
-    </div>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <div class="col-12 col-md-12 mx-auto index-info">
-      <a href="/2018/09/22/2018-9-22-leave_msg-writeup/">
-        <p class="h4 index-header">leave_msg writeup</p>
-      </a>
-
-      <a href="/2018/09/22/2018-9-22-leave_msg-writeup/">
-        
-        
-          
-        
-        <div class="index-excerpt">
-          <div class="index-text mb-1">防护机制：
-[*] &#39;/home/zs0zrc/pwn/Scoreboard/leave_msg/leave_msg&#39;
-    Arch:     i386-32-little
-    RELRO:    Partial RELRO
-    Stack:    Canary found
-    NX:       NX disabled
-    PIE:      No PIE (0x8048000)
-    RWX:      Has RWX segments
-只开启了Canary，没开NX，说明应该是要写shellcode
-拖入ida反编译，发现程序的功能很简单。可以输入三</div>
-        </div>
-      </a>
-
-      <div class="index-btm">
-        
-          <i class="iconfont icon-riqi2"></i>&nbsp;2018-09-22&nbsp;&nbsp;
-        
-        
-          <i class="iconfont icon-inbox"></i>
-          
-            <a href="/categories/hackme-inndy-writeup/">hackme.inndy_writeup</a>&nbsp;
-          &nbsp;
-        
-        
-          <i class="iconfont icon-tag"></i>
-          
-            <a href="/tags/writeup/">writeup</a>&nbsp;
-          
-            <a href="/tags/pwn/">pwn</a>&nbsp;
-          
-        
-      </div>
-    </div>
-  </div>
-
 
 
   <nav aria-label="index posts navigation">
     <span class="pagination pg-blue justify-content-center mt-5" id="pagination">
-      <a class="extend prev" rel="prev" href="/page/3/"><i class="fas fa-angle-double-left"></i></a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="page-number current">4</span><a class="page-number" href="/page/5/">5</a><a class="page-number" href="/page/6/">6</a><a class="extend next" rel="next" href="/page/5/"><i class="fas fa-angle-double-right"></i></a>
+      <a class="extend prev" rel="prev" href="/page/3/"><i class="fas fa-angle-double-left"></i></a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="page-number current">4</span><a class="page-number" href="/page/5/">5</a><a class="page-number" href="/page/6/">6</a><a class="page-number" href="/page/7/">7</a><a class="extend next" rel="next" href="/page/5/"><i class="fas fa-angle-double-right"></i></a>
     </span>
   </nav>
   

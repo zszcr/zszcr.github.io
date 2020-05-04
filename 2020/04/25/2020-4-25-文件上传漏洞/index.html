@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+
+
+
+
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/apple-touch-icon.png">
+  <link rel="icon" type="image/png" href="/img/image3.jpg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="description" content="zs0zrc&#39;s blog">
+  <meta name="author" content="zs0zrc">
+  <meta name="keywords" content="pwn CTF security anythings">
+  <title>文件上传漏洞 - zs0zrc</title>
+
+  <link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/5.12.1/css/all.min.css">
+<link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdn.staticfile.org/mdbootstrap/4.13.0/css/mdb.min.css">
+<link rel="stylesheet" href="https://cdn.staticfile.org/github-markdown-css/3.0.1/github-markdown.min.css">
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1067060_qzomjdt8bmp.css">
+
+
+  <link rel="stylesheet" href="/lib/prettify/tomorrow-night-eighties.min.css">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+  <link rel="stylesheet" href="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.css">
+
+
+<!-- 自定义样式保持在最底部 -->
+
+
+</head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">&nbsp;<strong>zs0zrc</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/">首页</a>
+          </li>
+        
+          
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/archives/">归档</a>
+          </li>
+        
+          
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/categories/">分类</a>
+          </li>
+        
+          
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/tags/">标签</a>
+          </li>
+        
+          
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/about/">关于</a>
+          </li>
+        
+          
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/links/">友链</a>
+          </li>
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;&nbsp;<i class="iconfont icon-search"></i>&nbsp;&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="view intro-2" id="background" parallax=true
+         style="background: url('/img/image1.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask rgba-black-light flex-center">
+          <div class="container text-center white-text fadeInUp">
+            <span class="h2" id="subtitle">
+              
+            </span>
+
+            
+              
+                <p class="mt-3 post-meta">
+                  <i class="fas fa-calendar-alt" aria-hidden="true"></i>
+                  星期六, 四月 25日 2020, 2:54 下午
+                </p>
+              
+
+              <p class="mt-1">
+                
+                  
+                  <span class="post-meta">
+                    <i class="far fa-chart-bar"></i>
+                    2.3k 字
+                  </span>
+                
+
+                
+                  
+                  <span class="post-meta">
+                      <i class="far fa-clock"></i>
+                      9 分钟
+                  </span>
+                
+
+                
+                  <!-- 不蒜子统计文章PV -->
+                  
+                  <span id="busuanzi_container_page_pv" class="post-meta" style="display: none">
+                    <i class="far fa-eye" aria-hidden="true"></i>
+                    <span id="busuanzi_value_page_pv"></span> 次
+                  </span>
+                
+              </p>
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-md">
+      <div class="container nopadding-md" id="board-ctn">
+        <div class="py-5 z-depth-3" id="board">
+          <div class="post-content mx-auto" id="post">
+            
+              <p class="note note-warning">本文最后更新于：星期一, 四月 27日 2020, 6:09 晚上</p>
+            
+            <div class="markdown-body">
+              <h3 id="文件上传漏洞"><a href="#文件上传漏洞" class="headerlink" title="文件上传漏洞"></a>文件上传漏洞</h3><h4 id="漏洞原理"><a href="#漏洞原理" class="headerlink" title="漏洞原理"></a>漏洞原理</h4><p>网站WEB应用存在一些文件上传功能，如文档、头像、图片、视频上传等，但是上传文件时，服务端代码对客户端上传的文件没有进行严格的校验和过滤，就可能导致可以上传任意文件。</p>
+<h4 id="危害"><a href="#危害" class="headerlink" title="危害"></a>危害</h4><p>通过这个漏洞，非法用户可以上传恶意脚本文件（webshell），通过webshell来控制整个网站，可以实现查看服务器目录、文件、执行系统命令等操作。</p>
+<h4 id="上传检测流程"><a href="#上传检测流程" class="headerlink" title="上传检测流程"></a>上传检测流程</h4><ul>
+<li>客户端<ul>
+<li>JavaScript检测文件扩展名</li>
+</ul>
+</li>
+<li>服务端<ul>
+<li>服务端MIME类型检测（检测Content-Type内容）</li>
+<li>服务端目录路径检测（检测Path参数相关的内容）</li>
+<li>服务端文件扩展名检测</li>
+<li>服务端文件内容检测（检测文件头或者是否包含恶意代码）</li>
+</ul>
+</li>
+</ul>
+<h4 id="绕过方法"><a href="#绕过方法" class="headerlink" title="绕过方法"></a>绕过方法</h4><ol>
+<li><p>JS检测绕过</p>
+<p>客户端浏览器使用JS对客户上传的文件后缀名进行检测，如果不符和条件就会弹框警告。</p>
+<pre><code class="javascript">function checkUpload(fileobj){
+      var fileArr = fileobj.value.split(&quot;.&quot;); //对文件名进行处理
+      var ext = fileArr[fileArr.length-1]; //得到文件扩展名
+      if(ext!=&#39;gif&#39;) //验证扩展名
+      {
+        alert(&quot;Only upload GIF images.&quot;);
+        fileobj.value = &quot;&quot;; //清除数据
+      }
+    }
+
+</code></pre>
+</li>
+</ol>
+<p>   这个很容易绕过，大致有两种方法。</p>
+<p>   一是直接禁用掉浏览器的JS，这个方法比较粗暴，不推荐使用，禁用JS的话可以用火狐的一个叫NoScript的插件。</p>
+<p>   另一种方法是将要上传的文件后缀改为允许上传的后缀，绕过JS检测，再抓包，将后缀名修改为可执行脚本的后缀名。</p>
+<ol start="2">
+<li><p>文件类型绕过</p>
+<p>如果服务端是通过Content-Type来判断文件类型的话，只要抓包修改它的值为允许的值就可以绕过了</p>
+</li>
+</ol>
+<ol start="3">
+<li><p>服务端文件扩展名绕过</p>
+<p>服务端文件扩展名检测有两种检测方法：</p>
+<ol>
+<li><p>黑名单检测</p>
+<p>黑名单检测会检测上传的文件是否是包含在blacklist里的危险类型，如：</p>
+<pre><code class="php">$file_name = $_FILES[&#39;fupload&#39;][&#39;name&#39;]; // 文件名
+$file_ext  = substr($file_name, strrpos($file_name,&#39;.&#39;) + 1); //文件后缀
+$file_tmp  = $_FILES[&#39;fupload&#39;][&#39;tmp_name&#39;]; //临时文件
+$target_path = &quot;uploads/&quot;.md5(uniqid(rand())).&quot;.&quot;.$file_ext; //存储路径与名称
+    // 检测后缀名
+$black_ext = explode(&quot;|&quot;, &quot;asp|asa|cer|cdx|aspx|ashx|ascx|asax|php|php2|php3|php4|php5|asis|htaccess|htm|html|shtml|pwml|phtml|phtm|js|jsp|vbs|asis|sh|reg|cgi|exe|dll|com|bat|pl|cfc|cfm|ini&quot;); // 转换为数组
+if(in_array($file_ext,$black_ext))
+{
+    exit(&quot;Only upload GIF images.&quot;);
+}
+</code></pre>
+</li>
+<li><p>白名单检测</p>
+<p>白名单检测会只允许用户上传指定类型的文件，如：jpg/png/gif等</p>
+</li>
+</ol>
+</li>
+</ol>
+<p>   <strong>黑名单检测绕过</strong></p>
+<ul>
+<li><p>后缀名大小写绕过</p>
+<p>服务端没有将后缀名转化成统一的格式进行比较，导致可以上传成功后缀为PhP等类型的文件，同时windows操作系统对大小写不敏感，所以.PhP会被当做.php文件解析。这个在Linux下就不好使了。</p>
+</li>
+<li><p>重写绕过</p>
+<p>服务端将黑名单的后缀名都替换为空，但是它只进行一次。那么上传后缀名为.pphphp的文件，替换php一次为空，文件的后缀名就为.php</p>
+</li>
+<li><p>特殊可解析绕过</p>
+<p>服务端的黑名单不严谨，在某些特定的环境某些特殊的后缀名也会被当成php文件解析。</p>
+<blockquote>
+<p>php|php2|php3|php4|php5|php6|php7|phtml|phtm|pht</p>
+</blockquote>
+<p>基于debain和ubuntu的apt-get安装的apache2，默认对文件解析规则如下：</p>
+<p><img src="/picture/image-20200425205152383.png" srcset="/img/loading.gif" alt="image-20200425205152383"></p>
+</li>
+<li><p>.htaccess绕过</p>
+<p>在apache中，.htaccess是一个配置文件，可以用来控制文件目录的访问权限以及解析设置。可以通过这个文件将该目录下的所有文件当作php来解析。</p>
+<p>配置上要允许.htaccess生效</p>
+<ul>
+<li>Apache开启rewrite模块</li>
+<li>Apache配置文件为AllowOverride All(默认为None)</li>
+</ul>
+<p>配置文件的两种写法</p>
+<pre><code>AddType application/x-httpd-php .jpg
+
+or 
+
+&lt;FileMatch &quot;jpg&quot;&gt;
+SetHandler application/x-httpd-php
+&lt;/FileMatch&gt;
+</code></pre><p>通过上传这样一个.htaccess文件，就可以将目录下的jpg当作php来解析了。</p>
+</li>
+<li><p>利用操作系统特性-windows</p>
+<p>windows对文件和文件名存在限制，上传不符合windows文件命名规则的文件名，在最后生成文件时，字符会被自动去除</p>
+<pre><code>shell.php.
+shell.php......
+shell.php_
+shell.php(空格)
+shell.php[%81-%99]
+</code></pre><p>windows文件流绕过</p>
+<pre><code>shell.php::$DATA 
+shell.php::$DATA......    
+</code></pre><p><strong>白名单检测绕过</strong></p>
+<p>白名单检测一般比较难绕过，通常是比较难绕过的，一般是结合解析漏洞、服务端代码漏洞（造成%00截断的相关函数）、以及相关的操作系统特性来绕过。</p>
+</li>
+<li><p>%00截断</p>
+<p>这个对php的版本有要求， php 版本&lt;5.3.4 ，同时php的magic_quotes_gpc为OFF状态 。</p>
+<p>在文件上传中，利用%00截断，在文件扩展名验证时，是去文件的扩展名来验证，但是最后文件保存到本地时，%00会截断文件名，只保存%00之前的内容。</p>
+<p>具体做法，上传一个shell.php的文件，抓包将文件名修改为shell.php%00.jpg，上传成功。</p>
+</li>
+<li><p>操作系统特性</p>
+<p> 文件名使用非字母数字，比如中文等最大程度的拉长，不同的操作系统文件名最大长度不同，可以测试出来。</p>
+<ul>
+<li><p>windows</p>
+<p> windows10文件名长度最大为223包括后缀，win2012的为237 </p>
+</li>
+<li><p>Linux</p>
+<p> linux ubuntu.16.04.1文件名长度最大252 </p>
+</li>
+</ul>
+</li>
+</ul>
+<ol start="4">
+<li><p>服务端文件内容检测绕过</p>
+<ul>
+<li><p>文件头检测</p>
+<p>服务端只检测了文件头，png|jpg|gif文件头如下：</p>
+<p> <strong>PNG</strong>：8950 4E 47 </p>
+<p> <strong>JPG</strong>：FFD8 FF E0 00 10 4A 46 49 46 </p>
+<p> <strong>GIF</strong>：4749 46 38 39 61 </p>
+<p>只要在一句话木马前加上文件头就可以绕过了</p>
+</li>
+<li><p>getimagesize()函数绕过</p>
+<p>服务端使用getimagesize()函数来检测文件类型，这个函数通过检查文件头来判断文件类型，所以绕过方法和上面一样，也是加对应的文件头就可以了</p>
+</li>
+<li><p>exif_imagetype()</p>
+<p>exif_imagetype()函数通过读取文件的第一个字节来判断文件类型，绕过方法同上</p>
+</li>
+<li><p>图片二次渲染</p>
+<p>服务端对图片进行了二次渲染，将原本属于图片数据的部分提取出来，再用自己的API或者函数进行渲染，通常php使用的是GD库，这个一般比较难绕过。</p>
+<p>基本绕过方法是基本方法是通过对比处理前和处理后的图片数据，找出没未经处理的数据区域，然后将代码插入。</p>
+<p>GIF可以使用基本方法去做，但是jpg和png就比较难。</p>
+<p>jpg和png的制作方法参考: <a href="https://xz.aliyun.com/t/2657" target="_blank" rel="noopener">https://xz.aliyun.com/t/2657</a></p>
+</li>
+</ul>
+</li>
+<li><p>条件竞争绕过</p>
+<p>一些网站上传文件的逻辑是先允许上传任意文件，然后检查上传文件是否包含webshell，如果包含则删除该文件。这里存在条件竞争，文件上传成功后和删除文件之间存在时间差，利用这个时间差可以生成一个新的webshell</p>
+<pre><code class="php">&lt;?php
+    fputs(fopen(&quot;../shell.php&quot;,&quot;w&quot;),&#39;&lt;?php @eval($_POST[cmd]);&#39;);
+?&gt;
+</code></pre>
+</li>
+</ol>
+<h4 id="解析漏洞"><a href="#解析漏洞" class="headerlink" title="解析漏洞"></a>解析漏洞</h4><p>解析漏洞是指服务器对http请求处理不当导致将非可执行的文件当作可执行的脚本来执行，一般配合文件上传功能使用。</p>
+<h5 id="IIS"><a href="#IIS" class="headerlink" title="IIS"></a>IIS</h5><ul>
+<li><p>IIS6.0</p>
+<p><strong>目录解析</strong></p>
+<p>在网站下建立的文件夹的名称中带有.asp、.asa等可执行脚本文件后缀的文件夹，其目录下的任何扩展名文件都会被IIS当作可执行脚本来解析并执行。</p>
+<blockquote>
+<p><a href="http://www.demo.com/shell.asp/shell.jpg" target="_blank" rel="noopener">www.demo.com/shell.asp/shell.jpg</a></p>
+</blockquote>
+<p><strong>文件解析</strong></p>
+<p>服务器默认不解析;后的内容，所以shell.asp;.jpg会被识别为asp文件</p>
+<blockquote>
+<p>shell.asp;.jpg</p>
+</blockquote>
+<p><strong>文件类型解析</strong></p>
+<p>IIS6.0默认可执行文件除了.asp，还包括 <code>.asa .cdx .cer</code> ，这三种类型都可以被解析执行。</p>
+</li>
+<li><p>IIS7.0/IIS7.5</p>
+<p>漏洞出现自php-cgi，与Nginx的解析漏洞类似。对任意文件名只要在URL后面追加字符串<code>/任意文件名.php</code>就会被当成php文件去解析。</p>
+<blockquote>
+<p>shell.jpg/x.php</p>
+</blockquote>
+</li>
+</ul>
+<h5 id="Apache"><a href="#Apache" class="headerlink" title="Apache"></a>Apache</h5><p>Apache解析文件的规则是从右到左的开始判断的，如果后缀名为不可识别文件，就往左判断.</p>
+<blockquote>
+<p>shell.php.xxx.aaa.bbb</p>
+</blockquote>
+<p>这个文件会被解析成php</p>
+<p>漏洞存在的Apache版本</p>
+<p>Apache2.0.x&lt;=2.0.59<br>Apache2.2.x&lt;=2.2.17 </p>
+<h5 id="Nginx"><a href="#Nginx" class="headerlink" title="Nginx"></a>Nginx</h5><p>Nginx默认是以CGI的方式支持php解析的，通常的做法是在Nginx的配置文件中通过正则设置 SCRIPT_FILENAME 。当访问<code>www.demo.com/shell.jpg/x.php</code>时，<code>$fastcgi_scipt_name</code>会被设置为”shell.jpg/x.php”，然后构造成SCRIPT_FILENAME传递给PHP CGI。如果开启了<code>fix_pathinfo</code>这个选项，那么PHP会认为SCRIPT_FILENAME是shell.jpg，而x.php 是PATH_INFO，所以shell.jpg会被当成php来解析。</p>
+<h4 id="REFERENCE"><a href="#REFERENCE" class="headerlink" title="REFERENCE"></a>REFERENCE</h4><ul>
+<li><a href="https://thief.one/2016/09/21/%E6%9C%8D%E5%8A%A1%E5%99%A8%E8%A7%A3%E6%9E%90%E6%BC%8F%E6%B4%9E/" target="_blank" rel="noopener">https://thief.one/2016/09/21/%E6%9C%8D%E5%8A%A1%E5%99%A8%E8%A7%A3%E6%9E%90%E6%BC%8F%E6%B4%9E/</a></li>
+<li><a href="https://masterxsec.github.io/2017/04/26/%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0%E6%80%BB%E7%BB%93/" target="_blank" rel="noopener">https://masterxsec.github.io/2017/04/26/%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0%E6%80%BB%E7%BB%93/</a></li>
+<li><a href="https://thief.one/2016/09/22/上传木马姿势汇总-欢迎补充/" target="_blank" rel="noopener">https://thief.one/2016/09/22/上传木马姿势汇总-欢迎补充/</a></li>
+<li><a href="https://www.freebuf.com/articles/web/179954.html" target="_blank" rel="noopener">https://www.freebuf.com/articles/web/179954.html</a></li>
+<li><a href="http://byd.dropsec.xyz/2017/02/21/%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0-%E7%BB%95%E8%BF%87/" target="_blank" rel="noopener">http://byd.dropsec.xyz/2017/02/21/%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0-%E7%BB%95%E8%BF%87/</a></li>
+</ul>
+
+            </div>
+            <hr>
+            <div>
+              <p>
+                
+                  <span>
+                <i class="iconfont icon-inbox"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/WEB/">WEB</a>
+                      &nbsp;
+                    
+                  </span>&nbsp;&nbsp;
+                
+                
+              </p>
+              
+                <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a href="https://zh.wikipedia.org/wiki/Wikipedia:CC_BY-SA_3.0%E5%8D%8F%E8%AE%AE%E6%96%87%E6%9C%AC" rel="nofollow noopener">CC BY-SA 3.0协议</a> 。转载请注明出处！</p>
+              
+            </div>
+
+            
+              <!-- Comments -->
+              <div class="comments" id="comments">
+                
+                
+  <script defer src="https://utteranc.es/client.js" repo="zszcr/comment" issue-term="pathname" label="utterances" theme="github-light" crossorigin="anonymous" async>
+  </script>
+
+
+              </div>
+            
+          </div>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc-start"></div>
+<div id="toc">
+  <p class="h5"><i class="far fa-list-alt"></i>&nbsp;目录</p>
+  <div id="tocbot"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+  </main>
+
+  
+    <a class="z-depth-1" id="scroll-top-button" href="#" role="button">
+      <i class="fa fa-chevron-up scroll-top-arrow" aria-hidden="true"></i>
+    </a>
+  
+
+  
+    <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+  
+
+  
+
+  
+
+  <footer class="mt-5">
+  <div class="text-center py-3">
+    <div>
+      <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><b>Hexo</b></a>
+      <i class="iconfont icon-love"></i>
+      <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"> <b>Fluid</b></a>
+    </div>
+    
+  <div>
+    
+      <!-- 不蒜子统计PV -->
+      
+      <span id="busuanzi_container_site_pv" style="display: none">
+      总访问量 <span id="busuanzi_value_site_pv"></span> 次
+    </span>
+    
+    
+      <!-- 不蒜子统计UV -->
+      
+      <span id="busuanzi_container_site_uv" style="display: none">
+      总访客数 <span id="busuanzi_value_site_uv"></span> 人
+    </span>
+    
+  </div>
+
+
+    
+
+    
+  </div>
+</footer>
+
+<!-- SCRIPTS -->
+<script src="https://cdn.staticfile.org/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://cdn.staticfile.org/popper.js/1.16.1/umd/popper.min.js"></script>
+<script src="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/js/bootstrap.min.js"></script>
+<script src="https://cdn.staticfile.org/mdbootstrap/4.13.0/js/mdb.min.js"></script>
+<script src="/js/main.js"></script>
+
+
+  <script src="/js/lazyload.js"></script>
+
+
+
+  
+  <script src="https://cdn.staticfile.org/tocbot/4.10.0/tocbot.min.js"></script>
+  <script>
+    $(document).ready(function () {
+      var navHeight = $('#navbar').height();
+      var post = $('#post');
+      var toc = $('#toc');
+      var tocLimMax = post.offset().top + post.height() - navHeight;
+
+      $(window).scroll(function () {
+        var tocLimMin = $('#toc-start').offset().top - navHeight;
+        var scroH = document.body.scrollTop + document.documentElement.scrollTop;
+
+        if (tocLimMin <= scroH && scroH <= tocLimMax) {
+          toc.css({
+            'display': 'block',
+            'position': 'fixed',
+            'top': navHeight,
+          });
+        } else if (scroH <= tocLimMin) {
+          toc.css({
+            'position': '',
+            'top': '',
+          });
+        } else if (scroH > tocLimMax) {
+          toc.css('display', 'none');
+        }
+      });
+      tocbot.init({
+        tocSelector: '#tocbot',
+        contentSelector: '.post-content',
+        headingSelector: 'h1,h2,h3,h4,h5,h6',
+        linkClass: 'tocbot-link',
+        activeLinkClass: 'tocbot-active-link',
+        listClass: 'tocbot-list',
+        isCollapsedClass: 'tocbot-is-collapsed',
+        collapsibleClass: 'tocbot-is-collapsible',
+        scrollSmooth: true,
+      });
+      if ($('.toc-list-item').length > 0) {
+        $('#toc > p').css('visibility', 'visible');
+      }
+      var offset = $('#board-ctn').css('margin-right')
+      $('#toc-ctn').css({
+        'right': offset
+      })
+    });
+  </script>
+
+
+
+
+
+
+
+  <script defer src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+<!-- Plugins -->
+
+
+  
+
+  
+    <!-- Google Analytics -->
+    <script defer>
+      (function (i, s, o, g, r, a, m) {
+        i['GoogleAnalyticsObject'] = r;
+        i[r] = i[r] || function () {
+          (i[r].q = i[r].q || []).push(arguments)
+        }, i[r].l = 1 * new Date();
+        a = s.createElement(o),
+          m = s.getElementsByTagName(o)[0];
+        a.async = 1;
+        a.src = g;
+        m.parentNode.insertBefore(a, m)
+      })(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
+
+      ga('create', 'UA-160202176-1', 'auto');
+      ga('send', 'pageview');
+    </script>
+  
+
+  
+
+  
+
+  
+
+
+
+  <script src="https://cdn.staticfile.org/prettify/188.0.0/prettify.min.js"></script>
+  <script>
+    $(document).ready(function () {
+      $('pre').addClass('prettyprint  linenums');
+      prettyPrint();
+    })
+  </script>
+
+
+
+  <script src="https://cdn.staticfile.org/typed.js/2.0.11/typed.min.js"></script>
+  <script>
+    var typed = new Typed('#subtitle', {
+      strings: [
+        '  ',
+        "文件上传漏洞&nbsp;",
+      ],
+      cursorChar: "_",
+      typeSpeed: 70,
+      loop: false,
+    });
+    typed.stop();
+    $(document).ready(function () {
+      $(".typed-cursor").addClass("h2");
+      typed.start();
+    });
+  </script>
+
+
+
+  <script src="https://cdn.staticfile.org/anchor-js/4.2.2/anchor.min.js"></script>
+  <script>
+    anchors.options = {
+      placement: "right",
+      visible: "hover",
+      
+    };
+    var el = "h1,h2,h3,h4,h5,h6".split(",");
+    var res = [];
+    for (item of el) {
+      res.push(".markdown-body > " + item)
+    }
+    anchors.add(res.join(", "))
+  </script>
+
+
+
+  <script src="/js/local-search.js"></script>
+  <script>
+    var path = "/local-search.xml";
+    var inputArea = document.querySelector("#local-search-input");
+    inputArea.onclick = function () {
+      getSearchFile(path);
+      this.onclick = null
+    }
+  </script>
+
+
+
+  <script src="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.js"></script>
+  <script>
+    $("#post img:not(.no-zoom img, img[no-zoom])").each(
+      function () {
+        var element = document.createElement("a");
+        $(element).attr("data-fancybox", "images");
+        $(element).attr("href", $(this).attr("src"));
+        $(this).wrap(element);
+      }
+    );
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

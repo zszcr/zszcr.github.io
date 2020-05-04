@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+
+
+
+
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/apple-touch-icon.png">
+  <link rel="icon" type="image/png" href="/img/image3.jpg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="description" content="zs0zrc&#39;s blog">
+  <meta name="author" content="zs0zrc">
+  <meta name="keywords" content="pwn CTF security anythings">
+  <title>同源策略与跨域资源共享 - zs0zrc</title>
+
+  <link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/5.12.1/css/all.min.css">
+<link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdn.staticfile.org/mdbootstrap/4.13.0/css/mdb.min.css">
+<link rel="stylesheet" href="https://cdn.staticfile.org/github-markdown-css/3.0.1/github-markdown.min.css">
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1067060_qzomjdt8bmp.css">
+
+
+  <link rel="stylesheet" href="/lib/prettify/tomorrow-night-eighties.min.css">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+  <link rel="stylesheet" href="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.css">
+
+
+<!-- 自定义样式保持在最底部 -->
+
+
+</head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">&nbsp;<strong>zs0zrc</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/">首页</a>
+          </li>
+        
+          
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/archives/">归档</a>
+          </li>
+        
+          
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/categories/">分类</a>
+          </li>
+        
+          
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/tags/">标签</a>
+          </li>
+        
+          
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/about/">关于</a>
+          </li>
+        
+          
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/links/">友链</a>
+          </li>
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;&nbsp;<i class="iconfont icon-search"></i>&nbsp;&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="view intro-2" id="background" parallax=true
+         style="background: url('/img/image1.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask rgba-black-light flex-center">
+          <div class="container text-center white-text fadeInUp">
+            <span class="h2" id="subtitle">
+              
+            </span>
+
+            
+              
+                <p class="mt-3 post-meta">
+                  <i class="fas fa-calendar-alt" aria-hidden="true"></i>
+                  星期六, 五月 2日 2020, 6:34 晚上
+                </p>
+              
+
+              <p class="mt-1">
+                
+                  
+                  <span class="post-meta">
+                    <i class="far fa-chart-bar"></i>
+                    2.2k 字
+                  </span>
+                
+
+                
+                  
+                  <span class="post-meta">
+                      <i class="far fa-clock"></i>
+                      9 分钟
+                  </span>
+                
+
+                
+                  <!-- 不蒜子统计文章PV -->
+                  
+                  <span id="busuanzi_container_page_pv" class="post-meta" style="display: none">
+                    <i class="far fa-eye" aria-hidden="true"></i>
+                    <span id="busuanzi_value_page_pv"></span> 次
+                  </span>
+                
+              </p>
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-md">
+      <div class="container nopadding-md" id="board-ctn">
+        <div class="py-5 z-depth-3" id="board">
+          <div class="post-content mx-auto" id="post">
+            
+              <p class="note note-warning">本文最后更新于：星期日, 五月 3日 2020, 3:21 下午</p>
+            
+            <div class="markdown-body">
+              <h2 id="同源策略与跨域资源共享"><a href="#同源策略与跨域资源共享" class="headerlink" title="同源策略与跨域资源共享"></a>同源策略与跨域资源共享</h2><h3 id="同源策略"><a href="#同源策略" class="headerlink" title="同源策略"></a>同源策略</h3><p><strong>同源策略</strong>(Same Origin Policy, SOP) 是指在Web浏览器中，允许某个网页脚本访问另一个网页的数据，但前提是这两个网页必须有相同的URI、主机名和端口号，一旦两个网站满足上述条件，这两个网站就被认定为具有相同来源。此策略可防止某个网页上的恶意脚本通过该页面的文档对象模型访问另一网页上的敏感数据。 </p>
+<p>同源策略仅适用于脚本，这意味着一些网站可以通过相应的HTML标签来访问不同来源网站上的图片、CSS和动态加载脚本等资源，而跨站请求伪造就是利用同源策略不适用与HTML的缺陷。</p>
+<h4 id="同源的定义"><a href="#同源的定义" class="headerlink" title="同源的定义"></a>同源的定义</h4><p>如果两个页面的协议，端口（如果有指定）和主机都相同，则两个页面具有相同的源。我们也可以把它称为“协议/主机/端口 tuple”，或简单地叫做“tuple”. (“tuple” ，“元”，是指一些事物组合在一起形成一个整体，比如（1，2）叫二元，（1，2，3）叫三元)<br> 就URL来说，URL由协议、域名、端口和路径组成，如果两个URL的协议、域名和端口相同，则表示他们同源。</p>
+<p>例子：</p>
+<p><img src="/picture/image-20200502192216451.png" srcset="/img/loading.gif" alt="image-20200502192216451"></p>
+<h4 id="源的继承"><a href="#源的继承" class="headerlink" title="源的继承"></a>源的继承</h4><p> 在页面中通过 <code>about:blank</code> 或 <code>javascript:</code> URL 执行的脚本会继承打开该 URL 的文档的源，因为这些类型的 URLs 没有包含源服务器的相关信息。 </p>
+<p>例如，<code>about:blank</code>通常作为父脚本写入内容的新的空白弹出窗口的URL（例如用Window.open() 函数）。如果这个弹出窗口也包含JavaScript，则该脚本将从创建它的脚本那里继承对应的源</p>
+<h4 id="限制对象"><a href="#限制对象" class="headerlink" title="限制对象"></a>限制对象</h4><ol>
+<li>Ajax通信</li>
+<li>Cookie的读取</li>
+<li>LocalStorage的读取</li>
+<li>IndexDB的读取</li>
+<li>DOM的操作</li>
+</ol>
+<h4 id="常见的跨域方法"><a href="#常见的跨域方法" class="headerlink" title="常见的跨域方法"></a>常见的跨域方法</h4><p>同源策略控制了不同源之间的交互， 例如在使用XMLHttpRequest 或 img标签时则会受到同源策略的约束。这些交互通常分为三类： </p>
+<ul>
+<li>跨域写操作</li>
+<li>跨域资源嵌入</li>
+<li>跨域读操作</li>
+</ul>
+<p>这三类操作中，只有跨域读操作一般是不被允许的。</p>
+<h5 id="跨域资源的嵌入"><a href="#跨域资源的嵌入" class="headerlink" title="跨域资源的嵌入"></a>跨域资源的嵌入</h5><p>具备src的HTML标签都是可以跨域的。</p>
+<p>一些例子：</p>
+<ul>
+<li>标签嵌入跨域脚本。语法错误信息只能被同源脚本中捕捉到。</li>
+<li>标签嵌入CSS。由于CSS的<a href="http://scarybeastsecurity.blogspot.dk/2009/12/generic-cross-browser-cross-domain.html" target="_blank" rel="noopener">松散的语法规则</a>，CSS的跨域需要一个设置正确的 HTTP 头部 <code>Content-Type</code> ，不同浏览器有不同的限制。</li>
+<li>通过 <code>&lt;img&gt;</code> 展示的图片</li>
+<li>通过 <code>&lt;video&gt;</code>和<code>&lt;audio&gt;</code> 播放的多媒体资源。</li>
+<li>通过<code>&lt;script&gt;</code>跨域加载脚本资源</li>
+<li>通过 <code>&lt;object&gt;</code> 、<code>&lt;applet&gt;</code>和 <code>&lt;embed&gt;</code> 嵌入的插件。</li>
+<li>通过 <code>@font-face</code> 引入的字体。一些浏览器允许跨域字体（ cross-origin fonts），一些需要同源字体（same-origin fonts）。</li>
+<li>通过 <code>iframe</code> 载入的任何资源。站点可以使用 <a href="https://developer.mozilla.org/zh-CN/docs/HTTP/X-Frame-Options" target="_blank" rel="noopener">X-Frame-Options</a> 消息头来阻止这种形式的跨域交互。</li>
+</ul>
+<h5 id="JSONP跨域"><a href="#JSONP跨域" class="headerlink" title="JSONP跨域"></a>JSONP跨域</h5><p>JSONP基本思想：网页中添加一个<code>&lt;script&gt;</code>标签，向服务器请求JSON数据，服务器收到请求后，将数据放到一个指定名字的回调函数中传回来。JSONP是JSON with Padding的缩写，它只支持GET请求。</p>
+<p>前端：</p>
+<pre><code class="html">&lt;script type=&quot;text/javascript&quot;&gt;
+    function showdata(jsondata){
+        alert(jsondata);
+    }
+&lt;/script&gt;
+&lt;script src=&quot;http://192.168.45.140/data.php?callback=showdata&quot;&gt;&lt;/script&gt;
+</code></pre>
+<p>上面的代码向服务器发起了GET请求，请求的查询字符串中的callback参数用于指定回调函数名字。</p>
+<p>后端：</p>
+<pre><code class="php">&lt;?php
+    $callback = $_GET[&#39;callback&#39;];
+    $data = array(&quot;test&quot;,&quot;123&quot;,&quot;abc&quot;);
+    echo $callback.&#39;(&#39;.json_encode($data).&#39;)&#39;;
+</code></pre>
+<h5 id="document-domain"><a href="#document-domain" class="headerlink" title="document.domain"></a>document.domain</h5><p>脚本可以通过document.domain的值设置为其当前域或者其当前域的父域，这意味着相同主域名下的不同子域名的页面，可以通过设置这个值来让它们的域相同，从而实现跨域。</p>
+<p>利用条件：</p>
+<ul>
+<li>两个域名必须属于同一个一级域名</li>
+<li>两者所用的协议和端口要相同</li>
+</ul>
+<p>只需要在跨域的两个页面中设置document.domain就可以了。修改document.domain的方法只适用于不同子域的框架间的交互，需要载如iframe页面。</p>
+<p><code>http://www.demo.com/a.html</code></p>
+<pre><code class="html">document.domain = &#39;demo.com&#39;;
+var ifr = document.createElement(&#39;iframe&#39;);
+ifr.src = &#39;http://script.demo.com/b.html&#39;;
+ifr.style.display = &#39;none&#39;;
+document.body.appendChild(ifr);
+ifr.onload = function(){
+    var doc = ifr.contentDocument || ifr.contentWindow.document;
+    alert(doc.getElementsByTagName(&quot;h1&quot;)[0].childNodes[0].nodeValue);
+};
+</code></pre>
+<p><code>http://script.demo.com/b.html</code></p>
+<pre><code class="html">document.domain = &quot;demo.com&quot;;
+</code></pre>
+<p>a.html通过创建一个iframe，去控制iframe的contentDocument，这样两个网页就可以进行交互了。</p>
+<h5 id="location-hash"><a href="#location-hash" class="headerlink" title="location.hash"></a>location.hash</h5><p>location.hash是 URL 跟在<code>#</code>后的字符串</p>
+<p>例子：</p>
+<blockquote>
+<p><a href="http://www.demo.com/index.html#Examples" target="_blank" rel="noopener">http://www.demo.com/index.html#Examples</a></p>
+</blockquote>
+<p>其中location.hash就是”Examples”</p>
+<p>将要传递的数据附在URL上，利用location.hash来进行传值。这种方法传递的数据长度是有限制的。</p>
+<p>具体做法：</p>
+<p>假设<code>a.demo.com</code>域名下的<code>a.html</code>想和<code>b.demo.com</code>域名下的<code>b.html</code>发生通信，<code>a.html</code>首先创建一个隐藏的iframe, iframe指向<code>b.html</code>，此时通过location.hash来传递参数给<code>b.html</code> 。但是由于同源策略限制，<code>b.html</code>无法返回数据，所以要找一个中间人，位于<code>a.demo.com</code>域名下的<code>c.html</code>，将返回的数据传给<code>c.html</code>。因为<code>c.html</code>和<code>a.html</code>是同源，所以可以通过<code>c.html</code>来将返回的数据传回给<code>a.html</code>，从而达到跨域的效果。</p>
+<p>a.html代码：</p>
+<pre><code class="javascript">&lt;script&gt;
+function startRequest(){  
+    var ifr = document.createElement(&#39;iframe&#39;);  
+    ifr.style.display = &#39;none&#39;;  
+    ifr.src = &#39;http://b.demo.com/b.html#hi&#39;; //传递的location.hash 
+    document.body.appendChild(ifr);  
+}  
+function checkHash() {  
+    try {  
+        var data = location.hash ? location.hash.substring(1) : &#39;&#39;;  
+        if (console.log) {  
+            console.log(&#39;Now the data is &#39;+data);  
+        }  
+    } catch(e) {};  
+}  
+setInterval(checkHash, 2000); 
+window.onload = startRequest;
+&lt;/script&gt;
+</code></pre>
+<p>b.html代码：</p>
+<pre><code class="javascript">window.onload = function() {
+    var ifr = document.createElement(&#39;iframe&#39;);
+    ifr.style.display = &#39;none&#39;;
+    var data = &quot;hello&quot;
+    ifr.src = &#39;http://a.demo.com/c.html#&#39; + data;
+    document.body.appendChild(ifr);
+}
+</code></pre>
+<p>c.html代码：</p>
+<pre><code class="javascript">parent.parent.location.hash = self.location.hash.substring(1);
+</code></pre>
+<h5 id="window-name"><a href="#window-name" class="headerlink" title="window.name"></a>window.name</h5><p>基本原理： indow对象有个name属性，该属性有个特征：即在一个窗口(window)的生命周期内,窗口载入的所有的页面都是共享一个window.name的，每个页面对window.name都有读写的权限，window.name是持久存在一个窗口载入过的所有页面中的。 </p>
+<p>具体实现参考这篇文章： <a href="https://www.cnblogs.com/rainman/archive/2011/02/21/1960044.html" target="_blank" rel="noopener">https://www.cnblogs.com/rainman/archive/2011/02/21/1960044.html</a> </p>
+<h5 id="postMessage"><a href="#postMessage" class="headerlink" title="postMessage"></a>postMessage</h5><p>这个是HTML5新增的方法，用于安全的实现跨域通信。</p>
+<p>语法：</p>
+<blockquote>
+<p>otherWindow.postMessage(message,targetOrigin,[ transfer])</p>
+</blockquote>
+<ul>
+<li>otherWindow: 对接收信息页面的window的引用。可以是页面中iframe的contentWindow属性；window.open的返回值；通过name或下标从window.frames取到的值。</li>
+<li>message: 所要发送的数据，string类型。</li>
+<li>targetOrigin: 用于限制otherWindow，“*”表示不作限制 </li>
+</ul>
+<p>a.demo.com/a.html代码：</p>
+<pre><code class="javascript">&lt;iframe id=&quot;ifr&quot; src=&quot;b.demo.com/b.html&quot;&gt;&lt;/iframe&gt;
+&lt;script type=&quot;text/javascript&quot;&gt;
+window.onload = function() {
+    var ifr = document.getElementById(&#39;ifr&#39;);
+    var targetOrigin = &#39;http://b.demo.com&#39;; 
+    ifr.contentWindow.postMessage(&#39;I was there!&#39;, targetOrigin);
+};
+&lt;/script&gt;
+</code></pre>
+<p>b.demo.com/b.html代码</p>
+<pre><code class="javascript">&lt;script type=&quot;text/javascript&quot;&gt;
+    window.addEventListener(&#39;message&#39;, function(event){
+        // 通过origin属性判断消息来源地址
+        if (event.origin == &#39;http://a.demo.com&#39;) {
+            alert(event.data);    // 弹出&quot;I was there!&quot;
+            alert(event.source);  // 对a.demo.com、a.html中window对象的引用
+                                  // 但由于同源策略，这里event.source不可以访问window对象
+        }
+    }, false);
+&lt;/script&gt;
+</code></pre>
+<h5 id="CORS"><a href="#CORS" class="headerlink" title="CORS"></a>CORS</h5><p>CORS是跨域资源共享，用于让网页的受限资源能被其他域名的网页访问的一种机制。</p>
+<p>工作原理：</p>
+<p>跨域资源共享标准描述了，新的HTTP头部在浏览器有权限的时候，应该以如何的形式发送请求到远程URLs。虽然服务器会有一些校验和认证，但是浏览器有责任去支持这些头部以及增加相关的限制。</p>
+<p>对于能够修改数据的Ajax和HTTP请求方法（特别是 <code>GET</code> 以外的 HTTP 请求，或者搭配某些 MIME 类型的 <code>POST</code> 请求），浏览器必须首先使用 <code>OPTIONS</code> 方法发起一个预检请求（preflight request），从而获知服务端是否允许该跨源请求。服务器确认允许之后，才发起实际的 HTTP 请求。在预检请求的返回中，服务器端也可以通知客户端，是否需要携带身份凭证（包括 Cookies 和 HTTP 认证相关数据）</p>
+<p>具体介绍参考： <a href="http://www.ruanyifeng.com/blog/2016/04/cors.html" target="_blank" rel="noopener">http://www.ruanyifeng.com/blog/2016/04/cors.html</a> </p>
+<h3 id="REFERENCE"><a href="#REFERENCE" class="headerlink" title="REFERENCE"></a>REFERENCE</h3><ul>
+<li><a href="https://lightless.me/archives/review-SOP.html" target="_blank" rel="noopener">https://lightless.me/archives/review-SOP.html</a> </li>
+<li><a href="https://www.anquanke.com/post/id/86078" target="_blank" rel="noopener">https://www.anquanke.com/post/id/86078</a> </li>
+<li><a href="https://xz.aliyun.com/t/224#toc-2" target="_blank" rel="noopener">https://xz.aliyun.com/t/224#toc-2</a> </li>
+<li><a href="https://www.cnblogs.com/rainman/archive/2011/02/20/1959325.html" target="_blank" rel="noopener">https://www.cnblogs.com/rainman/archive/2011/02/20/1959325.html</a> </li>
+<li><a href="https://segmentfault.com/a/1190000000702539#item-5" target="_blank" rel="noopener">https://segmentfault.com/a/1190000000702539#item-5</a> </li>
+<li><a href="https://developer.mozilla.org/zh-CN/docs/Web/Security/Same-origin_policy" target="_blank" rel="noopener">https://developer.mozilla.org/zh-CN/docs/Web/Security/Same-origin_policy</a> </li>
+<li><a href="https://zh.wikipedia.org/wiki/同源策略" target="_blank" rel="noopener">https://zh.wikipedia.org/wiki/%E5%90%8C%E6%BA%90%E7%AD%96%E7%95%A5</a> </li>
+</ul>
+
+            </div>
+            <hr>
+            <div>
+              <p>
+                
+                  <span>
+                <i class="iconfont icon-inbox"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/WEB/">WEB</a>
+                      &nbsp;
+                    
+                  </span>&nbsp;&nbsp;
+                
+                
+              </p>
+              
+                <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a href="https://zh.wikipedia.org/wiki/Wikipedia:CC_BY-SA_3.0%E5%8D%8F%E8%AE%AE%E6%96%87%E6%9C%AC" rel="nofollow noopener">CC BY-SA 3.0协议</a> 。转载请注明出处！</p>
+              
+            </div>
+
+            
+              <!-- Comments -->
+              <div class="comments" id="comments">
+                
+                
+  <script defer src="https://utteranc.es/client.js" repo="zszcr/comment" issue-term="pathname" label="utterances" theme="github-light" crossorigin="anonymous" async>
+  </script>
+
+
+              </div>
+            
+          </div>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc-start"></div>
+<div id="toc">
+  <p class="h5"><i class="far fa-list-alt"></i>&nbsp;目录</p>
+  <div id="tocbot"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+  </main>
+
+  
+    <a class="z-depth-1" id="scroll-top-button" href="#" role="button">
+      <i class="fa fa-chevron-up scroll-top-arrow" aria-hidden="true"></i>
+    </a>
+  
+
+  
+    <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+  
+
+  
+
+  
+
+  <footer class="mt-5">
+  <div class="text-center py-3">
+    <div>
+      <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><b>Hexo</b></a>
+      <i class="iconfont icon-love"></i>
+      <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"> <b>Fluid</b></a>
+    </div>
+    
+  <div>
+    
+      <!-- 不蒜子统计PV -->
+      
+      <span id="busuanzi_container_site_pv" style="display: none">
+      总访问量 <span id="busuanzi_value_site_pv"></span> 次
+    </span>
+    
+    
+      <!-- 不蒜子统计UV -->
+      
+      <span id="busuanzi_container_site_uv" style="display: none">
+      总访客数 <span id="busuanzi_value_site_uv"></span> 人
+    </span>
+    
+  </div>
+
+
+    
+
+    
+  </div>
+</footer>
+
+<!-- SCRIPTS -->
+<script src="https://cdn.staticfile.org/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://cdn.staticfile.org/popper.js/1.16.1/umd/popper.min.js"></script>
+<script src="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/js/bootstrap.min.js"></script>
+<script src="https://cdn.staticfile.org/mdbootstrap/4.13.0/js/mdb.min.js"></script>
+<script src="/js/main.js"></script>
+
+
+  <script src="/js/lazyload.js"></script>
+
+
+
+  
+  <script src="https://cdn.staticfile.org/tocbot/4.10.0/tocbot.min.js"></script>
+  <script>
+    $(document).ready(function () {
+      var navHeight = $('#navbar').height();
+      var post = $('#post');
+      var toc = $('#toc');
+      var tocLimMax = post.offset().top + post.height() - navHeight;
+
+      $(window).scroll(function () {
+        var tocLimMin = $('#toc-start').offset().top - navHeight;
+        var scroH = document.body.scrollTop + document.documentElement.scrollTop;
+
+        if (tocLimMin <= scroH && scroH <= tocLimMax) {
+          toc.css({
+            'display': 'block',
+            'position': 'fixed',
+            'top': navHeight,
+          });
+        } else if (scroH <= tocLimMin) {
+          toc.css({
+            'position': '',
+            'top': '',
+          });
+        } else if (scroH > tocLimMax) {
+          toc.css('display', 'none');
+        }
+      });
+      tocbot.init({
+        tocSelector: '#tocbot',
+        contentSelector: '.post-content',
+        headingSelector: 'h1,h2,h3,h4,h5,h6',
+        linkClass: 'tocbot-link',
+        activeLinkClass: 'tocbot-active-link',
+        listClass: 'tocbot-list',
+        isCollapsedClass: 'tocbot-is-collapsed',
+        collapsibleClass: 'tocbot-is-collapsible',
+        scrollSmooth: true,
+      });
+      if ($('.toc-list-item').length > 0) {
+        $('#toc > p').css('visibility', 'visible');
+      }
+      var offset = $('#board-ctn').css('margin-right')
+      $('#toc-ctn').css({
+        'right': offset
+      })
+    });
+  </script>
+
+
+
+
+
+
+
+  <script defer src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+<!-- Plugins -->
+
+
+  
+
+  
+    <!-- Google Analytics -->
+    <script defer>
+      (function (i, s, o, g, r, a, m) {
+        i['GoogleAnalyticsObject'] = r;
+        i[r] = i[r] || function () {
+          (i[r].q = i[r].q || []).push(arguments)
+        }, i[r].l = 1 * new Date();
+        a = s.createElement(o),
+          m = s.getElementsByTagName(o)[0];
+        a.async = 1;
+        a.src = g;
+        m.parentNode.insertBefore(a, m)
+      })(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
+
+      ga('create', 'UA-160202176-1', 'auto');
+      ga('send', 'pageview');
+    </script>
+  
+
+  
+
+  
+
+  
+
+
+
+  <script src="https://cdn.staticfile.org/prettify/188.0.0/prettify.min.js"></script>
+  <script>
+    $(document).ready(function () {
+      $('pre').addClass('prettyprint  linenums');
+      prettyPrint();
+    })
+  </script>
+
+
+
+  <script src="https://cdn.staticfile.org/typed.js/2.0.11/typed.min.js"></script>
+  <script>
+    var typed = new Typed('#subtitle', {
+      strings: [
+        '  ',
+        "同源策略与跨域资源共享&nbsp;",
+      ],
+      cursorChar: "_",
+      typeSpeed: 70,
+      loop: false,
+    });
+    typed.stop();
+    $(document).ready(function () {
+      $(".typed-cursor").addClass("h2");
+      typed.start();
+    });
+  </script>
+
+
+
+  <script src="https://cdn.staticfile.org/anchor-js/4.2.2/anchor.min.js"></script>
+  <script>
+    anchors.options = {
+      placement: "right",
+      visible: "hover",
+      
+    };
+    var el = "h1,h2,h3,h4,h5,h6".split(",");
+    var res = [];
+    for (item of el) {
+      res.push(".markdown-body > " + item)
+    }
+    anchors.add(res.join(", "))
+  </script>
+
+
+
+  <script src="/js/local-search.js"></script>
+  <script>
+    var path = "/local-search.xml";
+    var inputArea = document.querySelector("#local-search-input");
+    inputArea.onclick = function () {
+      getSearchFile(path);
+      this.onclick = null
+    }
+  </script>
+
+
+
+  <script src="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.js"></script>
+  <script>
+    $("#post img:not(.no-zoom img, img[no-zoom])").each(
+      function () {
+        var element = document.createElement("a");
+        $(element).attr("data-fancybox", "images");
+        $(element).attr("href", $(this).attr("src"));
+        $(this).wrap(element);
+      }
+    );
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>
