@@ -149,45 +149,6 @@
     
     
     <div class="col-12 col-md-12 mx-auto index-info">
-      <a href="/2019/05/28/2019-5-28-ChakraCore基础/">
-        <p class="h4 index-header">ChakraCore基础知识笔记</p>
-      </a>
-
-      <a href="/2019/05/28/2019-5-28-ChakraCore基础/">
-        
-        
-          
-        
-        <div class="index-excerpt">
-          <div class="index-text mb-1">ChakraCore简介结构：
-基本执行流程：当一个函数第一次执行时，ChakraCore 的语法解析器（parser）产生一个抽象语法树（AST）来代表这个函数的源码，随后AST 会被翻译为字节码（bytecode），这些字节码将由ChakraCore 解释器直接执行。在解释执行期间解释器会收集一些程序信息，如类型信息、调用次数，这些信息会被用来帮助JIT 编译器生成高度优化的机器码。当ChakraCore 在解释器中发现一个函数或者循环体（loop-body）被多次执行时，会将其送入后台JIT 编译队列为这个函数生成优化的代码。一旦这些优化代码准备就绪，ChakraCore 就会替换函数和</div>
-        </div>
-      </a>
-
-      <div class="index-btm">
-        
-          <i class="iconfont icon-riqi2"></i>&nbsp;2019-05-28&nbsp;&nbsp;
-        
-        
-          <i class="iconfont icon-inbox"></i>
-          
-            <a href="/categories/JS-Engine/">JS-Engine</a>&nbsp;
-          &nbsp;
-        
-        
-          <i class="iconfont icon-tag"></i>
-          
-            <a href="/tags/ChakraCore/">ChakraCore</a>&nbsp;
-          
-        
-      </div>
-    </div>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <div class="col-12 col-md-12 mx-auto index-info">
       <a href="/2019/05/13/2019-5-13-JavaScriptCore的基础知识/">
         <p class="h4 index-header">JavaScriptCore的基础知识</p>
       </a>
@@ -604,11 +565,52 @@ boot.sh
     </div>
   </div>
 
+  <div class="row mx-auto index-card">
+    
+    
+    <div class="col-12 col-md-12 mx-auto index-info">
+      <a href="/2019/01/13/2019-11-13-逆向虚拟机保护学习/">
+        <p class="h4 index-header">逆向学习之虚拟机保护</p>
+      </a>
+
+      <a href="/2019/01/13/2019-11-13-逆向虚拟机保护学习/">
+        
+        
+          
+        
+        <div class="index-excerpt">
+          <div class="index-text mb-1">考试周终于过去了，是时候又要开始学习了。所以就研究下逆向中的虚拟机保护技术，下面记录下学习的过程，以及一些收获。
+基础概念逆向中的虚拟机保护是一种基于虚拟机的代码保护技术。它将基于x86汇编系统中的可执行代码转换为字节码指令系统的代码，来达到不被轻易逆向和篡改的目的。简单点说就是将程序的代码转换自定义的操作码(opcode)，然后在程序执行时再通过解释这些操作码，选择对应的函数执行，从而实现程序原有的功能。
+vm_start：虚拟机的入口函数，对虚拟机环境进行初始化
+vm_dispatcher:调度器，解释opcode，并选择对应的handle函数执行，当handle执行完后会跳回这里，形成一</div>
+        </div>
+      </a>
+
+      <div class="index-btm">
+        
+          <i class="iconfont icon-riqi2"></i>&nbsp;2019-01-13&nbsp;&nbsp;
+        
+        
+          <i class="iconfont icon-inbox"></i>
+          
+            <a href="/categories/REVERSE/">REVERSE</a>&nbsp;
+          &nbsp;
+        
+        
+          <i class="iconfont icon-tag"></i>
+          
+            <a href="/tags/Vmare-protect/">Vmare protect</a>&nbsp;
+          
+        
+      </div>
+    </div>
+  </div>
+
 
 
   <nav aria-label="index posts navigation">
     <span class="pagination pg-blue justify-content-center mt-5" id="pagination">
-      <a class="extend prev" rel="prev" href="/"><i class="fas fa-angle-double-left"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/">7</a><a class="extend next" rel="next" href="/page/3/"><i class="fas fa-angle-double-right"></i></a>
+      <a class="extend prev" rel="prev" href="/"><i class="fas fa-angle-double-left"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><span class="space">&hellip;</span><a class="page-number" href="/page/6/">6</a><a class="extend next" rel="next" href="/page/3/"><i class="fas fa-angle-double-right"></i></a>
     </span>
   </nav>
   

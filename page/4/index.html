@@ -149,59 +149,6 @@
     
     
     <div class="col-12 col-md-12 mx-auto index-info">
-      <a href="/2018/10/16/2018-10-14-护网杯wp及复现/">
-        <p class="h4 index-header">护网杯wp及复现</p>
-      </a>
-
-      <a href="/2018/10/16/2018-10-14-护网杯wp及复现/">
-        
-        
-          
-        
-        <div class="index-excerpt">
-          <div class="index-text mb-1">昨天刚打完护网杯线上赛，被自己菜哭，菜的真实，所以现在来赛后复现了
-start签到题，就是覆盖栈上的变量为特定的值，有点新奇的就是有一个变量要覆盖成小数0.1
-0.1 在内存中存储形式为 0x3fb999999999999a
-exp：
-#!/usr/bin/env python
-from pwn import *
-local = 0
-
-if local:
-    p = process(&#39;./gettingstart&#39;)
-    elf = ELF(&#39;./gettingstart&#39;)
-    libc = elf.libc
-else:
-    host = &#</div>
-        </div>
-      </a>
-
-      <div class="index-btm">
-        
-          <i class="iconfont icon-riqi2"></i>&nbsp;2018-10-16&nbsp;&nbsp;
-        
-        
-          <i class="iconfont icon-inbox"></i>
-          
-            <a href="/categories/CTF-s-writeup/">CTF&#39;s writeup</a>&nbsp;
-          &nbsp;
-        
-        
-          <i class="iconfont icon-tag"></i>
-          
-            <a href="/tags/writeup/">writeup</a>&nbsp;
-          
-            <a href="/tags/pwn/">pwn</a>&nbsp;
-          
-        
-      </div>
-    </div>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <div class="col-12 col-md-12 mx-auto index-info">
       <a href="/2018/10/07/2018-10-7-Ubuntu主题Flatabulous安装/">
         <p class="h4 index-header">Ubuntu主题Flatabulous安装</p>
       </a>
@@ -642,11 +589,58 @@ int service()
     </div>
   </div>
 
+  <div class="row mx-auto index-card">
+    
+    
+    <div class="col-12 col-md-12 mx-auto index-info">
+      <a href="/2018/09/24/2018-9-24-tictactoe2-writeup/">
+        <p class="h4 index-header">tictactoe2 writeup</p>
+      </a>
+
+      <a href="/2018/09/24/2018-9-24-tictactoe2-writeup/">
+        
+        
+          
+        
+        <div class="index-excerpt">
+          <div class="index-text mb-1">防护机制：
+[*] &#39;/home/zs0zrc/pwn/Scoreboard/tictactoe/tictactoe&#39;
+    Arch:     i386-32-little
+    RELRO:    Partial RELRO
+    Stack:    Canary found
+    NX:       NX enabled
+    PIE:      No PIE (0x8048000)
+这题文件和tictactoe1是一样的，只不过这个要求getshell，漏洞点也就是一个任意地址写，我对着分析了半天除了想到将n修改成0，使得可以进行9次任意地址写 ，就想不到什么</div>
+        </div>
+      </a>
+
+      <div class="index-btm">
+        
+          <i class="iconfont icon-riqi2"></i>&nbsp;2018-09-24&nbsp;&nbsp;
+        
+        
+          <i class="iconfont icon-inbox"></i>
+          
+            <a href="/categories/hackme-inndy-writeup/">hackme.inndy_writeup</a>&nbsp;
+          &nbsp;
+        
+        
+          <i class="iconfont icon-tag"></i>
+          
+            <a href="/tags/writeup/">writeup</a>&nbsp;
+          
+            <a href="/tags/pwn/">pwn</a>&nbsp;
+          
+        
+      </div>
+    </div>
+  </div>
+
 
 
   <nav aria-label="index posts navigation">
     <span class="pagination pg-blue justify-content-center mt-5" id="pagination">
-      <a class="extend prev" rel="prev" href="/page/3/"><i class="fas fa-angle-double-left"></i></a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="page-number current">4</span><a class="page-number" href="/page/5/">5</a><a class="page-number" href="/page/6/">6</a><a class="page-number" href="/page/7/">7</a><a class="extend next" rel="next" href="/page/5/"><i class="fas fa-angle-double-right"></i></a>
+      <a class="extend prev" rel="prev" href="/page/3/"><i class="fas fa-angle-double-left"></i></a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="page-number current">4</span><a class="page-number" href="/page/5/">5</a><a class="page-number" href="/page/6/">6</a><a class="extend next" rel="next" href="/page/5/"><i class="fas fa-angle-double-right"></i></a>
     </span>
   </nav>
   
