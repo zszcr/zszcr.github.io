@@ -149,6 +149,96 @@
     
     
     <div class="col-12 col-md-12 mx-auto index-info">
+      <a href="/2019/01/19/2019-1-19-内核模块编程学习笔记/">
+        <p class="h4 index-header">linux内核模块编程学习笔记</p>
+      </a>
+
+      <a href="/2019/01/19/2019-1-19-内核模块编程学习笔记/">
+        
+        
+          
+        
+        <div class="index-excerpt">
+          <div class="index-text mb-1">最近想研究下linux内核，就开始学习内核模块编程，写篇博客，做下学习笔记。
+内核模块编程模块的定义内核模块就是具有独立功能的程序，它能被单独编译，但是不能单独运行，它的运行必须被链接到内核作为内核的一部分在内核空间运行。
+用户编程和内核模块编程的区别
+
+基本组成模块通常由一组函数和数据结构组成，用来实现一种文件系统、一个驱动程序或其他内核上层的功能。
+内核编程3个必须的头文件
+#include &lt;linux/module.h&gt;
+#include &lt;linux/kernel.h&gt;
+#include &lt;linux/init.h&gt;
+
+必须的两个函数
+//模块加载</div>
+        </div>
+      </a>
+
+      <div class="index-btm">
+        
+          <i class="iconfont icon-riqi2"></i>&nbsp;2019-01-19&nbsp;&nbsp;
+        
+        
+          <i class="iconfont icon-inbox"></i>
+          
+            <a href="/categories/CODE/">CODE</a>&nbsp;
+          &nbsp;
+        
+        
+          <i class="iconfont icon-tag"></i>
+          
+            <a href="/tags/kernel/">kernel</a>&nbsp;
+          
+        
+      </div>
+    </div>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <div class="col-12 col-md-12 mx-auto index-info">
+      <a href="/2019/01/13/2019-11-13-逆向虚拟机保护学习/">
+        <p class="h4 index-header">逆向学习之虚拟机保护</p>
+      </a>
+
+      <a href="/2019/01/13/2019-11-13-逆向虚拟机保护学习/">
+        
+        
+          
+        
+        <div class="index-excerpt">
+          <div class="index-text mb-1">考试周终于过去了，是时候又要开始学习了。所以就研究下逆向中的虚拟机保护技术，下面记录下学习的过程，以及一些收获。
+基础概念逆向中的虚拟机保护是一种基于虚拟机的代码保护技术。它将基于x86汇编系统中的可执行代码转换为字节码指令系统的代码，来达到不被轻易逆向和篡改的目的。简单点说就是将程序的代码转换自定义的操作码(opcode)，然后在程序执行时再通过解释这些操作码，选择对应的函数执行，从而实现程序原有的功能。
+vm_start：虚拟机的入口函数，对虚拟机环境进行初始化
+vm_dispatcher:调度器，解释opcode，并选择对应的handle函数执行，当handle执行完后会跳回这里，形成一</div>
+        </div>
+      </a>
+
+      <div class="index-btm">
+        
+          <i class="iconfont icon-riqi2"></i>&nbsp;2019-01-13&nbsp;&nbsp;
+        
+        
+          <i class="iconfont icon-inbox"></i>
+          
+            <a href="/categories/REVERSE/">REVERSE</a>&nbsp;
+          &nbsp;
+        
+        
+          <i class="iconfont icon-tag"></i>
+          
+            <a href="/tags/Vmare-protect/">Vmare protect</a>&nbsp;
+          
+        
+      </div>
+    </div>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <div class="col-12 col-md-12 mx-auto index-info">
       <a href="/2018/11/20/2018-11-20-2018-高校网络信息安全管理运维挑战赛-pwn-writeup/">
         <p class="h4 index-header">2018-高校网络信息安全管理运维挑战赛-pwn-writeup</p>
       </a>
@@ -524,110 +614,11 @@ void _</div>
     </div>
   </div>
 
-  <div class="row mx-auto index-card">
-    
-    
-    <div class="col-12 col-md-12 mx-auto index-info">
-      <a href="/2018/10/23/2018-10-23-HitconCTF-复现/">
-        <p class="h4 index-header">HitconCTF 复现</p>
-      </a>
-
-      <a href="/2018/10/23/2018-10-23-HitconCTF-复现/">
-        
-        
-          
-        
-        <div class="index-excerpt">
-          <div class="index-text mb-1">toooo这道题是我在苦逼的写完了社会实践报告后刷D4rk3r大佬的博客看到的，感觉很有意思，就先看了这道题
-这题是一道arm的pwn，可是它被分类到了misc，可能大佬觉得这是脑洞题吧
-查看了下程序的架构
-☁  tooooo  file tooooo 
-tooooo: ELF 64-bit LSB shared object, ARM aarch64, version 1 (SYSV), dynamically linked, interpreter /lib/ld-linux-aarch64.so.1, for GNU/Linux 3.7.0, BuildID[sha1]=9e7e0f87</div>
-        </div>
-      </a>
-
-      <div class="index-btm">
-        
-          <i class="iconfont icon-riqi2"></i>&nbsp;2018-10-23&nbsp;&nbsp;
-        
-        
-          <i class="iconfont icon-inbox"></i>
-          
-            <a href="/categories/CTF-s-writeup/">CTF&#39;s writeup</a>&nbsp;
-          &nbsp;
-        
-        
-          <i class="iconfont icon-tag"></i>
-          
-            <a href="/tags/writeup/">writeup</a>&nbsp;
-          
-            <a href="/tags/pwn/">pwn</a>&nbsp;
-          
-            <a href="/tags/Hitcon/">Hitcon</a>&nbsp;
-          
-        
-      </div>
-    </div>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <div class="col-12 col-md-12 mx-auto index-info">
-      <a href="/2018/10/16/2018-10-14-护网杯wp及复现/">
-        <p class="h4 index-header">护网杯wp及复现</p>
-      </a>
-
-      <a href="/2018/10/16/2018-10-14-护网杯wp及复现/">
-        
-        
-          
-        
-        <div class="index-excerpt">
-          <div class="index-text mb-1">昨天刚打完护网杯线上赛，被自己菜哭，菜的真实，所以现在来赛后复现了
-start签到题，就是覆盖栈上的变量为特定的值，有点新奇的就是有一个变量要覆盖成小数0.1
-0.1 在内存中存储形式为 0x3fb999999999999a
-exp：
-#!/usr/bin/env python
-from pwn import *
-local = 0
-
-if local:
-    p = process(&#39;./gettingstart&#39;)
-    elf = ELF(&#39;./gettingstart&#39;)
-    libc = elf.libc
-else:
-    host = &#</div>
-        </div>
-      </a>
-
-      <div class="index-btm">
-        
-          <i class="iconfont icon-riqi2"></i>&nbsp;2018-10-16&nbsp;&nbsp;
-        
-        
-          <i class="iconfont icon-inbox"></i>
-          
-            <a href="/categories/CTF-s-writeup/">CTF&#39;s writeup</a>&nbsp;
-          &nbsp;
-        
-        
-          <i class="iconfont icon-tag"></i>
-          
-            <a href="/tags/writeup/">writeup</a>&nbsp;
-          
-            <a href="/tags/pwn/">pwn</a>&nbsp;
-          
-        
-      </div>
-    </div>
-  </div>
-
 
 
   <nav aria-label="index posts navigation">
     <span class="pagination pg-blue justify-content-center mt-5" id="pagination">
-      <a class="extend prev" rel="prev" href="/page/2/"><i class="fas fa-angle-double-left"></i></a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><a class="page-number" href="/page/5/">5</a><a class="page-number" href="/page/6/">6</a><a class="extend next" rel="next" href="/page/4/"><i class="fas fa-angle-double-right"></i></a>
+      <a class="extend prev" rel="prev" href="/page/2/"><i class="fas fa-angle-double-left"></i></a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><a class="page-number" href="/page/5/">5</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/">7</a><a class="extend next" rel="next" href="/page/4/"><i class="fas fa-angle-double-right"></i></a>
     </span>
   </nav>
   

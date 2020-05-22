@@ -149,6 +149,90 @@
     
     
     <div class="col-12 col-md-12 mx-auto index-info">
+      <a href="/2020/05/21/2020-5-21-sqli-labs-writeup/">
+        <p class="h4 index-header">sqli-labs writeup</p>
+      </a>
+
+      <a href="/2020/05/21/2020-5-21-sqli-labs-writeup/">
+        
+        
+          
+        
+        <div class="index-excerpt">
+          <div class="index-text mb-1">sqli-labs writeup刷刷sqli-labs ，学习下sql注入漏洞
+环境是win10虚拟机, phpstudy搭建的
+php版本:5.4.45
+mysql版本:5.7.26
+less-1单引号闭合
+payload:
+获取表名
+?id=0&#39; union select 1,2,group_concat(table_name) from information_schema.tables where table_schema=database() --+
+获取列名
+?id=0&#39; union select 1,2,group_concat(column_name) fro</div>
+        </div>
+      </a>
+
+      <div class="index-btm">
+        
+          <i class="iconfont icon-riqi2"></i>&nbsp;2020-05-21&nbsp;&nbsp;
+        
+        
+          <i class="iconfont icon-inbox"></i>
+          
+            <a href="/categories/WEB/">WEB</a>&nbsp;
+          &nbsp;
+        
+        
+      </div>
+    </div>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <div class="col-12 col-md-12 mx-auto index-info">
+      <a href="/2020/05/13/2020-5-13-SQL注入漏洞学习/">
+        <p class="h4 index-header">SQL注入学习</p>
+      </a>
+
+      <a href="/2020/05/13/2020-5-13-SQL注入漏洞学习/">
+        
+        
+          
+        
+        <div class="index-excerpt">
+          <div class="index-text mb-1">SQL注入学习SQL注入学习笔记
+漏洞原理服务端在与数据库进行交互时，使用了字符串拼接的方式构造SQL语句，并且服务端没有对用户提交的参数进行严格的过滤，导致用户可以将SQL语句插入到可控参数中，改变原有的SQL语义结构，从而打到执行攻击者所预期的结果。
+例如：
+开发者使用下面的SQL拼接语句来向数据库查询数据
+
+$sql = “select id, username from user where id = $id”;
+
+其中$id是用户可控的参数，如果用户传入1 union select 1,database() limit 1,1 ,那么拼接后的SQL语义结构就会被改变，变成：
+
+ se</div>
+        </div>
+      </a>
+
+      <div class="index-btm">
+        
+          <i class="iconfont icon-riqi2"></i>&nbsp;2020-05-13&nbsp;&nbsp;
+        
+        
+          <i class="iconfont icon-inbox"></i>
+          
+            <a href="/categories/WEB/">WEB</a>&nbsp;
+          &nbsp;
+        
+        
+      </div>
+    </div>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <div class="col-12 col-md-12 mx-auto index-info">
       <a href="/2020/05/03/2020-5-3-XSS学习笔记/">
         <p class="h4 index-header">XSS学习笔记</p>
       </a>
@@ -465,104 +549,11 @@ HTTP是媒体独立的
     </div>
   </div>
 
-  <div class="row mx-auto index-card">
-    
-    
-    <div class="col-12 col-md-12 mx-auto index-info">
-      <a href="/2019/06/01/2019-6-1-CVE-2018-8372/">
-        <p class="h4 index-header">CVE-2018-8372</p>
-      </a>
-
-      <a href="/2019/06/01/2019-6-1-CVE-2018-8372/">
-        
-        
-          
-        
-        <div class="index-excerpt">
-          <div class="index-text mb-1">跟着大佬博客学习Chakra
-JIT优化eliminate duplicate checktest1.js
-var arr = [1.1,2.2];
-function jit()
-{
-    arr[1] = 2.2;
-    arr[2] = 1.1;
-}
-
-run：
-
-.\ch.exe .\test1.js -bgjit- -mic -dump:Globopt -OutputFile:output.txt
-
-
-在第一次对arr数组操作时，会检查arr的类型，而在第二次对arr数组操作时，就不需要BailOnNotArray的检查了，这是JS引擎对冗余检查的优化，但是当其中可能存在带回调的操</div>
-        </div>
-      </a>
-
-      <div class="index-btm">
-        
-          <i class="iconfont icon-riqi2"></i>&nbsp;2019-06-01&nbsp;&nbsp;
-        
-        
-          <i class="iconfont icon-inbox"></i>
-          
-            <a href="/categories/JS-Engine/">JS-Engine</a>&nbsp;
-          
-            <a href="/categories/JS-Engine/CVE/">CVE</a>&nbsp;
-          &nbsp;
-        
-        
-          <i class="iconfont icon-tag"></i>
-          
-            <a href="/tags/ChakraCore/">ChakraCore</a>&nbsp;
-          
-        
-      </div>
-    </div>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <div class="col-12 col-md-12 mx-auto index-info">
-      <a href="/2019/05/28/2019-5-28-ChakraCore基础/">
-        <p class="h4 index-header">ChakraCore基础知识笔记</p>
-      </a>
-
-      <a href="/2019/05/28/2019-5-28-ChakraCore基础/">
-        
-        
-          
-        
-        <div class="index-excerpt">
-          <div class="index-text mb-1">ChakraCore简介结构：
-基本执行流程：当一个函数第一次执行时，ChakraCore 的语法解析器（parser）产生一个抽象语法树（AST）来代表这个函数的源码，随后AST 会被翻译为字节码（bytecode），这些字节码将由ChakraCore 解释器直接执行。在解释执行期间解释器会收集一些程序信息，如类型信息、调用次数，这些信息会被用来帮助JIT 编译器生成高度优化的机器码。当ChakraCore 在解释器中发现一个函数或者循环体（loop-body）被多次执行时，会将其送入后台JIT 编译队列为这个函数生成优化的代码。一旦这些优化代码准备就绪，ChakraCore 就会替换函数和</div>
-        </div>
-      </a>
-
-      <div class="index-btm">
-        
-          <i class="iconfont icon-riqi2"></i>&nbsp;2019-05-28&nbsp;&nbsp;
-        
-        
-          <i class="iconfont icon-inbox"></i>
-          
-            <a href="/categories/JS-Engine/">JS-Engine</a>&nbsp;
-          &nbsp;
-        
-        
-          <i class="iconfont icon-tag"></i>
-          
-            <a href="/tags/ChakraCore/">ChakraCore</a>&nbsp;
-          
-        
-      </div>
-    </div>
-  </div>
-
 
 
   <nav aria-label="index posts navigation">
     <span class="pagination pg-blue justify-content-center mt-5" id="pagination">
-      <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/6/">6</a><a class="extend next" rel="next" href="/page/2/"><i class="fas fa-angle-double-right"></i></a>
+      <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/">7</a><a class="extend next" rel="next" href="/page/2/"><i class="fas fa-angle-double-right"></i></a>
     </span>
   </nav>
   
