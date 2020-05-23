@@ -149,6 +149,57 @@
     
     
     <div class="col-12 col-md-12 mx-auto index-info">
+      <a href="/2018/05/10/2018-5-10-echo-和-echo2-writeup/">
+        <p class="h4 index-header">echo 和 echo2 writeup</p>
+      </a>
+
+      <a href="/2018/05/10/2018-5-10-echo-和-echo2-writeup/">
+        
+        
+          
+        
+        <div class="index-excerpt">
+          <div class="index-text mb-1">hackme.inndy 的echo 和 echo2
+echo防护机制：
+
+32位的开启了NX的程序ida反编译一下：
+
+很明显的一个格式化字符串漏洞，加上程序中存在system函数，所以可以将printf_got覆盖成system函数，再传入”/bin/sh” 来getshell这里我用了pwntools库中的fmtstr_payload()函数
+exp:
+from pwn import*
+context.log_level= &quot;debug&quot;
+
+p = remote(&#39;hackme.inndy.tw&#39;,7711) 
+#p = process(&#39;./</div>
+        </div>
+      </a>
+
+      <div class="index-btm">
+        
+          <i class="iconfont icon-riqi2"></i>&nbsp;2018-05-10&nbsp;&nbsp;
+        
+        
+          <i class="iconfont icon-inbox"></i>
+          
+            <a href="/categories/hackme-inndy-writeup/">hackme.inndy_writeup</a>&nbsp;
+          &nbsp;
+        
+        
+          <i class="iconfont icon-tag"></i>
+          
+            <a href="/tags/writeup/">writeup</a>&nbsp;
+          
+            <a href="/tags/pwn/">pwn</a>&nbsp;
+          
+        
+      </div>
+    </div>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <div class="col-12 col-md-12 mx-auto index-info">
       <a href="/2018/05/09/2018-5-9-homework-writeup/">
         <p class="h4 index-header">homework writeup</p>
       </a>
