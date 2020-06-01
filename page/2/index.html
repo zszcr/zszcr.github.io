@@ -149,6 +149,42 @@
     
     
     <div class="col-12 col-md-12 mx-auto index-info">
+      <a href="/2020/03/13/2020-3-13-curl用法/">
+        <p class="h4 index-header">curl命令行工具的用法</p>
+      </a>
+
+      <a href="/2020/03/13/2020-3-13-curl用法/">
+        
+        
+          
+        
+        <div class="index-excerpt">
+          <div class="index-text mb-1">curl命令行工具的用法curl简介curl是一个开源的用于数据传输的命令行工具与库，主要用来发出网络请求，然和得到和提取数据，最后显示在“标准输出”上。它使用URL语法格式，支持很多种协议，如 DICT, FILE, FTP, FTPS, GOPHER, HTTP, HTTPS 等等。curl库提供了很多功能，可以用来进行HTTP/HTTPS请求，上传/下载文件等，并且它还支持Cookie、认证、代理、限速等。
+curl的使用访问URLcurl命令后面直接加上要访问的网址，就可以看到网页的源码 ，它不加任何参数时发出的请求是GET请求。
+
+如果想将这个网页保存下来，可以使用’-o’参数，指定</div>
+        </div>
+      </a>
+
+      <div class="index-btm">
+        
+          <i class="iconfont icon-riqi2"></i>&nbsp;2020-03-13&nbsp;&nbsp;
+        
+        
+          <i class="iconfont icon-inbox"></i>
+          
+            <a href="/categories/tool/">tool</a>&nbsp;
+          &nbsp;
+        
+        
+      </div>
+    </div>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <div class="col-12 col-md-12 mx-auto index-info">
       <a href="/2020/03/11/2020-3-11-HTTP学习笔记/">
         <p class="h4 index-header">HTTP学习笔记</p>
       </a>
@@ -542,58 +578,6 @@ UAFUAF也就是use after free，这种情况的产生是因为free掉了chunk后
             <a href="/tags/pwn/">pwn</a>&nbsp;
           
             <a href="/tags/houseofxxx/">houseofxxx</a>&nbsp;
-          
-        
-      </div>
-    </div>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <div class="col-12 col-md-12 mx-auto index-info">
-      <a href="/2019/02/15/2019-2-15-kernel-UAF/">
-        <p class="h4 index-header">【kernel-UAF】babydriver</p>
-      </a>
-
-      <a href="/2019/02/15/2019-2-15-kernel-UAF/">
-        
-        
-          
-        
-        <div class="index-excerpt">
-          <div class="index-text mb-1">题目来源：CISCN2017 babydriver
-拿到手后是一个压缩包，解压后有三个文件
-boot.sh        #启动脚本
-bzImage        #内核binary
-rootfs.cpio    #文件系统映像
-boot.sh
-
-​    可以发现开启了smep防护，而smep保护主要功能是禁止内核执行用户态的代码
-将rootfs.cpio解压，查看里面的文件
-
-​    可以发现flag的owner被设为root，以及它加载了babydriver.ko这个内核模块。很明显，漏洞应该就在这个模块中
-防护机制：
-☁  4.4.72  checksec babydriver.ko</div>
-        </div>
-      </a>
-
-      <div class="index-btm">
-        
-          <i class="iconfont icon-riqi2"></i>&nbsp;2019-02-15&nbsp;&nbsp;
-        
-        
-          <i class="iconfont icon-inbox"></i>
-          
-            <a href="/categories/Linux-Kernel/">Linux_Kernel</a>&nbsp;
-          &nbsp;
-        
-        
-          <i class="iconfont icon-tag"></i>
-          
-            <a href="/tags/pwn/">pwn</a>&nbsp;
-          
-            <a href="/tags/kernel/">kernel</a>&nbsp;
           
         
       </div>

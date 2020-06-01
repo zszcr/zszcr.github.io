@@ -149,6 +149,64 @@
     
     
     <div class="col-12 col-md-12 mx-auto index-info">
+      <a href="/2018/09/20/2018-9-14-gdb/">
+        <p class="h4 index-header">gdb常用命令</p>
+      </a>
+
+      <a href="/2018/09/20/2018-9-14-gdb/">
+        
+        
+          
+        
+        <div class="index-excerpt">
+          <div class="index-text mb-1">gdb
+基础调试命令
+s step，si步入
+n 执行下一条指令 ni步入
+b 在某处下断点，可以用
+b * adrress
+b function_name
+info b 查看断点信息
+delete 删除所有断点
+c 继续
+r 执行
+disas addr 查看addr处前后的反汇编代码
+disas functions 参看fucntion函数的反汇编代码
+显示内存数据
+p 系列
+p system/main 显示某个函数地址
+p $esp 显示寄存器
+p/x p/a p/b p/s。。。
+p 0xff - 0xea 计算器
+print &amp;VarName 查看变量地址
+p * 0xffff</div>
+        </div>
+      </a>
+
+      <div class="index-btm">
+        
+          <i class="iconfont icon-riqi2"></i>&nbsp;2018-09-20&nbsp;&nbsp;
+        
+        
+          <i class="iconfont icon-inbox"></i>
+          
+            <a href="/categories/TOOL/">TOOL</a>&nbsp;
+          &nbsp;
+        
+        
+          <i class="iconfont icon-tag"></i>
+          
+            <a href="/tags/pwn/">pwn</a>&nbsp;
+          
+        
+      </div>
+    </div>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <div class="col-12 col-md-12 mx-auto index-info">
       <a href="/2018/09/20/2018-9-22-very_overflow-writeup/">
         <p class="h4 index-header">very_overflow writeup</p>
       </a>
@@ -578,48 +636,6 @@ struct record {
 
 题目用来free的函数
 v</div>
-        </div>
-      </a>
-
-      <div class="index-btm">
-        
-          <i class="iconfont icon-riqi2"></i>&nbsp;2018-05-11&nbsp;&nbsp;
-        
-        
-          <i class="iconfont icon-inbox"></i>
-          
-            <a href="/categories/hackme-inndy-writeup/">hackme.inndy_writeup</a>&nbsp;
-          &nbsp;
-        
-        
-          <i class="iconfont icon-tag"></i>
-          
-            <a href="/tags/writeup/">writeup</a>&nbsp;
-          
-            <a href="/tags/pwn/">pwn</a>&nbsp;
-          
-        
-      </div>
-    </div>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <div class="col-12 col-md-12 mx-auto index-info">
-      <a href="/2018/05/11/2018-5-11-rsbo-1-和-rsbo-2-writeup/">
-        <p class="h4 index-header">rsbo-1 和 rsbo-2 writeup</p>
-      </a>
-
-      <a href="/2018/05/11/2018-5-11-rsbo-1-和-rsbo-2-writeup/">
-        
-        
-          
-        
-        <div class="index-excerpt">
-          <div class="index-text mb-1">这两道题的文件是一样的，不过一个没要求getshell，一个要求getshll
-rsbo-1防护机制:只开启了堆栈不可执行题目hint: ROP, open, read很明显要要用ROP调用执行open()函数打开flag文件 然后用read()函数读取文件ida反编译代码**
-它先执行init函数 ，打开“/home/ctf/flag”文件，然后读到buf上，再用随机数将buf的内容破坏，最后用memset将buf的内容清零。然后执行read_80_bytes()函数，这里存在溢出点，具体需要填充的字节为108，这个函数读取0x80个字节的内容到v5上，然后将返回值赋给v8,接下来的一个fo</div>
         </div>
       </a>
 

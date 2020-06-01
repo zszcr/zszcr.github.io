@@ -149,6 +149,49 @@
     
     
     <div class="col-12 col-md-12 mx-auto index-info">
+      <a href="/2020/05/24/2020-5-24-反序列化漏洞学习/">
+        <p class="h4 index-header">PHP反序列化漏洞学习</p>
+      </a>
+
+      <a href="/2020/05/24/2020-5-24-反序列化漏洞学习/">
+        
+        
+          
+        
+        <div class="index-excerpt">
+          <div class="index-text mb-1">PHP反序列化漏洞学习PHP序列化PHP使用serialize()函数来进行序列化
+函数原型：
+serialize ( mixed $value ) : string
+
+serialize()函数返回一个字符串，这个字符串包含了表示value的字节流，可以存储与任何地方，通常会存储在一个文本文件中。
+序列化有利于存储或者传递PHP的值，同时不会丢失其类型和结构。
+序列化对象
+PHP中的对象可以被序列化，如果对象存在魔法函数__sleep()，那么在序列化前会调用魔法函数__sleep()，__sleep()函数必须返回一个数组，数组的内容是要进行序列化的属性。
+demo1:
+&lt;?php
+</div>
+        </div>
+      </a>
+
+      <div class="index-btm">
+        
+          <i class="iconfont icon-riqi2"></i>&nbsp;2020-05-24&nbsp;&nbsp;
+        
+        
+          <i class="iconfont icon-inbox"></i>
+          
+            <a href="/categories/WEB/">WEB</a>&nbsp;
+          &nbsp;
+        
+        
+      </div>
+    </div>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <div class="col-12 col-md-12 mx-auto index-info">
       <a href="/2020/05/23/2020-5-23-命令执行&代码执行漏洞学习/">
         <p class="h4 index-header">命令执行&amp;代码执行漏洞学习</p>
       </a>
@@ -505,42 +548,6 @@ apahce2的配置布局如下
           <i class="iconfont icon-inbox"></i>
           
             <a href="/categories/WEB/">WEB</a>&nbsp;
-          &nbsp;
-        
-        
-      </div>
-    </div>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <div class="col-12 col-md-12 mx-auto index-info">
-      <a href="/2020/03/13/2020-3-13-curl用法/">
-        <p class="h4 index-header">curl命令行工具的用法</p>
-      </a>
-
-      <a href="/2020/03/13/2020-3-13-curl用法/">
-        
-        
-          
-        
-        <div class="index-excerpt">
-          <div class="index-text mb-1">curl命令行工具的用法curl简介curl是一个开源的用于数据传输的命令行工具与库，主要用来发出网络请求，然和得到和提取数据，最后显示在“标准输出”上。它使用URL语法格式，支持很多种协议，如 DICT, FILE, FTP, FTPS, GOPHER, HTTP, HTTPS 等等。curl库提供了很多功能，可以用来进行HTTP/HTTPS请求，上传/下载文件等，并且它还支持Cookie、认证、代理、限速等。
-curl的使用访问URLcurl命令后面直接加上要访问的网址，就可以看到网页的源码 ，它不加任何参数时发出的请求是GET请求。
-
-如果想将这个网页保存下来，可以使用’-o’参数，指定</div>
-        </div>
-      </a>
-
-      <div class="index-btm">
-        
-          <i class="iconfont icon-riqi2"></i>&nbsp;2020-03-13&nbsp;&nbsp;
-        
-        
-          <i class="iconfont icon-inbox"></i>
-          
-            <a href="/categories/tool/">tool</a>&nbsp;
           &nbsp;
         
         

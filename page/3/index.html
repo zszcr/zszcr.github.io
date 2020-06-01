@@ -149,6 +149,58 @@
     
     
     <div class="col-12 col-md-12 mx-auto index-info">
+      <a href="/2019/02/15/2019-2-15-kernel-UAF/">
+        <p class="h4 index-header">【kernel-UAF】babydriver</p>
+      </a>
+
+      <a href="/2019/02/15/2019-2-15-kernel-UAF/">
+        
+        
+          
+        
+        <div class="index-excerpt">
+          <div class="index-text mb-1">题目来源：CISCN2017 babydriver
+拿到手后是一个压缩包，解压后有三个文件
+boot.sh        #启动脚本
+bzImage        #内核binary
+rootfs.cpio    #文件系统映像
+boot.sh
+
+​    可以发现开启了smep防护，而smep保护主要功能是禁止内核执行用户态的代码
+将rootfs.cpio解压，查看里面的文件
+
+​    可以发现flag的owner被设为root，以及它加载了babydriver.ko这个内核模块。很明显，漏洞应该就在这个模块中
+防护机制：
+☁  4.4.72  checksec babydriver.ko</div>
+        </div>
+      </a>
+
+      <div class="index-btm">
+        
+          <i class="iconfont icon-riqi2"></i>&nbsp;2019-02-15&nbsp;&nbsp;
+        
+        
+          <i class="iconfont icon-inbox"></i>
+          
+            <a href="/categories/Linux-Kernel/">Linux_Kernel</a>&nbsp;
+          &nbsp;
+        
+        
+          <i class="iconfont icon-tag"></i>
+          
+            <a href="/tags/pwn/">pwn</a>&nbsp;
+          
+            <a href="/tags/kernel/">kernel</a>&nbsp;
+          
+        
+      </div>
+    </div>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <div class="col-12 col-md-12 mx-auto index-info">
       <a href="/2019/01/31/2019-1-31-kernel_pwn入门之环境搭建/">
         <p class="h4 index-header">kernel_pwn入门之环境搭建</p>
       </a>
@@ -561,51 +613,6 @@ arm_pwn: ELF 64-bit LSB executable, ARM aarch64, version 1 (SYSV), dynamically l
             <a href="/tags/pwn/">pwn</a>&nbsp;
           
             <a href="/tags/ARM/">ARM</a>&nbsp;
-          
-        
-      </div>
-    </div>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <div class="col-12 col-md-12 mx-auto index-info">
-      <a href="/2018/10/30/2018-10-30-tcache下的堆利用的学习/">
-        <p class="h4 index-header">tcache下的堆利用的学习</p>
-      </a>
-
-      <a href="/2018/10/30/2018-10-30-tcache下的堆利用的学习/">
-        
-        
-          
-        
-        <div class="index-excerpt">
-          <div class="index-text mb-1">最近做国际赛的题，遇到了tcache下的堆利用，之前没有接触过tcache机制，所以就来学习一下，主要是围绕howtoheap来学习，做下笔记。
-tcache机制是glibc-2.26新增的机制，主要是用来提升堆管理的性能，但是它的安全机制几乎没有….所以搞事就容易很多了，混子pwn手的福音
-基础知识tcache的两个新增的结构体
-typedef struct tcache_entry        //tcache_entry 是用来链接chunk的结构体，*next指向下一个chunk的 
-{                              //user data
-  struc</div>
-        </div>
-      </a>
-
-      <div class="index-btm">
-        
-          <i class="iconfont icon-riqi2"></i>&nbsp;2018-10-30&nbsp;&nbsp;
-        
-        
-          <i class="iconfont icon-inbox"></i>
-          
-            <a href="/categories/Heap-Exploitation/">Heap_Exploitation</a>&nbsp;
-          &nbsp;
-        
-        
-          <i class="iconfont icon-tag"></i>
-          
-            <a href="/tags/pwn/">pwn</a>&nbsp;
-          
-            <a href="/tags/housetoheap/">housetoheap</a>&nbsp;
           
         
       </div>
